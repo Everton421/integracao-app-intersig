@@ -8,3 +8,4 @@ export interface par_orca    {
         id:number
         TIPO_RECEB:number
 }
+

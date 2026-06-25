@@ -37,6 +37,17 @@
 
              ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
             `,
+            `CREATE TABLE  IF NOT EXISTS ${database_mobile}.fornecedores_enviados  (
+               id  int(11) NOT NULL AUTO_INCREMENT,
+               id_mobile  varchar(255) NOT NULL DEFAULT '0',
+               codigo_sistema  varchar(255) DEFAULT '0',
+                createdAt timestamp NULL DEFAULT current_timestamp(),
+               updatedAt timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+               PRIMARY KEY ( id ),
+                KEY  codigo_sistema  ( codigo_sistema , id_mobile )
+             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+            `,
+
               `CREATE TABLE  IF NOT EXISTS ${database_mobile}.marcas_enviadas  (
                id  int(11) NOT NULL AUTO_INCREMENT,
                id_mobile  varchar(255) NOT NULL DEFAULT '0',
@@ -119,7 +130,16 @@
                 KEY  codigo_sistema  ( codigo_sistema , id_mobile )
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;`,
           
-         
+            ` CREATE TABLE IF NOT EXISTS  ${database_mobile}.pedidos_compra  (
+               id  int(11) NOT NULL AUTO_INCREMENT,
+               id_mobile  varchar(255) NOT NULL DEFAULT '0',
+               codigo_sistema  varchar(255) DEFAULT '0',
+               createdAt  timestamp NULL DEFAULT current_timestamp(),
+               updatedAt  timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+              PRIMARY KEY ( id ),
+                KEY  codigo_sistema  ( codigo_sistema , id_mobile )
+            ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;`,
+          
               
         ] 
 

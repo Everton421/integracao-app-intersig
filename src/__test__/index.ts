@@ -1,4 +1,4 @@
-import { serviceSendProduct } from "../services/service-send-product.ts";
+import { serviceSendProduct } from "../modules/products/service-send-product.ts";
 
  
 

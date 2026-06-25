@@ -1,14 +1,16 @@
 import amqplib from 'amqplib';
 import { type event } from "../contracts/event.ts";
-import { serviceSendBrands } from "../services/service-send-brands.ts";
-import { serviceSendCategory } from "../services/service-send-category.ts";
-import { serviceSendClient } from "../services/service-send-client.ts";
-import { serviceSendOrder } from "../services/service-send-orders.ts";
-import { serviceSendProdSetor } from "../services/service-send-prod-setor.ts";
-import { serviceSendProduct } from "../services/service-send-product.ts";
-import { serviceSendServices } from "../services/service-send-services.ts";
-import { serviceSendSetor } from "../services/service-send-setor.ts";
-import { serviceSendTipoOs } from "../services/service-send-tipo-os.ts";
+import { serviceSendBrands } from "../modules/brands/service-send-brands.ts";
+import { serviceSendCategory } from "../modules/category/service-send-category.ts";
+import { serviceSendClient } from "../modules/customer/service-send-client.ts";
+import { serviceSendOrder } from "../modules/sales-order/service-send-orders.ts";
+import { serviceSendProdSetor } from "../modules/product-sector/service-send-prod-setor.ts";
+import { serviceSendProduct } from "../modules/products/service-send-product.ts";
+import { serviceSendServices } from "../modules/service/service-send-services.ts";
+import { serviceSendSetor } from "../modules/sector/service-send-setor.ts";
+import { serviceSendTipoOs } from "../modules/service-type/service-send-tipo-os.ts";
+import { serviceSendSupplier } from '../modules/supplier/service-send-supplier.ts';
+import { serviceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
 
 
 export async function consumer_sistema(): Promise<any> {
@@ -89,11 +91,21 @@ export async function consumer_sistema(): Promise<any> {
               //resultBrand.sucess ?    channel.ack(msg)  : channel.nack(msg);
                 channel.ack(msg);
               break;
-            case 'cad_orca':
-               const resultOrder = await serviceSendOrder(data)
+              case 'cad_forn': 
+                await serviceSendSupplier(data);
+              break;
+            
+              case 'cad_orca':
+                const resultOrder = await serviceSendOrder(data)
                //resultOrder.sucess ?    channel.ack(msg)  : channel.nack(msg);
                 channel.ack(msg);
                break;
+               case 'cad_comp':
+                  const resultPurchaseOrder = await serviceSendPurchaseOrder(data)
+               //resultOrder.sucess ?    channel.ack(msg)  : channel.nack(msg);
+                channel.ack(msg);
+               break;
+               
             default:
               console.log("[X] Mensagem recebida do sistema, porém nenhuma ação será executada.")
                 channel.ack(msg);

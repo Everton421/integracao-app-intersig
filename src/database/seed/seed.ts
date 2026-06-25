@@ -1,5 +1,5 @@
 import { type ResultSetHeader } from "mysql2";
-import dbConn from "../../connection/database-connection.ts";
+import dbConn from "../connection/database-connection.ts";
 import { sqlTables } from "../structure/tables.ts";
 
 export async function seed( ) {

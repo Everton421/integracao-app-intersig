@@ -1,21 +1,22 @@
-import { getBrand } from "../repository/repository-brand.ts";
-import { getAllClients } from "../repository/repository-client.ts";
-import { selectPedidoSistema } from "../repository/repository-pedido.ts";
-import { getAllProdSetor } from "../repository/repository-prod-setor.ts";
-import { getProduct } from "../repository/repository-produto.ts";
-import { getSetores } from "../repository/repository-setor.ts";
-import { getCategory } from "../repository/repositry-category.ts";
-import { serviceSendBrands } from "../services/service-send-brands.ts";
-import { serviceSendCategory } from "../services/service-send-category.ts";
-import { serviceSendClient } from "../services/service-send-client.ts";
-import { serviceSendOrder } from "../services/service-send-orders.ts";
-import { serviceSendProdSetor } from "../services/service-send-prod-setor.ts";
-import { serviceSendProduct } from "../services/service-send-product.ts";
-import { serviceSendSetor } from "../services/service-send-setor.ts";
+import { getBrand } from "../modules/brands/repository-brand.ts";
+import { serviceSendBrands } from "../modules/brands/service-send-brands.ts";
+import { getCategory } from "../modules/category/repositry-category.ts";
+import { serviceSendCategory } from "../modules/category/service-send-category.ts";
+import { getAllClients } from "../modules/customer/repository-client.ts";
+import { serviceSendClient } from "../modules/customer/service-send-client.ts";
+import { getAllProdSetor } from "../modules/product-sector/repository-prod-setor.ts";
+import { serviceSendProdSetor } from "../modules/product-sector/service-send-prod-setor.ts";
+import { getProduct } from "../modules/products/repository-produto.ts";
+import { serviceSendProduct } from "../modules/products/service-send-product.ts";
+import { serviceSendPurchaseOrder } from "../modules/purchase-order/service-send-purchase-order.ts";
+import { selectOrdemCompraSistema, selectPedidoSistema } from "../modules/sales-order/repository-pedido.ts";
+import { serviceSendOrder } from "../modules/sales-order/service-send-orders.ts";
+import { getSetores } from "../modules/sector/repository-setor.ts";
+import { serviceSendSetor } from "../modules/sector/service-send-setor.ts";
 
 
 async function jobSendData(){
-          const dataProd = await getProduct ();
+    const dataProd = await getProduct();
         if(dataProd.length >  0 ){
             for( const i of dataProd ){
                 await serviceSendProduct({
@@ -35,8 +36,6 @@ async function jobSendData(){
             }
         }
 
-  
-
             const dataClient = await getAllClients();
             for( const i of dataClient ){
                 await serviceSendClient({ 
@@ -54,7 +53,6 @@ async function jobSendData(){
                 }) 
             }
 
-
             const dataBrand = await getBrand();
             for( const i of dataBrand ){
                 await serviceSendBrands({
@@ -71,7 +69,7 @@ async function jobSendData(){
                     tipo_evento: 'UPDATE'
                 }) 
             }
-                
+               
             const dataCategory = await getCategory();
             for(const i of dataCategory ){
                     await serviceSendCategory({
@@ -88,7 +86,9 @@ async function jobSendData(){
                     tipo_evento: 'UPDATE'
                 }) 
             }
-            const dataSetores = await getSetores();
+ 
+     
+           const dataSetores = await getSetores();
             for( const i of dataSetores){
                     await serviceSendSetor({
                     criado_em: i.DATA_CADASTRO,
@@ -124,7 +124,8 @@ async function jobSendData(){
                 })
             }
         } 
-
+            
+ 
             const dataOrders = await selectPedidoSistema();
                 if(dataOrders.length > 0  ){
                     for( const i of dataOrders ){
@@ -144,6 +145,26 @@ async function jobSendData(){
                     }
 
                 }
+
+      /*   const dataPurchaseOrders = await selectOrdemCompraSistema();
+       if(dataPurchaseOrders.length > 0 ){
+                for( const i of dataPurchaseOrders ){
+                    await serviceSendPurchaseOrder({
+                        criado_em: i.DATA_CADASTRO,
+                        dados_json: String(i),
+                        tipo_evento: "INSERT",
+                        id:0,
+                        id_evento:0,
+                        id_message:'0',
+                        id_registro: i.CODIGO,
+                        setor:0,
+                        status: "PROCESSADO",
+                        tabela:0,
+                        tabela_origem: 'pro_comp'
+                    })
+                }
+        }
+        */
             console.log("[X] fim do processo.") 
                 return
         }

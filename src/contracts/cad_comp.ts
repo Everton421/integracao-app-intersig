@@ -1,0 +1,50 @@
+export interface cad_comp {
+CODIGO:number
+FILIAL:number
+FORNECEDOR:number
+DEPART:number
+FORMA_PAGAMENTO:number
+QTDE_PGTO:number
+PRIMEIRO_PGTO:number
+INTERVALO_PGTO:number
+DIA_INTERVALO:string
+DATA_RECEB:string
+TOTAL_PRODUTOS:number
+TOTAL_SERVICOS:number
+DESC_PROD:number
+DESC_SERV:number
+TRIBUTOS: 'S' | 'N'
+BASE_IPI:number
+TOTAL_IPI:number
+TOTAL_GERAL:number
+DATA_CADASTRO:string
+OBSERVACOES:string
+OBSERVACOES2:string
+CONTATO:string
+COMPRADOR:number
+SITUACAO:string
+SIT_SEPAR: 'N' | 'P' | 'I'
+DATA_PEDIDO: string
+DESTACAR: string
+FRETE: string
+TRANSPORTADORA:number
+PLACA: string
+ESTADO: string
+QUANTIDADE:number
+ESPECIE: string
+MARCA:number
+NUMERO:number
+OUTRAS_DESPESAS:number
+VALOR_FRETE:number
+VALOR_SEGURO:number
+SETOR:number
+HORA_RECEB:string
+INFO_ENTREGA:string
+ADIC_FINANCEIRO:number
+DESC_FINANCEIRO:number
+TIPO: '1' | '2' | '3' | '4'
+CREDITO_FORNECEDOR:number
+PESO_BRUTO:number
+PESO_LIQUIDO:number
+ENTRADA_MANUAL_PESO_LIQUIDO:string
+}
