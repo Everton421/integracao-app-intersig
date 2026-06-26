@@ -27,8 +27,8 @@ export async function serviceSendProdSetor(event: event) {
                                                 const arrVerifyItems = resultVerifyProduct as produtos_enviados[]
                                                 if(arrVerifyItems.length > 0 ){
                                                         const data = {
-                                                                produto: arrVerifyItems[0].id_mobile,
-                                                                setor: PROD_SETOR.SETOR,
+                                                                produto: Number(arrVerifyItems[0].id_mobile),
+                                                                setor: Number(PROD_SETOR.SETOR),
                                                                 data_recadastro: PROD_SETOR.DATA_RECAD,
                                                                 estoque: Number(PROD_SETOR.ESTOQUE),
                                                                 local1_produto: PROD_SETOR.LOCAL1_PRODUTO || '',
