@@ -30,7 +30,7 @@ export async function serviceSendProdSetor(event: event) {
                                                                 produto: arrVerifyItems[0].id_mobile,
                                                                 setor: PROD_SETOR.SETOR,
                                                                 data_recadastro: PROD_SETOR.DATA_RECAD,
-                                                                estoque: PROD_SETOR.ESTOQUE,
+                                                                estoque: Number(PROD_SETOR.ESTOQUE),
                                                                 local1_produto: PROD_SETOR.LOCAL1_PRODUTO || '',
                                                                 local2_produto: PROD_SETOR.LOCAL2_PRODUTO || '',
                                                                 local3_produto: PROD_SETOR.LOCAL3_PRODUTO || '',
