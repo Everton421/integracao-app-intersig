@@ -39,14 +39,14 @@ export async function serviceSendProdSetor(event: event) {
                                                         }
                                                         console.log(` Enviando saldo produto ${PROD_SETOR.PRODUTO}...`, )
                                                         await delay(500)
-                                                        const result = await api.post("/produtos-setor", data,
+                                                        const result = await api.put("/produtos-setor", data,
                                                                         {
                                                                         headers:{
                                                                                 source: origin
                                                                                 }
                                                                         }
                                                                 )
-                                                            if( result.status === 200 ){
+                                                            if( result.status === 200 || result.status === 201){
                                                                 status.sucess = true;
                                                                 }else{
                                                                 status.sucess = false;
