@@ -19,9 +19,7 @@ export async function serviceSendServices (event: event ){
                         } 
 
                                           let sql = ` select 
-                                                cs.*,
-                                                DATE_FORMAT(cs.updated_at, '%Y-%m-%d %H:%i:%s') AS DATA_RECAD 
-                                                from ${PUBLICO}.cad_serv cs
+                                                cs.*     from ${PUBLICO}.cad_serv cs
                                                 WHERE
                                                 cs.CODIGO = ${event.id_registro} ;
                                                 `  
@@ -36,7 +34,7 @@ export async function serviceSendServices (event: event ){
                                                               const serv = arrServ[0]
 
                                                                 const payload = {
-                                                                        codigo: serviceVerify.id_mobile, 
+                                                                        codigo: Number(serviceVerify.id_mobile), 
                                                                         id: String(serv.CODIGO),
                                                                         valor : serv.VALOR,
 		                                                        aplicacao : serv.APLICACAO ,
@@ -65,6 +63,7 @@ export async function serviceSendServices (event: event ){
                                                                  const serv = arrServ[0]
 
                                                                   const data = {
+                                                                        codigo: Number(serv.CODIGO) , 
                                                                         id: String(serv.CODIGO),
                                                                         valor : serv.VALOR,
 		                                                        aplicacao : serv.APLICACAO ,
@@ -82,7 +81,7 @@ export async function serviceSendServices (event: event ){
                                                                  }
                                                          )
 
-                                                        if(resultPost.status === 200){
+                                                        if(resultPost.status === 200 || resultPost.status === 201){
                                                                       const data = resultPost.data  as  any
                                                                      await dbConn.query(`INSERT INTO ${MOBILE}.servicos_enviados set codigo_sistema = ${serv.CODIGO}, id_mobile= ${data.codigo}`)
                                                                 return { sucess:true , message:''};

@@ -51,6 +51,7 @@ export async function postCategory ( codigo:number) {
                                                            const grupo = arrPgru[0]
 
                                                             const data = {
+                                                                        codigo: Number(grupo.CODIGO),
                                                                         id: String(grupo.CODIGO),
                                                                         descricao: grupo.NOME,
                                                                         data_cadastro: grupo.DATA_CADASTRO ,

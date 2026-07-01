@@ -66,6 +66,7 @@ export async function serviceSendSetor(event:event) {
                                                    const [ arrSetor] = await dbConn.query(`SELECT * FROM ${ESTOQUE}.setores WHERE CODIGO = ${event.id_registro};`)
                                                         const setor = arrSetor as setores[]
                                                 const payload = { 
+                                                        codigo:setor[0].CODIGO,
                                                         id:String(setor[0].CODIGO),
                                                         descricao: setor[0].NOME,
                                                         data_cadastro: dateService.formatarData(setor[0].DATA_CADASTRO)
@@ -79,7 +80,7 @@ export async function serviceSendSetor(event:event) {
                                                                                 }
                                                                         }
                                                                 )
-                                                 if(resultPut.status === 200 ){
+                                                 if(resultPut.status === 200  || resultPut.status === 201){
                                                         const data = resultPut.data  as  result_api_post
                                                         await dbConn.query(`INSERT INTO ${MOBILE}.setores_enviados set codigo_sistema = ${event.id_registro}, id_mobile= ${data.codigo }`)
                                                                 status.sucess =  true

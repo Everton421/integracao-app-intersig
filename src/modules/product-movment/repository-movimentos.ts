@@ -32,7 +32,8 @@ type movimentos= {
    }
        export async function insertMvto_produtos(mvto:message_movimento_produtos ) {
 
-            const [ verifyMvtos ] = await dbConn.query(`SELECT * FROM ${MOBILE}.movimentos_produtos where id_mobile = ${mvto.id}`)    
+         console.log(mvto)
+         const [ verifyMvtos ] = await dbConn.query(`SELECT * FROM ${MOBILE}.movimentos_produtos where id_mobile = ${mvto.codigo}`)    
          const resultVerifyMvtos = verifyMvtos as movimentos[]
          const dateService = new DateService();
             
@@ -129,6 +130,7 @@ type movimentos= {
                   
                      await dbConn.query(`INSERT INTO ${MOBILE}.movimentos_produtos SET id_mobile =${mvto.id}, codigo_sistema = ${codigoAcerto};`)
             }
+
              
     }
 

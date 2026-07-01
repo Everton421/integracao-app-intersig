@@ -11,6 +11,8 @@ import { serviceSendSetor } from "../modules/sector/service-send-setor.ts";
 import { serviceSendTipoOs } from "../modules/service-type/service-send-tipo-os.ts";
 import { serviceSendSupplier } from '../modules/supplier/service-send-supplier.ts';
 import { serviceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
+import { SendLotesSeries } from '../modules/lotes-series/service-send-lote-serie.ts';
+import { SendLoteSerieSetor } from '../modules/lote-serie-setor/lote-serie-setor.ts';
 
 
 export async function consumer_sistema(): Promise<any> {
@@ -51,6 +53,16 @@ export async function consumer_sistema(): Promise<any> {
           const data = conteudo as event;
           console.log(`[X] Mensagem recebida do sistema tabela origem ${data.tabela_origem}.`)
           switch (data.tabela_origem) {
+
+            case 'lotes_series':
+                SendLotesSeries(data)
+                channel.ack(msg);
+               break;
+
+            case 'lote_serie_setor':
+                SendLoteSerieSetor(data)
+                channel.ack(msg);
+               break;
             case 'cad_prod':
                 const resultProduct =  await serviceSendProduct(data);
                //resultProduct.sucess ? channel.ack(msg)   : channel.nack(msg); 

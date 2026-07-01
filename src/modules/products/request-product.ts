@@ -16,6 +16,7 @@ type  typeProductMobileRequest = {
         tipo: number
         class_fiscal: string
         origem: string
+        controle_lote_serie: 'S' | 'N'
         data_cadastro?: string 
         observacoes1: string
         observacoes2: string
@@ -27,7 +28,7 @@ type typePostProductMobile = typeProductMobileRequest & { id: number }
 
 export  function requestMobileProduct   () {
 
-       const postProductMobile = async (data: Omit<typePostProductMobile, 'codigo'>)=>{   
+       const postProductMobile = async (data:  typePostProductMobile )=>{   
             let responseRequestMobile = {sucess: false, message:'' , data: null };
             try {
                 const resultPost = await api.post('/produto', data);

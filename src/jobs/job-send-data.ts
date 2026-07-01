@@ -105,7 +105,7 @@ async function jobSendData(){
                 }) 
                 }
 
-                        const dataProdSetor = await getAllProdSetor();
+         const dataProdSetor = await getAllProdSetor();
         if( dataProdSetor.length >  0 ){
 
             for(const i of dataProdSetor ){

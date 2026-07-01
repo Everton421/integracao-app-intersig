@@ -1,5 +1,5 @@
 import { type ResultSetHeader } from "mysql2"
-import dbConn, { MOBILE, VENDAS } from "../../database/connection/database-connection.ts"
+import dbConn, { MOBILE, PUBLICO, VENDAS } from "../../database/connection/database-connection.ts"
 import { type pro_orca } from "../../contracts/pro_orca.ts"
 import { type par_orca } from "../../contracts/par_orca.ts"
 import {type pro_comp } from "../../contracts/pro_comp.ts"
@@ -158,34 +158,86 @@ import {type par_comp } from "../../contracts/par_comp.ts"
             } 
     }
 
-
+    type resultselectProdutoDoPedido =   pro_orca & { controle_lote_serie:'S' | 'N'   }
+   
      export async function selectProdutoDoPedido( codigo_pedido:number ){
 
                     const sql =  ` SELECT 
                     p.*,
-                    pe.id_mobile as id 
+                    pe.id_mobile as id,
+                    cp.CONTR_LOTE_SERIE as controle_lote_serie
                      from ${VENDAS}.pro_orca p
                      join ${MOBILE}.produtos_enviados pe on pe.codigo_sistema = p.PRODUTO
+                     join ${PUBLICO}.cad_prod cp on cp.CODIGO = p.PRODUTO
+                 
                       where p.orcamento = ?  `;
                             const values =[codigo_pedido ]
                              const [ rows ] =  await dbConn.query( sql, values );
-                return rows as pro_orca[];
+                return rows as resultselectProdutoDoPedido[];
                   
     }
 
+    type resultselectProdutoDoPedidoDeCompra =pro_comp & { controle_lote_serie:'S' | 'N'   }
          export async function selectProdutoDoPedidoDeCompra( codigo_pedido:number ){
 
                     const sql =  ` SELECT 
                     pc.*,
-                    pe.id_mobile as id 
+                    pe.id_mobile as id,
+                    cp.CONTR_LOTE_SERIE as controle_lote_serie 
                      from ${VENDAS}.pro_comp pc
                      join ${MOBILE}.produtos_enviados pe on pe.codigo_sistema = pc.PRODUTO
+                     join ${PUBLICO}.cad_prod cp on cp.CODIGO = pc.PRODUTO
                       where pc.ORDEM = ?  `;
                             const values =[codigo_pedido ]
                              const [ rows ] =  await dbConn.query( sql, values );
-                return rows as pro_comp[];
+                return rows as resultselectProdutoDoPedidoDeCompra[];
                   
     }
+
+    type resultSeriesPedidoCompra = {
+             CODIGO:number
+             QTDE_SEPARADA:number,
+             SERIE:string
+             LOTE:string | null
+    }
+
+export async function  selectSeriesPedidoCompra(codigo_pedido:number) {
+        const sql = `SELECT 
+            ls.CODIGO,
+            lsc.QTDE_SEPARADA,
+            ls.SERIE,
+            ls.LOTE 
+                    FROM ${VENDAS}.lotes_series_comp lsc 
+                    JOIN ${PUBLICO}.lotes_series ls
+                    on ls.CODIGO = lsc.LOTE_SERIE
+                    WHERE lsc.ORDEM = '${codigo_pedido}'
+            `
+            const [ rows ] =  await dbConn.query( sql );
+        return rows as resultSeriesPedidoCompra[]
+}
+
+    type resultSeriesPedidoVenda = {
+             CODIGO:number
+             QTDE_SEPARADA:number,
+             SERIE:string
+             LOTE:string | null
+    }
+
+export async function  selectSeriesPedidoVenda(codigo_pedido:number) {
+        const sql = `SELECT 
+            ls.CODIGO,
+            lso.QTDE_SEPARADA,
+            ls.SERIE,
+            ls.LOTE 
+                    FROM ${VENDAS}.lotes_series_orca lso 
+                    JOIN ${PUBLICO}.lotes_series ls
+                    on ls.CODIGO = lso.LOTE_SERIE
+                    WHERE lso.ORCAMENTO = '${codigo_pedido}'
+            `
+            const [ rows ] =  await dbConn.query( sql );
+        return rows as resultSeriesPedidoVenda[]
+}
+
 
    export async function selectParcelasDoPedido( codigo_pedido:number ){
 

@@ -2,7 +2,7 @@ import { selectClientePedido, selectFornecedorPedido, selectOrdemCompraSistema  
 import { serviceSendClient } from "../customer/service-send-client.ts";
 import { DateService } from "../../utils/date.ts";
 import { serviceSendSupplier } from "../supplier/service-send-supplier.ts";
-import { selectParcelasPedidoCompra, selectProdutoDoPedidoDeCompra } from "../sales-order/repository-itens-pedido.ts";
+import { selectParcelasPedidoCompra, selectProdutoDoPedidoDeCompra, selectSeriesPedidoCompra } from "../sales-order/repository-itens-pedido.ts";
 
 export async function purchaseOrderMapper(codigo_sistema:number) {
 
@@ -23,11 +23,22 @@ export async function purchaseOrderMapper(codigo_sistema:number) {
                      }
                     }
 
-
+                    
                     const prod:any=[]
                     if(arr_produtos.length >  0 ){
                         for( const i of arr_produtos ) {
-                            prod.push(
+
+                                                        const series = []
+                                                         const resultSeries = await selectSeriesPedidoCompra(codigo_sistema);
+                                                            for(const serie of resultSeries){
+                                                                series.push({
+                                                                     lote_serie : Number(serie.CODIGO),
+                                                                     quantidade : String(serie.QTDE_SEPARADA),
+                                                                     serie : String(serie.SERIE),
+                                                                     lote : null
+                                                                })
+                                                            } 
+                                prod.push(
                                                 {
                                                      pedido : codigo_sistema,
                                                      codigo : i.PRODUTO,
@@ -37,9 +48,11 @@ export async function purchaseOrderMapper(codigo_sistema:number) {
                                                      preco : i.UNITARIO,
                                                      total : ( i.UNITARIO * i.QUANTIDADE ) - ( i.QUANTIDADE * i.DESCONTO),
                                                      quantidade_faturada : i.QTDE_FATURADA,
-                                                     quantidade_separada : i.QTDE_SEPARADA
+                                                     quantidade_separada : i.QTDE_SEPARADA,
+                                                      controle_lote_serie: i.controle_lote_serie,
+                                                     series: series
                                                 }
-                            )
+                                          )
                         }
                     }else{
                     console.log(`[X] Não foi encontrado produtos do pedido codigo: ${codigo_sistema} no sistema.`)
@@ -61,11 +74,11 @@ export async function purchaseOrderMapper(codigo_sistema:number) {
 
                             const tipo = erp_order.TIPO == '1' ||  erp_order.TIPO == '2' && '1'
                         const obj =  {       codigo :  codigo_sistema ,
-                                             id :  codigo_sistema ,
-                                             id_externo :   ''   ,
-                                             id_interno :   '' ,
+                                             id :  '#C-'+codigo_sistema ,
+                                             id_externo : String(codigo_sistema),
+                                             id_interno : String(codigo_sistema),
                                              fornecedor: {
-                                                 codigo: Number(arrForn[0].id_mobile)
+                                                 codigo: Number(erp_order.FORNECEDOR)
                                              },
                                              vendedor :  0,
                                              situacao :  String(erp_order.SITUACAO)  ,

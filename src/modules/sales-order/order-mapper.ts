@@ -1,4 +1,4 @@
-import { selectParcelasDoPedido, selectProdutoDoPedido } from "./repository-itens-pedido.ts";
+import { selectParcelasDoPedido, selectProdutoDoPedido, selectSeriesPedidoVenda } from "./repository-itens-pedido.ts";
 import { selectClientePedido, selectPedidoSistema } from "./repository-pedido.ts";
 import { serviceSendClient } from "../customer/service-send-client.ts";
 import { DateService } from "../../utils/date.ts";
@@ -27,6 +27,17 @@ export async function orderMapper(codigo_sistema:number) {
                     const prod:any=[]
                     if(arr_produtos.length >  0 ){
                         for( const i of arr_produtos ) {
+                            const series = []
+                             const resultSeries = await selectSeriesPedidoVenda(codigo_sistema);
+                                for(const serie of resultSeries){
+                                    series.push({
+                                         lote_serie : Number(serie.CODIGO),
+                                         quantidade : String(serie.QTDE_SEPARADA),
+                                         serie : String(serie.SERIE),
+                                         lote : null
+                                    })
+                                } 
+
                             prod.push(
                                                 {
                                                      pedido : codigo_sistema,
@@ -37,7 +48,9 @@ export async function orderMapper(codigo_sistema:number) {
                                                      preco : i.PRECO_TABELA,
                                                      total : i.TOTAL_LIQ,
                                                      quantidade_faturada : i.QTDE_FATURADA,
-                                                     quantidade_separada : i.QTDE_SEPARADA
+                                                     quantidade_separada : i.QTDE_SEPARADA,
+                                                      controle_lote_serie: i.controle_lote_serie,
+                                                      series:series
                                                 }
                             )
                         }
@@ -60,10 +73,10 @@ export async function orderMapper(codigo_sistema:number) {
                             }
 
                             const tipo = erp_order.TIPO == '1' ||  erp_order.TIPO == '2' && '1'
-                        const obj =  {       codigo :  codigo_sistema ,
-                                             id :  codigo_sistema ,
-                                             id_externo :   erp_order.COD_SITE   ,
-                                             id_interno :   erp_order.ID_INTERNA ,
+                        const obj =  {        
+                                             id :  `#V-${codigo_sistema}` , 
+                                             id_externo :   String(codigo_sistema)   ,
+                                             id_interno :   String(codigo_sistema) ,
                                              vendedor :  erp_order.VENDEDOR ,
                                              situacao :   erp_order.SITUACAO ,
                                              situacao_separacao :  erp_order.SIT_SEPAR ,

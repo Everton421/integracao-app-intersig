@@ -52,6 +52,7 @@ export async function serviceSendBrands (event: event ){
                                         
                                                                    const brand = arrPmar[0]
                                                                  const data = {
+                                                                        codigo: Number(brand.CODIGO),
                                                                         id: String(brand.CODIGO),
                                                                         descricao: brand.DESCRICAO,
                                                                         data_cadastro: brand.DATA_CADASTRO ,

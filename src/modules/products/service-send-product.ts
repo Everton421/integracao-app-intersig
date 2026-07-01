@@ -38,9 +38,8 @@ type resultProductMobile = {
 type postProductMobile = resultProductMobile 
 
 export async function serviceSendProduct(event: event) {
-        await delay(250)
+        //await delay(250)
         let status = {sucess: true, message:'' , data: null };
-
         try {
                 if (event.tipo_evento === 'DELETE'){
                         console.log(`[V] Excluindo produto ${event.id_registro}`)
@@ -79,6 +78,7 @@ export async function serviceSendProduct(event: event) {
                                p.CODIGO codigo,  
                                COALESCE(   ROUND(pp.preco,2 ),  0.00 ) as preco,
                                COALESCE( p.GRUPO, 0) as grupo, 
+                               p.CONTR_LOTE_SERIE as controle_lote_serie,
                                coalesce(und.SIGLA,'UND') as unidade_medida,
                                p.DESCRICAO descricao, 
                                p.NUM_FABRICANTE num_fabricante,
@@ -111,47 +111,45 @@ export async function serviceSendProduct(event: event) {
                 const grupoErp = arrProduct[0]?.grupo || 0;
 
 
-                /// verifca se a marca já  foi enviada 
-                let id_marca_mobile = 0;
-
-                const [resultVerifyBrand] = await dbConn.query(`SELECT * FROM ${MOBILE}.marcas_enviadas WHERE codigo_sistema = ${marcaErp};`);
-                const arrVerifyBrand = resultVerifyBrand as table_enviados[];
-
-                if (arrVerifyBrand.length === 0) {
-                        const result = await postBrand(marcaErp) as any
-                        if (result && result.sucess ) id_marca_mobile = result.data && result.data.codigo  ? result.data.codigo : 0;
-                } else {
-                        id_marca_mobile = arrVerifyBrand[0].id_mobile
-                }
-
-                const marca = id_marca_mobile  ;
+              //  /// verifca se a marca já  foi enviada 
+              //  let id_marca_mobile = 0;
+//
+              //  const [resultVerifyBrand] = await dbConn.query(`SELECT * FROM ${MOBILE}.marcas_enviadas WHERE codigo_sistema = ${marcaErp};`);
+              //  const arrVerifyBrand = resultVerifyBrand as table_enviados[];
+//
+              //  if (arrVerifyBrand.length === 0) {
+              //          const result = await postBrand(marcaErp) as any
+              //          if (result && result.sucess ) id_marca_mobile = result.data && result.data.codigo  ? result.data.codigo : 0;
+              //  } else {
+              //          id_marca_mobile = arrVerifyBrand[0].id_mobile
+              //  }
+//
+              //  const marca = id_marca_mobile  ;
                 // ---------------------------------------------------------------------------
 
               // verifca grupo
-                let id_categoria_mobile = 0;
-                const [resultVerifyCategory] = await dbConn.query(`SELECT * FROM ${MOBILE}.categorias_enviadas WHERE codigo_sistema = ${grupoErp};`);
-                const arrVerifyCategory = resultVerifyCategory as table_enviados[];
-                if (arrVerifyCategory.length === 0) {
-                        const resultPostCategory = await postCategory(grupoErp)  as any
-                        if ( resultPostCategory &&  resultPostCategory.sucess &&  resultPostCategory.data) {
-                        id_categoria_mobile =   resultPostCategory.data.codigo ? resultPostCategory.data.codigo : 0
-                        } 
-                        
-                } else {
-                        id_categoria_mobile = arrVerifyCategory[0].id_mobile
-                }
-
-                const grupo =  id_categoria_mobile  ;
+              //  let id_categoria_mobile = 0;
+              //  const [resultVerifyCategory] = await dbConn.query(`SELECT * FROM ${MOBILE}.categorias_enviadas WHERE codigo_sistema = ${grupoErp};`);
+              //  const arrVerifyCategory = resultVerifyCategory as table_enviados[];
+              //  if (arrVerifyCategory.length === 0) {
+              //          const resultPostCategory = await postCategory(grupoErp)  as any
+              //          if ( resultPostCategory &&  resultPostCategory.sucess &&  resultPostCategory.data) {
+              //          id_categoria_mobile =   resultPostCategory.data.codigo ? resultPostCategory.data.codigo : 0
+              //          } 
+              //          
+              //  } else {
+              //          id_categoria_mobile = arrVerifyCategory[0].id_mobile
+              //  }
+//
+              //  const grupo =  id_categoria_mobile  ;
 
                 // ---------------------------------------------------------------------------
 
                 const [resultVerifyProduct] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`);
                 const arrVerifyItems = resultVerifyProduct as produtos_enviados[]
-
                 if (arrVerifyItems.length > 0 && arrProduct.length > 0 ) {
                         console.log(` Atualizando  produto ${event.id_registro}...`,)
-                        let item = { ...arrProduct[0],  id: String(arrProduct[0].codigo), grupo: Number(grupo), marca: Number(marca) } 
-
+                        let item = { ...arrProduct[0],  id: String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } 
                         item.codigo = Number(arrVerifyItems[0].id_mobile);
 
                         const arrStock = await findStock(arrProduct[0].codigo);
@@ -175,7 +173,7 @@ export async function serviceSendProduct(event: event) {
                         //post produto 
                         console.log(` Enviando   produto ${event.id_registro}...`,)
 
-                        let item = { ...arrProduct[0], id:String(arrProduct[0].codigo), grupo: Number(grupo), marca: Number(marca) } as postProductMobile
+                        let item = { ...arrProduct[0], id:String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } as postProductMobile
                         const arrStock = await findStock(arrProduct[0].codigo);
                         item.estoque = 0
                         if (arrStock.length > 0) item.estoque = arrStock[0].ESTOQUE;

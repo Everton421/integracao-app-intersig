@@ -81,6 +81,7 @@ export async function serviceSendClient(event: event) {
                 const arrClient = resultClient as cad_clie[];
                 const client = arrClient[0]
                 const data = {
+                        codigo:  client.CODIGO,
                         id: String(client.CODIGO),
                         celular: client.CELULAR,
                         nome: client.NOME,

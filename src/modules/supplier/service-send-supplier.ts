@@ -78,6 +78,7 @@ export async function serviceSendSupplier(event: event) {
 
                 const forn = arrforn[0]
                 const payload = {
+                        codigo: Number(forn.CODIGO),
                         id: String(forn.CODIGO),
                         celular: forn.TELEFONE,
                         nome: forn.NOME_FANTASIA,

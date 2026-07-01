@@ -62,6 +62,7 @@ export async function serviceSendTipoOs (event: event ){
                                                               const arrtipoOs = resultTipo_os as tipos_os[] ;
                                                               const tipoOs = arrtipoOs[0]
                                                                 const data = {
+                                                                        codigo: tipoOs.CODIGO,
                                                                         id: tipoOs.CODIGO,
 		                                                        descricao : tipoOs.DESCRICAO ,
                                                                         data_cadastro: dataService.formatarDataHora(tipoOs.updated_at) ,
