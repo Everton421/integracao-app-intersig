@@ -27,7 +27,7 @@ export async function serviceSendOrder(event: event) {
                                 }
                                 )
 
-                                if (result.status === 200) {
+                                if (result.status === 200 || result.status === 201 ) {
                                         const resultId = result.data.results[0].codigo;
                                         resultFunction.sucess = true
                                 }
@@ -50,7 +50,6 @@ export async function serviceSendOrder(event: event) {
                                                 }
                                         }
                                 )
-
                                 if (result.status === 200 || result.status === 201) {
                                         const resultId = result.data.results[0].codigo;
 

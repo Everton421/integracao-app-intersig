@@ -55,7 +55,7 @@ export async function purchaseOrderMapper(codigo_sistema:number) {
                                           )
                         }
                     }else{
-                    console.log(`[X] Não foi encontrado produtos do pedido codigo: ${codigo_sistema} no sistema.`)
+                    console.log(`[X] Não foi encontrado produtos do pedido de compra codigo: ${codigo_sistema} no sistema.`)
                         return;
                     }
 
