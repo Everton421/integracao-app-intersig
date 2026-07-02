@@ -3,7 +3,7 @@ import { serviceSendClient } from "../customer/service-send-client.ts";
 import { DateService } from "../../utils/date.ts";
 import { serviceSendSupplier } from "../supplier/service-send-supplier.ts";
 import { selectParcelasPedidoCompra, selectProdutoDoPedidoDeCompra, selectSeriesPedidoCompra } from "../sales-order/repository-itens-pedido.ts";
-import dbConn from "../../database/connection/database-connection.ts";
+import dbConn, { VENDAS } from "../../database/connection/database-connection.ts";
 
 
 type typeresultDefaultSector = { SETOR:number};
@@ -78,8 +78,8 @@ export async function purchaseOrderMapper(codigo_sistema:number) {
                             }
 
                             
-                        const [resultDefaultSector] = await dbConn.query(` SELECT SETOR from  empresas_setor 
-                                WHERE FILIAL = ( SELECT MIN(FILIAL) FROM empresas_setor)
+                        const [resultDefaultSector] = await dbConn.query(` SELECT SETOR from  ${VENDAS}.empresas_setor 
+                                WHERE FILIAL = ( SELECT MIN(FILIAL) FROM ${VENDAS}.empresas_setor)
                                 AND PADRAO_VENDA = 'X'  Limit 1`)  ;
 
                             const defaultSector = resultDefaultSector as typeresultDefaultSector[];

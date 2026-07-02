@@ -77,8 +77,8 @@ export async function orderMapper(codigo_sistema:number) {
                             }
 
 
-                        const [resultDefaultSector] = await dbConn.query(` SELECT SETOR from  empresas_setor 
-                                WHERE FILIAL = ( SELECT MIN(FILIAL) FROM empresas_setor)
+                        const [resultDefaultSector] = await dbConn.query(` SELECT SETOR from  ${VENDAS}.empresas_setor 
+                                WHERE FILIAL = ( SELECT MIN(FILIAL) FROM ${VENDAS}.empresas_setor)
                                 AND PADRAO_VENDA = 'X'  Limit 1`)  ;
 
                             const defaultSector = resultDefaultSector as typeresultDefaultSector[];
