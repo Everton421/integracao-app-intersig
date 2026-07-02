@@ -3,6 +3,11 @@ import { serviceSendClient } from "../customer/service-send-client.ts";
 import { DateService } from "../../utils/date.ts";
 import { serviceSendSupplier } from "../supplier/service-send-supplier.ts";
 import { selectParcelasPedidoCompra, selectProdutoDoPedidoDeCompra, selectSeriesPedidoCompra } from "../sales-order/repository-itens-pedido.ts";
+import dbConn from "../../database/connection/database-connection.ts";
+
+
+type typeresultDefaultSector = { SETOR:number};
+
 
 export async function purchaseOrderMapper(codigo_sistema:number) {
 
@@ -72,7 +77,18 @@ export async function purchaseOrderMapper(codigo_sistema:number) {
                                           )
                             }
 
-                            const tipo = erp_order.TIPO == '1' ||  erp_order.TIPO == '2' && '1'
+                            
+                        const [resultDefaultSector] = await dbConn.query(` SELECT SETOR from  empresas_setor 
+                                WHERE FILIAL = ( SELECT MIN(FILIAL) FROM empresas_setor)
+                                AND PADRAO_VENDA = 'X'  Limit 1`)  ;
+
+                            const defaultSector = resultDefaultSector as typeresultDefaultSector[];
+                            let setor = defaultSector[0].SETOR;
+
+                            if(erp_order.SETOR > 0 ){
+                                setor =erp_order.SETOR;
+                            }
+
                         const obj =  {       codigo :  codigo_sistema ,
                                              id :  '#C-'+codigo_sistema ,
                                              id_externo : String(codigo_sistema),
@@ -105,7 +121,9 @@ export async function purchaseOrderMapper(codigo_sistema:number) {
                                              produtos:  prod,
                                              servicos : [],
                                              parcelas :   parcelas, 
-                                             operacao : 'C'
+                                             operacao : 'C',
+                                              setor: setor || 1  
+
                                         }
                                      return obj;
 

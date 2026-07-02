@@ -33,4 +33,5 @@ export type cad_orca = {
   QTDE_PARCELAS: number
   TIPO_OS: number
   TIPO: string
+  SETOR:number
 }

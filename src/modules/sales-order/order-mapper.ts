@@ -2,6 +2,10 @@ import { selectParcelasDoPedido, selectProdutoDoPedido, selectSeriesPedidoVenda 
 import { selectClientePedido, selectPedidoSistema } from "./repository-pedido.ts";
 import { serviceSendClient } from "../customer/service-send-client.ts";
 import { DateService } from "../../utils/date.ts";
+import dbConn, { VENDAS } from "../../database/connection/database-connection.ts";
+
+
+type typeresultDefaultSector = { SETOR:number};
 
 export async function orderMapper(codigo_sistema:number) {
 
@@ -55,7 +59,7 @@ export async function orderMapper(codigo_sistema:number) {
                             )
                         }
                     }else{
-                    console.log(`[X]o: ${codigo_sistema} no sistema.`)
+                    console.log(`[X] Não foi encontrado produtos do pedido codigo: ${codigo_sistema} no sistema.`)
                         return;
                     }
 
@@ -72,7 +76,18 @@ export async function orderMapper(codigo_sistema:number) {
                                           )
                             }
 
-                            const tipo = erp_order.TIPO == '1' ||  erp_order.TIPO == '2' && '1'
+
+                        const [resultDefaultSector] = await dbConn.query(` SELECT SETOR from  empresas_setor 
+                                WHERE FILIAL = ( SELECT MIN(FILIAL) FROM empresas_setor)
+                                AND PADRAO_VENDA = 'X'  Limit 1`)  ;
+
+                            const defaultSector = resultDefaultSector as typeresultDefaultSector[];
+                            let setor = defaultSector[0].SETOR;
+                            
+                            if(erp_order.SETOR > 0 ){
+                                setor =erp_order.SETOR;
+                            }
+
                         const obj =  {        
                                              id :  `#V-${codigo_sistema}` , 
                                              id_externo :   String(codigo_sistema)   ,
@@ -102,8 +117,8 @@ export async function orderMapper(codigo_sistema:number) {
                                              produtos:  prod,
                                              servicos : [],
                                              parcelas :   parcelas,
-                                             operacao : 'V'
-
+                                             operacao : 'V',
+                                              setor: setor || 1  
                                         }
                                         
                                      
