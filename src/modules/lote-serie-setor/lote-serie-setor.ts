@@ -24,7 +24,7 @@ export async function SendLoteSerieSetor(event: event) {
 
                 try{
                     await api.put("/lote-serie-setor", {
-                             setor: Number(ESTOQUE),
+                             setor: Number(SETOR),
                              produto: Number(PRODUTO),
                              lote_serie: Number(LOTE_SERIE),
                              estoque: Number(ESTOQUE)
