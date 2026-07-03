@@ -3,13 +3,13 @@ import { insertMvto_produtos } from "./modules/product-movment/repository-movime
 import { updateProdSetor } from "./modules/product-sector/repository-prod-setor.ts";
 import { consumerMobile } from "./services/consumer-mobile.ts";
 import { consumer_sistema } from "./services/consumer-sistema.ts";
-import { updateOrder } from "./services/service-receive-order.ts";
+import { updateOrderSeparacao } from "./services/service-receive-order.ts";
  
 
 await consumer_sistema();
      await seed()
 
-     await consumerMobile('pedido.atualizado', updateOrder, true );
+     await consumerMobile('pedido.separado', updateOrderSeparacao, true );
      
      await consumerMobile('produtosetor.atualizado',updateProdSetor, true ) 
      await consumerMobile('movimentosprodutos.inserido',insertMvto_produtos, true ) 

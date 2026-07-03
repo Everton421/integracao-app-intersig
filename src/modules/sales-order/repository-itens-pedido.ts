@@ -34,8 +34,16 @@ import {type par_comp } from "../../contracts/par_comp.ts"
        tabela:number
        quantidade_separada:number
        quantidade_faturada:number
+       controle_lote_serie: 'S' | 'N'
+       series: seriesProdutoPedido[]
      }
     
+     interface seriesProdutoPedido   {
+           lote_serie: number,
+           quantidade:  string ,
+           serie:  string | null ,
+           lote: string | null
+     }
     export interface IParcelasPedidoSistema
    {
        pedido:number

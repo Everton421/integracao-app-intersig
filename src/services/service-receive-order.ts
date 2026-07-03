@@ -32,10 +32,10 @@ async function insertNewOrder(order:any){
 }
 
 
-export async function updateOrder(order:any){
-    if(order.codigo){
+export async function updateOrderSeparacao(order:any){
+    if(order.pedido){
 
-                const resultRequestOrder = await api.get(`/pedidos/${order.codigo}`);
+                const resultRequestOrder = await api.get(`/pedidos/${order.pedido}`);
                  if(resultRequestOrder.status == 200 && resultRequestOrder.data  ){
                         const order  = resultRequestOrder.data;
 
@@ -56,13 +56,13 @@ export async function updateOrder(order:any){
                               }
                         
                     }else{
-                          console.log(`[x] A api não retornou o pedido ${order.codigo}  .`)
+                          console.log(`[x] A api não retornou o pedido ${order.pedido}  .`)
 
                  }
 
                   
                }else{
-                console.log(`[x] não foi encontrado pedido ${order.codigo} na tabela de pedidos enviados.`)
+                console.log(`[x] não foi encontrado pedido ${order.pedido} na tabela de pedidos enviados.`)
                }
 
 }
