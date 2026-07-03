@@ -321,12 +321,15 @@ export async function updatePedidoSeparacao(orcamento: IPedidoSistema, codigoPed
         if (orcamento.produtos.length > 0) {
             for(const product of orcamento.produtos){
             
-              const sql = `UPDATE ${VENDAS}.pro_orca set
+              const sqlUpdateProOrca = `UPDATE ${VENDAS}.pro_orca set
                   QTDE_SEPARADA = '${product.quantidade_separada}'
-                  WHERE PEDIDO = '${codigoPedido}' AND SEQUENCIA = '${product.sequencia}';
-              `
+                  WHERE PEDIDO = '${codigoPedido}' AND SEQUENCIA = '${product.sequencia}';`
+                  console.log(sqlUpdateProOrca)
+            await dbConn.query(sqlUpdateProOrca)
 
                 if(product.series){
+                      try{
+
                     for( const serie of product.series ){
                         const valuesQuery = [ codigoPedido, product.codigo, serie.lote_serie];
                         const sqlVerifySeriesPedido = `SELECT * FROM ${VENDAS}.lotes_series_orca WHERE ORCAMENTO = ?   AND LOTE_SERIE = ?; `;
@@ -346,17 +349,18 @@ export async function updatePedidoSeparacao(orcamento: IPedidoSistema, codigoPed
                                 if(maxSequence.length > 0 ){
                                   sequencia = maxSequence[0].SEQUENCIA + 1;
                                 }
-                              const sqlInsertSerie = `INSERT INTO ${VENDAS}.lotes_series_orca ORCAMENTO = ?, SEQUENCIA = ? , LOTE_SERIE = ? , QTDE_SEPARADA =  ?, QTDE_MOV = ? ;`;
-                                const valuesInsert = [codigoPedido, sequencia, serie.lote_serie, , serie.quantidade, 0 ]
+                              const sqlInsertSerie = `INSERT INTO ${VENDAS}.lotes_series_orca SET ORCAMENTO = ?, SEQUENCIA = ? , LOTE_SERIE = ? , QTDE_SEPARADA =  ?, QTDE_MOV = ? ;`;
+                                const valuesInsert = [Number(codigoPedido), Number(sequencia), Number(serie.lote_serie),   Number(serie.quantidade), 0 ]
                                 const [ resultRowsInsert ] =await dbConn.query(sqlInsertSerie, valuesInsert );
-                                console.log(resultRowsInsert)
                         }
 
                       }
 
+                      }catch(e){
+                        console.log(`Erro`, e )
+                      }
                 }
 
-            await dbConn.query(sql)
             }
           resultFunction.sucess = true;
 

@@ -32,6 +32,6 @@ export type cad_orca = {
   OBSERVACOES2: string
   QTDE_PARCELAS: number
   TIPO_OS: number
-  TIPO: string
+  TIPO: number
   SETOR:number
 }

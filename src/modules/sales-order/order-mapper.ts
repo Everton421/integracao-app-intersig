@@ -88,7 +88,10 @@ export async function orderMapper(codigo_sistema:number) {
                                 setor =erp_order.SETOR;
                             }
 
-                        const obj =  {        
+                            let tipo = 1;
+
+
+                            const obj =  {        
                                              id :  `#V-${codigo_sistema}` , 
                                              id_externo :   String(codigo_sistema)   ,
                                              id_interno :   String(codigo_sistema) ,
@@ -113,7 +116,7 @@ export async function orderMapper(codigo_sistema:number) {
                                              data_recadastro :   dateService.obterDataHoraAtual() ,
                                              tipo_os :   erp_order.TIPO_OS ,
                                              enviado : "S",
-                                             tipo :  Number(erp_order.TIPO) ,
+                                             tipo :  tipo ,
                                              produtos:  prod,
                                              servicos : [],
                                              parcelas :   parcelas,

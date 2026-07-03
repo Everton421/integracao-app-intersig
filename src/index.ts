@@ -12,4 +12,4 @@ await consumer_sistema();
      await consumerMobile('pedido.separado', updateOrderSeparacao, true );
      
      await consumerMobile('produtosetor.atualizado',updateProdSetor, true ) 
-     await consumerMobile('movimentosprodutos.inserido',insertMvto_produtos, true ) 
+   //  await consumerMobile('movimentosprodutos.inserido',insertMvto_produtos, true ) 
