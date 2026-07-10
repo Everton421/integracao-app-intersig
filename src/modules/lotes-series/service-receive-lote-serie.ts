@@ -13,8 +13,11 @@ import { LoteSeriesRequest } from "./lotes-series-request.ts";
 
     
     static async receiveByEvent(event: EventLoteSerie){
-        const  { codigo } = event;
-          return  this.receiveByCode( codigo );
+         const  { codigo } = event;
+           
+         const resultReceiveLoteSerieBydCode = await this.receiveLoteSerieByCode(codigo)
+
+            return  resultReceiveLoteSerieBydCode
 
     }
 
@@ -23,8 +26,12 @@ import { LoteSeriesRequest } from "./lotes-series-request.ts";
       *  codigo do lote/serie a ser consultado
       * @param codigo 
       */
-    static async receiveByCode(codigo: number){
+    static async receiveLoteSerieByCode(codigo: number){
+
+
      let resultFunction = { message: null, success:false } as { success:boolean, message:string |null  }
+
+     
          try{
              // consulta loteSerie na api.
              const resultApiLoteSeries = await LoteSeriesRequest.getLoteSeriesRequest(codigo);
@@ -45,6 +52,8 @@ import { LoteSeriesRequest } from "./lotes-series-request.ts";
                     if( resultVerifylotesSeriesEnviadas.success){
                             console.log(`[X] Lote/Serie ${codigo} já foi registrada no sistema, serie: ${serie} `);
                             resultFunction.message = `[X] Lote/Serie ${codigo} já foi registrada no sistema, serie: ${serie} ` 
+                          resultFunction.success = true;
+                           return resultFunction
                      
                      }else{
                                      const sqlInsertLoteSerieSistema = `INSERT INTO ${PUBLICO}.lotes_series SET PRODUTO = ?, LOTE = ?, SERIE = ?, FORNECEDOR= 0, DATA_FABRIC ='0000-00-00' ,DATA_VALID='0000-00-00' `;
@@ -77,6 +86,7 @@ import { LoteSeriesRequest } from "./lotes-series-request.ts";
              }finally{
                  return resultFunction
              }
+           
      }
 
 

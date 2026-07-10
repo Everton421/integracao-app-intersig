@@ -56,11 +56,11 @@ export async function consumerMobile(domain: string, exec:( message:any )=> Prom
             const resultExecFunction =  await exec(conteudo.data);
 
             if (ack) {
-                if( resultExecFunction && resultExecFunction.success){
+                //if( resultExecFunction && resultExecFunction.success){
                   channel.ack(msg)
-                }else{
-                  console.log(resultExecFunction.message);
-                }
+                //}else{
+                //  console.log(resultExecFunction.message);
+                //}
               }
           } else {
 
