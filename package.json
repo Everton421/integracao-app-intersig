@@ -17,7 +17,57 @@
     "send:setores": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-setores.ts",
     "send:pedidos": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-pedidos.ts",
     "send:ordem_compra": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-ordem-compra.ts",
+  
     "teste": "tsx --env-file .env --watch  --experimental-strip-types src/__test__/index.ts",
+    "teste-receive-lote-serie": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/receive-lote-serie.test.ts",
+    "teste-receive-lote-serie-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lote-serie-setor/__test__/receive-lote-series-setor.test.ts",
+   
+    "teste-service-receive-sales-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-receive-sales-order-separation.test.ts",  
+    "test-service-sync-sales-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-sync-sales-orders.ts",    
+   
+
+    "teste-service-receive-purchase-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-receive-purchase-order-separation.test.ts",  
+    "test-service-send-purchase-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-send-purchase-order.test.ts",    
+
+
+    "teste-update-prod-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/update-prod-setor.test.ts",    
+   
+    "test-service-send-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-send-brand.test.ts",    
+    "test-service-update-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-update-brand.test.ts",    
+    "test-brand-resquest": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/brand-resquest.test.ts",    
+    "test-service-delete-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-delete-brand.test.ts",    
+    "test-service-sync-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-sync-brand.test.ts",    
+    
+    "test-category-resquest": "tsx --env-file .env --watch  --experimental-strip-types src/modules/category/__test__/category-request.test.ts",    
+    "test-service-send-category": "tsx --env-file .env --watch  --experimental-strip-types src/modules/category/__test__/service-send-category.test.ts",    
+    "test-delete-category-service": "tsx --env-file .env --watch  --experimental-strip-types src/modules/category/__test__/service-delete-category.test.ts",    
+    "test-service-update-category": "tsx --env-file .env --watch  --experimental-strip-types src/modules/category/__test__/service-update-category.test.ts",    
+    "test-service-sync-categories": "tsx --env-file .env --watch  --experimental-strip-types src/modules/category/__test__/service-sync-categories.test.ts",    
+    
+    "test-service-send-customer": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/service-send-customer.test.ts",    
+    "test-service-delete-customer": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/service-delete-customer.test.ts",    
+    "test-service-update-customer": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/service-update-customer.test.ts",    
+    "test-service-sync-customers": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/service-sync-customers.test.ts",    
+
+    "test-service-sync-lotes-series": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/service-sync-lotes-series.test.ts",    
+    "test-service-send-lote-serie": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/service-send-lote-serie.test.ts",
+    "test-service-receive-lote-serie": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/service-receive-lote-serie.test.ts",
+        
+    "test-service-send-sector": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sector/__test__/service-send-sector.test.ts",
+    "test-service-update-sector": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sector/__test__/service-update-sector.test.ts",
+    "test-service-sync-sector": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sector/__test__/service-sync-sector.test.ts",
+
+
+    "test-service-sync-service": "tsx --env-file .env --watch  --experimental-strip-types src/modules/service/__test__/service-sync-service.test.ts",
+
+    "test-service-sync-service-type": "tsx --env-file .env --watch  --experimental-strip-types src/modules/service-type/__test__/service-sync-service-type.test.ts",
+    "test-service-send-service-type": "tsx --env-file .env --watch  --experimental-strip-types src/modules/service-type/__test__/service-send-service-type.test.ts",
+    
+    "test-service-sync-supplier": "tsx --env-file .env --watch  --experimental-strip-types src/modules/supplier/__test__/service-sync-supplier.test.ts",
+
+    
+
+
     "send:data": "tsx --env-file .env --experimental-strip-types src/jobs/job-send-data.ts",
     "test:request": "tsx --env-file .env --experimental-strip-types --test src/requests/request-product/request-product.ts",
     "health": "node --env-file .env --watch --experimental-strip-types src/api-monitor/api-monitor.ts"

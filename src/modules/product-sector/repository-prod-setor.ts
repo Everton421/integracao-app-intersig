@@ -1,8 +1,8 @@
 import { type ResultSetHeader } from "mysql2";
  
 import dbConn, { ESTOQUE, MOBILE, PUBLICO, VENDAS } from "../../database/connection/database-connection.ts";
-import { type message_prod_setor } from "../../contracts/message-prod-setor.ts";
-import { type  prod_setor } from "../../contracts/prod_setor.ts";
+import { type message_prod_setor } from "./contracts/message-prod-setor.ts";
+import { type  prod_setor } from "./contracts/prod_setor.ts";
 
 
   export async function getAllProdSetor( ) {
@@ -14,6 +14,9 @@ import { type  prod_setor } from "../../contracts/prod_setor.ts";
 
   export  async function updateProdSetor(message: message_prod_setor){
         const data = message as message_prod_setor;
+        
+          let resultFunction = {success: false, message:null } as { success: boolean, message: null | string  };
+
          console.log(`[SQl] Atualizando prod_setor produto: ${data.produto} `)
 
         const sqlProd_setor = ` INSERT INTO ${ESTOQUE}.prod_setor  
@@ -38,6 +41,10 @@ import { type  prod_setor } from "../../contracts/prod_setor.ts";
                          `;
                          try{
                             const [ result ]   = await dbConn.query(sqlProd_setor) as ResultSetHeader[]
+                            console.log(result);
+                            if(result && result.affectedRows > 0 ){
+
+                            }
                          }catch( e ){
                             console.log("[X] Erro ao tentar atualizar prod_setor: ", e)
                          }
@@ -49,7 +56,51 @@ import { type  prod_setor } from "../../contracts/prod_setor.ts";
       ESTOQUE:number
     }
 
-    export async function findStock( codigo:number, setor?:number){
+    
+export class ProdSetorRepository{
+
+        static async updateProdSetor(message: message_prod_setor){
+          const data = message as message_prod_setor;
+        
+            let resultFunction = {success: false, message:null } as { success: boolean, message: null | string  };
+
+            console.log(`[SQl] Atualizando prod_setor produto: ${data.produto} `)
+            const sqlProd_setor = ` INSERT INTO ${ESTOQUE}.prod_setor  
+                                set
+                                ESTOQUE = ${data.estoque},
+                                LOCAL1_PRODUTO = '${data.local1_produto}',
+                                LOCAL2_PRODUTO = '${data.local2_produto}',
+                                LOCAL3_PRODUTO = '${data.local3_produto}',
+                                DATA_RECAD =   NOW() ,
+                                LOCAL_PRODUTO = '${data.local_produto}',
+                                LOCAL4_PRODUTO = '${data.local4_produto}',
+                                PRODUTO = '${data.id_produto}',
+                                SETOR = '${data.id_setor}'
+                                ON DUPLICATE KEY UPDATE
+                                ESTOQUE = ${data.estoque},
+                                LOCAL1_PRODUTO = '${data.local1_produto}',
+                                LOCAL2_PRODUTO = '${data.local2_produto}',
+                                LOCAL3_PRODUTO = '${data.local3_produto}',
+                                DATA_RECAD =   NOW() ,
+                                LOCAL_PRODUTO = '${data.local_produto}',
+                                LOCAL4_PRODUTO = '${data.local4_produto}' 
+                            `;
+                         try{
+                            const [ result ]   = await dbConn.query(sqlProd_setor) as ResultSetHeader[]
+                            if(result && result.affectedRows > 0 ){
+                                resultFunction.success = true;
+                            }
+                         }catch( e ){
+                            resultFunction.success = false;
+                            resultFunction.message = "[X] Erro ao tentar atualizar prod_setor: ", e;
+                            console.log("[X] Erro ao tentar atualizar prod_setor: ", e)
+                         }finally{
+                            return resultFunction;
+                         }
+                          
+ }
+
+    static async findStock( codigo:number, setor?:number){
         let sql = `
                   SELECT  
                         est.CODIGO,
@@ -82,3 +133,4 @@ import { type  prod_setor } from "../../contracts/prod_setor.ts";
                      const result = arrResult  as resultStock[] | [];
                   return result  
     }
+}

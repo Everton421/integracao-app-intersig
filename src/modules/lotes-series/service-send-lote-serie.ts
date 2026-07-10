@@ -1,60 +1,58 @@
-import { type event } from "../../contracts/event.ts";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import dbConn, { MOBILE, PUBLICO } from "../../database/connection/database-connection.ts";
-import { api } from "../../services/api.ts";
+import { type ResultSetHeader } from "mysql2";
+import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
+import { LoteSeriesRequest } from "./lotes-series-request.ts";
+import { type lotes_series } from "./contracts/lotes_series.ts";
+import { getLoteSerie } from "./repository-lote-serie.ts";
 
-type resultLotesSeries ={
-    CODIGO:number
-    PRODUTO:number
-    LOTE:string
-    SERIE:string
-    FORNECEDOR:number
-    DATA_FABRIC:string
-    DATA_VALID:string
-    }
+export class ServiceSendLoteSerie {
+    static async send(codeLoteSerieErp: number) {
+        let resultfunction = { success: false, message: null, data: null } as { success: boolean, message: string | null, data: any }
 
-export async function SendLotesSeries(event: event) {
-    
-    const sql = `SELECT * FROM ${PUBLICO}.lotes_series WHERE CODIGO =${event.id_registro};`;
+        try {
+            const resultLoteSerie = await getLoteSerie(codeLoteSerieErp) as lotes_series[];
 
-    const [ resultQueryLotesSeries] = await dbConn.query(sql);
-    const arrLotesSeries = resultQueryLotesSeries as resultLotesSeries[];
+            if (resultLoteSerie.length === 0) {
+                resultfunction.success = false;
+                resultfunction.message = `Lote/Serie codigo ${codeLoteSerieErp} não foi encontrado(a)`
+            } else {
+                const { CODIGO, PRODUTO, LOTE, SERIE } = resultLoteSerie[0];
 
-        if(arrLotesSeries.length > 0 ){
-            const { PRODUTO, LOTE, SERIE ,CODIGO} =arrLotesSeries[0];
+                const resultRequest = await LoteSeriesRequest.post(
+                    {
+                        codigo: Number(CODIGO),
+                        produto: Number(PRODUTO),
+                        lote: String(LOTE) || null,
+                        serie: String(SERIE) || null
+                    }
+                )
 
-              const [ lotesSeriesEnviadas  ] = await dbConn.query(`SELECT * FROM ${MOBILE}.lotes_series_enviadas where codigo_sistema = ${event.id_registro};`);
-                const arrVerifylotesSeriesEnviadas = lotesSeriesEnviadas as table_enviados[]
+                if (resultRequest.success) {
+                    if (resultRequest.data && resultRequest.data.codigo) {
+                        const { codigo } = resultRequest.data;
 
-                    const payload = {
-                                   codigo: Number(CODIGO),
-                                   produto: Number(PRODUTO),
-                                   lote: String(LOTE) || '',
-                                   serie: String(SERIE) || ''
-                            }
-                    if(arrVerifylotesSeriesEnviadas.length > 0 ){
-                        const { codigo_sistema ,id_mobile } = arrVerifylotesSeriesEnviadas[0];
-
-                        try{
-                            const resultApi = await api.put('/lotes-series', payload)
-                        }catch(e:any){
-                            console.log(`[X] Erro ao tentar atualizar lote serie: ${CODIGO}`)
-                            console.log(e.response.data)
-                        }
-                    }else{
-                     try{   
-                         const resultApi = await api.post('/lotes-series',payload)
-                            if(resultApi.status == 200 || resultApi.status == 201 ){
-                                 const insert= `INSERT INTO ${MOBILE}.lotes_series_enviadas set codigo_sistema = ${CODIGO}, id_mobile= ${CODIGO};`;
-                                  await dbConn.query(insert);
-                            }
-                        }catch(e:any){
-                            console.log(`[X] Erro ao tentar enviar lote serie: ${CODIGO}`)
-                            console.log(e.response.data)
-
+                        const sqlInsert = `INSERT INTO ${MOBILE}.lotes_series_enviadas (id_mobile, codigo_sistema) VALUES (?, ?)`;
+                        const values = [codigo, codeLoteSerieErp];
+                        const [{ insertId }] = await dbConn.query(sqlInsert, values) as ResultSetHeader[];
+                        if (insertId > 0) {
+                            resultfunction.success = true;
+                        } else {
+                            resultfunction.success = false;
+                            resultfunction.message = `[X] Algo inesperado ocorreu ao tentar registrar lote/serie[ERP] ${codeLoteSerieErp} na tabela lotes_series_enviadas.`;
                         }
                     }
+                } else {
+                    resultfunction.data = resultRequest.data;
+                    resultfunction.success = resultRequest.success;
+                    resultfunction.message = resultRequest.message;
+                }
+            }
+
+        } catch (e) {
+            resultfunction.success = false;
+            resultfunction.message = String(e);
+        } finally {
+            return resultfunction;
         }
 
-
+    }
 }

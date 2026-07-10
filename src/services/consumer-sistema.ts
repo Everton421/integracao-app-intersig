@@ -1,18 +1,20 @@
 import amqplib from 'amqplib';
 import { type event } from "../contracts/event.ts";
-import { serviceSendBrands } from "../modules/brands/service-send-brands.ts";
-import { serviceSendCategory } from "../modules/category/service-send-category.ts";
-import { serviceSendClient } from "../modules/customer/service-send-client.ts";
-import { serviceSendOrder } from "../modules/sales-order/service-send-orders.ts";
+import {    ServiceSyncbrand } from "../modules/brands/service-sync-brands-.ts";
+import { ServiceSyncCategories } from "../modules/category/service-sync-categories.ts";
+import { ServiceSyncCustomers } from "../modules/customer/service-sync-customers.ts";
+ 
 import { serviceSendProdSetor } from "../modules/product-sector/service-send-prod-setor.ts";
 import { serviceSendProduct } from "../modules/products/service-send-product.ts";
-import { serviceSendServices } from "../modules/service/service-send-services.ts";
-import { serviceSendSetor } from "../modules/sector/service-send-setor.ts";
-import { serviceSendTipoOs } from "../modules/service-type/service-send-tipo-os.ts";
-import { serviceSendSupplier } from '../modules/supplier/service-send-supplier.ts';
-import { serviceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
-import { SendLotesSeries } from '../modules/lotes-series/service-send-lote-serie.ts';
+import { ServiceSyncService } from "../modules/service/service-sync-service.ts";
+import { ServiceSyncSector } from "../modules/sector/service-sync-sector.ts";
+import { ServiceSyncServiceType } from "../modules/service-type/service-sync-service-type.ts";
+import { ServiceSyncSupplier } from '../modules/supplier/service-sync-supplier.ts';
+ 
 import { SendLoteSerieSetor } from '../modules/lote-serie-setor/lote-serie-setor.ts';
+import { ServiceSyncLotesSeries } from '../modules/lotes-series/service-sync-lotes-series.ts';
+import { ServiceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
+import { ServiceSyncSalesOrder } from '../modules/sales-order/service-sync-sales-orders.ts';
 
 
 export async function consumer_sistema(): Promise<any> {
@@ -55,7 +57,7 @@ export async function consumer_sistema(): Promise<any> {
           switch (data.tabela_origem) {
 
             case 'lotes_series':
-                SendLotesSeries(data)
+                const resultLoteSerie = await ServiceSyncLotesSeries.syncData(data)
                 channel.ack(msg);
                break;
 
@@ -69,18 +71,15 @@ export async function consumer_sistema(): Promise<any> {
                 channel.ack(msg);
                break;
             case 'cad_serv':
-              const resultServices = await serviceSendServices(data);
-               //resultServices.sucess ? channel.ack(msg)   : channel.nack(msg); 
-              channel.ack(msg);
-              break;
+              const resultServices = await ServiceSyncService.syncData(data);
+               channel.ack(msg);
+               break;
             case 'tipos_os':
-              const resultSendTipoOs = await serviceSendTipoOs(data);
-                //resultSendTipoOs.sucess ? channel.ack(msg)   : channel.nack(msg); 
-              channel.ack(msg);
+              const resultSendTipoOs = await ServiceSyncServiceType.syncData(data);
+               channel.ack(msg);
                 break;
             case 'setores':
-              const resultSendSetor = await serviceSendSetor(data);
-                //resultSendSetor.sucess ? channel.ack(msg)   : channel.nack(msg); 
+              const resultSendSetor = await ServiceSyncSector.syncData(data);
                channel.ack(msg);
                 break;
             case 'prod_setor':
@@ -89,31 +88,32 @@ export async function consumer_sistema(): Promise<any> {
                 channel.ack(msg);
                 break;
             case 'cad_clie':
-              const resultClient = await serviceSendClient(data);
-               // resultClient.sucess ? channel.ack(msg)   : channel.nack(msg); 
+              const resultClient = await ServiceSyncCustomers.syncData(data);
+               // resultClient.success ? channel.ack(msg) : channel.nack(msg); 
                 channel.ack(msg);
                break;
             case 'cad_pgru':
-              const resutlCategory = await serviceSendCategory(data);
-              //resutlCategory.sucess  ? channel.ack(msg)   : channel.nack(msg); 
+              const resultCategory = await ServiceSyncCategories.syncData(data);
+              //resultCategory.success ? channel.ack(msg) : channel.nack(msg); 
                 channel.ack(msg);
               break;
             case 'cad_pmar':
-              const resultBrand =  await serviceSendBrands(data);
+              const resultBrand =  await ServiceSyncbrand.syncData(data)
               //resultBrand.sucess ?    channel.ack(msg)  : channel.nack(msg);
                 channel.ack(msg);
               break;
               case 'cad_forn': 
-                await serviceSendSupplier(data);
+                await ServiceSyncSupplier.syncData(data);
+                channel.ack(msg);
               break;
             
               case 'cad_orca':
-                const resultOrder = await serviceSendOrder(data)
+                const resultOrder = await ServiceSyncSalesOrder.syncData(data)
                //resultOrder.sucess ?    channel.ack(msg)  : channel.nack(msg);
                 channel.ack(msg);
                break;
                case 'cad_comp':
-                  const resultPurchaseOrder = await serviceSendPurchaseOrder(data)
+                  const resultPurchaseOrder = await ServiceSendPurchaseOrder.send(data)
                //resultOrder.sucess ?    channel.ack(msg)  : channel.nack(msg);
                 channel.ack(msg);
                break;

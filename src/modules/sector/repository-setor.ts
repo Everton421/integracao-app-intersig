@@ -1,13 +1,16 @@
 import dbConn, { ESTOQUE } from "../../database/connection/database-connection.ts";
-import { type  setores } from "../../contracts/setores.ts";
+import { type  setores } from "./contracts/setores.ts";
 
 export async function getSetores(codigo?:number){
-                const baseSQl = `SELECT * FROM ${ESTOQUE}.setores `
+                const baseSQl = `SELECT 
+                                        s.*,
+                                        DATE_FORMAT(s.DATA_CADASTRO, '%Y-%m-%d') AS DATA_CADASTRO
+                                        FROM ${ESTOQUE}.setores s `
 
                 let whereClause = `;`;
                     if(codigo && codigo != undefined){
 
-                        whereClause = `WHERE CODIGO = ${codigo};`;
+                        whereClause = `WHERE s.CODIGO = ${codigo};`;
                     }
                 const sql = baseSQl + whereClause;
 

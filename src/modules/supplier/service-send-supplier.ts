@@ -1,130 +1,73 @@
-import dbConn, { MOBILE, PUBLICO } from "../../database/connection/database-connection.ts";
-import { type cad_clie } from "../../contracts/cad_clie.ts";
-import { type cad_forn } from "../../contracts/cad_forn.ts";
-import { type event } from "../../contracts/event.ts";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import { DateService } from "../../utils/date.ts";
-import { api } from "../../services/api.ts";
+import { type ResultSetHeader } from "mysql2";
+import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
+import { SupplierRequest } from "./supplier-request.ts";
+import { type cad_forn } from "./contracts/cad_forn.ts";
+import { getSupplier } from "./repository-supplier.ts";
 
-type clientes_enviados = {
-        id: number,
-        id_mobile: number,
-        codigo_sistema: number
-}
+export class ServiceSendSupplier {
+    static async send(codeSupplierErp: number) {
+        let resultfunction = { success: false, message: null, data: null } as { success: boolean, message: string | null, data: any }
 
-export async function serviceSendSupplier(event: event) {
+        try {
+            const resultSupplier = await getSupplier(codeSupplierErp) as cad_forn[];
 
-        const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
+            if (resultSupplier.length === 0) {
+                resultfunction.success = false;
+                resultfunction.message = `Fornecedor codigo ${codeSupplierErp} não foi encontrado(a)`
+            } else {
+                const {
+                    CODIGO, NOME_FANTASIA, TELEFONE, CEP, ENDERECO,
+                    INSCRICAO, NUMERO, CNPJ, CIDADE, DATA_CADASTRO,
+                    DATA_RECAD, BAIRRO, ESTADO, ATIVO
+                } = resultSupplier[0];
 
-        console.log("[V] Verificando MOBILE_fornecedores_sistema ...")
-
-        if (event.tipo_evento === 'DELETE') {
-                const status = { sucess: false, message: `Evento ${event.tipo_evento} ${event.tabela_origem} ainda não foi configurado.` };
-                console.log(`Evento ${event.tipo_evento} ${event.tabela_origem} ainda não foi configurado.`);
-                return status;
-        }
-
-        const dateService = new DateService();
-
-        let sql = ` select *,
-                              DATE_FORMAT(DATA_CADASTRO, '%Y-%m-%d') AS DATA_CADASTRO,
-                              DATE_FORMAT(DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS DATA_RECAD 
-                            from ${PUBLICO}.cad_forn f
-                              WHERE
-                            f.CODIGO = ${event.id_registro}  
-                            `
-        const [resultVerifyClient] = await dbConn.query(`SELECT * FROM ${MOBILE}.fornecedores_enviados where codigo_sistema = ${event.id_registro};`);
-        const arrVerifyClient = resultVerifyClient as table_enviados[]
-        const fonrVerify = arrVerifyClient[0];
-
-        if (arrVerifyClient.length > 0) {
-                const [resultClient] = await dbConn.query(sql)
-                const arrforn = resultClient as cad_forn[];
-                const forn = arrforn[0]
-
-                const data = {
-                        codigo: Number(fonrVerify.id_mobile),
-                        id: fonrVerify.codigo_sistema,
-                        celular: forn.TELEFONE,
-                        nome: forn.NOME_FANTASIA,
-                        cep: forn.CEP,
-                        endereco: forn.ENDERECO,
-                        ie: forn.INSCRICAO,
-                        numero: forn.NUMERO,
-                        cnpj: forn.CNPJ,
-                        cidade: forn.CIDADE,
-                        data_cadastro: dateService.obterDataAtual(),
-                        data_recadastro: dateService.obterDataHoraAtual(),
-                        bairro: forn.BAIRRO,
-                        estado: forn.ESTADO
-                }
-                const resultPut = await api.put("/fornecedores", data,
-                        {
-                                headers: {
-                                        source: origin
-                                }
-                        }
+                const resultRequest = await SupplierRequest.post(
+                    {
+                        codigo: Number(CODIGO),
+                        id: String(CODIGO),
+                        celular: String(TELEFONE),
+                        nome: String(NOME_FANTASIA),
+                        cep: String(CEP),
+                        endereco: String(ENDERECO),
+                        ie: String(INSCRICAO),
+                        numero: Number(NUMERO),
+                        cnpj: String(CNPJ),
+                        cidade: String(CIDADE),
+                        data_cadastro: String(DATA_CADASTRO),
+                        data_recadastro: String(DATA_RECAD),
+                        bairro: String(BAIRRO),
+                        estado: String(ESTADO),
+                        ativo: String(ATIVO),
+                    }
                 )
-                if (resultPut.status === 200) {
-                        return { sucess: true, message: '' };
-                } else {
-                        return { sucess: false, message: '' };
-                }
 
-        } else {
+                if (resultRequest.success) {
+                    if (resultRequest.data && resultRequest.data.codigo) {
+                        const { codigo } = resultRequest.data;
 
-                const [resultClient] = await dbConn.query(sql)
-                const arrforn = resultClient as cad_forn[];
-
-                const forn = arrforn[0]
-                const payload = {
-                        codigo: Number(forn.CODIGO),
-                        id: String(forn.CODIGO),
-                        celular: forn.TELEFONE,
-                        nome: forn.NOME_FANTASIA,
-                        cep: forn.CEP,
-                        endereco: forn.ENDERECO,
-                        ie: forn.INSCRICAO,
-                        numero: forn.NUMERO,
-                        cnpj: forn.CNPJ,
-                        cidade: forn.CIDADE,
-                        data_cadastro: dateService.obterDataAtual(),
-                        data_recadastro: dateService.obterDataHoraAtual(),
-                        bairro: forn.BAIRRO,
-                        estado: forn.ESTADO,
-                        ativo: forn.ATIVO
-                }
-
-                try {
-                        const resultPost = await api.post("/fornecedores", payload,
-                                {
-                                        headers: {
-                                                source: origin
-                                        }
-                                }
-                        )
-
-                        if (resultPost.status === 201) {
-                                const data = resultPost.data as any
-                                try{
-
-                                await dbConn.query(`INSERT INTO ${MOBILE}.fornecedores_enviados set codigo_sistema = ${forn.CODIGO}, id_mobile= ${data.codigo}`)
-
-                                }catch(e){
-                                        console.log(e)
-                                }
-                                return { sucess: true, message: '' };
-
+                        const sqlInsert = `INSERT INTO ${MOBILE}.fornecedores_enviados (id_mobile, codigo_sistema) VALUES (?, ?)`;
+                        const values = [codigo, codeSupplierErp];
+                        const [{ insertId }] = await dbConn.query(sqlInsert, values) as ResultSetHeader[];
+                        if (insertId > 0) {
+                            resultfunction.success = true;
+                        } else {
+                            resultfunction.success = false;
+                            resultfunction.message = `[X] Algo inesperado ocorreu ao tentar registrar fornecedor[ERP] ${codeSupplierErp} na tabela fornecedores_enviados.`;
                         }
-                } catch (e) {
-                        console.log(e)
-                        return { sucess: false, message: '' };
-
+                    }
+                } else {
+                    resultfunction.data = resultRequest.data;
+                    resultfunction.success = resultRequest.success;
+                    resultfunction.message = resultRequest.message;
                 }
+            }
 
-
+        } catch (e) {
+            resultfunction.success = false;
+            resultfunction.message = String(e);
+        } finally {
+            return resultfunction;
         }
 
-
-
+    }
 }

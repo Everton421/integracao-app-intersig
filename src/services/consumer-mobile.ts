@@ -5,7 +5,10 @@ import amqplib from 'amqplib';
  * @param domain dominio a ser consultado. Ex: pedido.atualizado, produto.atualizado
  * @param exec função que recebera a mensagem e fará o processamento
  */
-export async function consumerMobile(domain: string, exec: any, ack: boolean) {
+
+ 
+
+export async function consumerMobile(domain: string, exec:( message:any )=> Promise<{success:boolean, message:string | null }> , ack: boolean) {
 
   try {
 
@@ -50,10 +53,15 @@ export async function consumerMobile(domain: string, exec: any, ack: boolean) {
           if (conteudo.metadata.origin != origin) {
 
             console.log(`[v] Mensagem recebida  em [${uniqueQueueName}]  | Key: ${msg.fields.routingKey} | origin : ${conteudo.metadata.origin}`);
-            await exec(conteudo.data);
+            const resultExecFunction =  await exec(conteudo.data);
+
             if (ack) {
-              channel.ack(msg)
-            }
+                if( resultExecFunction && resultExecFunction.success){
+                  channel.ack(msg)
+                }else{
+                  console.log(resultExecFunction.message);
+                }
+              }
           } else {
 
             if (conteudo.metadata.origin == origin) {

@@ -1,38 +1,48 @@
-import { selectParcelasDoPedido, selectProdutoDoPedido, selectSeriesPedidoVenda } from "./repository-itens-pedido.ts";
-import { selectClientePedido, selectPedidoSistema } from "./repository-pedido.ts";
-import { serviceSendClient } from "../customer/service-send-client.ts";
+import { repositoryItensSalesOrder   } from "./repository-itens-pedido.ts";
+import { ServiceSyncCustomers } from "../customer/service-sync-customers.ts";
 import { DateService } from "../../utils/date.ts";
 import dbConn, { VENDAS } from "../../database/connection/database-connection.ts";
+import { SalesOrderRepository } from "./repository-pedido.ts";
 
 
 type typeresultDefaultSector = { SETOR:number};
 
-export async function orderMapper(codigo_sistema:number) {
+
+export class OrderMapper {
+    static async mapping(codigo_sistema:number ){
 
             const dateService = new DateService();
 
-            const result_erp_order= await selectPedidoSistema(codigo_sistema);
+            const result_erp_order= await SalesOrderRepository.findSalesOrderErp(codigo_sistema);
         
             if(result_erp_order.length > 0 ){
                 const erp_order =   result_erp_order[0];
-                const arr_produtos = await selectProdutoDoPedido(codigo_sistema);
+                const arr_produtos = await repositoryItensSalesOrder.findItemsSalesOrder(codigo_sistema);
                 
-                let arrClient  = await selectClientePedido(erp_order.CLIENTE);
+                let arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
                 
 
                 if(arrClient.length === 0 ){
-                    console.log(`[X] Não foi encontrado  cliente do pedido codigo: ${codigo_sistema} no sistema.`)
-                      await serviceSendClient({ id_registro: erp_order.CLIENTE, criado_em:'', dados_json:'', id:0, id_evento:0, id_message:'', setor:0, status:'PENDENTE', tabela:0, tabela_origem:'cad_clie', tipo_evento:'UPDATE'})
-                }
+                    console.log(`[X] Não foi encontrado registro do envio do cliente do pedido de venda codigo: ${codigo_sistema}.`)
+                    console.log(`[V] Verificando possibilidade de envio do cliente[ERP] ${erp_order.CLIENTE}.`)
+                        const resultServiceSyncCustomer = await ServiceSyncCustomers.syncData({ id_registro: erp_order.CLIENTE, criado_em:'', dados_json:'', id:0, id_evento:0, id_message:'', setor:0, status:'PENDENTE', tabela:0, tabela_origem:'cad_clie', tipo_evento:'UPDATE'})
+                        if(resultServiceSyncCustomer.success){
+                            arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
+                        }else{
+                            console.log(`[X] Não foi possivel enviar o cliente [ERP] ${erp_order.CLIENTE}, resultado da tentativa de envio ${resultServiceSyncCustomer.success}`)
+                            console.log(`[X]  Pedido de venda [ERP] ${erp_order.CODIGO} não poderá ser enviado`)
+                            return;
+                        }
+                    }
 
-                   arrClient  = await selectClientePedido(erp_order.CLIENTE);
+                   arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
 
 
                     const prod:any=[]
                     if(arr_produtos.length >  0 ){
                         for( const i of arr_produtos ) {
                             const series = []
-                             const resultSeries = await selectSeriesPedidoVenda(codigo_sistema);
+                             const resultSeries = await repositoryItensSalesOrder.findSeriesSalesOrder(codigo_sistema);
                                 for(const serie of resultSeries){
                                     series.push({
                                          lote_serie : Number(serie.CODIGO),
@@ -63,7 +73,7 @@ export async function orderMapper(codigo_sistema:number) {
                         return;
                     }
 
-                    const arr_parcelas = await selectParcelasDoPedido(codigo_sistema);
+                    const arr_parcelas = await  repositoryItensSalesOrder.findInstallmentsSalesOrder(codigo_sistema);
 
                     const parcelas :any[] =[]
                         for( const i of arr_parcelas ){
@@ -131,5 +141,5 @@ export async function orderMapper(codigo_sistema:number) {
                 console.log(`[X] Não foi encontrado pedido codigo: ${codigo_sistema} no sistema.`)
 
             }
-
+    }
 }

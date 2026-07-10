@@ -1,5 +1,5 @@
 import { getBrand } from "../modules/brands/repository-brand.ts";
-import { serviceSendBrands } from "../modules/brands/service-send-brands.ts";
+import { serviceSendBrands } from "../modules/brands/service-sync-brands-.ts";
 
 const data = await getBrand();
 for (const i of data) {

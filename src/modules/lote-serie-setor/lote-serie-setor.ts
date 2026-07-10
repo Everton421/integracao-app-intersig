@@ -1,6 +1,5 @@
 import { type event } from "../../contracts/event.ts";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import dbConn, { ESTOQUE, MOBILE, PUBLICO } from "../../database/connection/database-connection.ts";
+import dbConn, { ESTOQUE } from "../../database/connection/database-connection.ts";
 import { api } from "../../services/api.ts";
 
 type resultLotesSeries ={
@@ -29,8 +28,8 @@ export async function SendLoteSerieSetor(event: event) {
                              lote_serie: Number(LOTE_SERIE),
                              estoque: Number(ESTOQUE)
                     })
-                }catch(e){
-                    console.log(`[X] Erro ao tentar enviar lote_serie_setor ID: ${id}`)
+                }catch(e:any){
+                    console.log(`[X] Erro ao tentar enviar lote_serie_setor ID: ${id} ${e.response?.data}`)
                 }
         }
 

@@ -1,5 +1,5 @@
 import { selectPedidoSistema } from "../modules/sales-order/repository-pedido.ts";
-import { serviceSendOrder } from "../modules/sales-order/service-send-orders.ts";
+import { serviceSendOrder } from "../modules/sales-order/service-sync-sales-orders.ts";
 
 const data = await selectPedidoSistema();
 if (data.length > 0) {

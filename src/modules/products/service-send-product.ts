@@ -1,12 +1,9 @@
 import { type ResultSetHeader } from "mysql2";
-import dbConn, { MOBILE, PUBLICO } from "../../database/connection/database-connection.ts";
 import { type event } from "../../contracts/event.ts";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import { findStock } from "../product-sector/repository-prod-setor.ts";
-import { delay } from "../../utils/delay.ts";
+import dbConn, { MOBILE, PUBLICO } from "../../database/connection/database-connection.ts";
+ 
 import { api } from "../../services/api.ts";
-import { postBrand } from "../brands/service-send-brands.ts";
-import { postCategory } from "../category/service-send-category.ts";
+import { ProdSetorRepository } from "../product-sector/repository-prod-setor.ts";
 
 type produtos_enviados = {
         id: number
@@ -111,39 +108,7 @@ export async function serviceSendProduct(event: event) {
                 const grupoErp = arrProduct[0]?.grupo || 0;
 
 
-              //  /// verifca se a marca já  foi enviada 
-              //  let id_marca_mobile = 0;
-//
-              //  const [resultVerifyBrand] = await dbConn.query(`SELECT * FROM ${MOBILE}.marcas_enviadas WHERE codigo_sistema = ${marcaErp};`);
-              //  const arrVerifyBrand = resultVerifyBrand as table_enviados[];
-//
-              //  if (arrVerifyBrand.length === 0) {
-              //          const result = await postBrand(marcaErp) as any
-              //          if (result && result.sucess ) id_marca_mobile = result.data && result.data.codigo  ? result.data.codigo : 0;
-              //  } else {
-              //          id_marca_mobile = arrVerifyBrand[0].id_mobile
-              //  }
-//
-              //  const marca = id_marca_mobile  ;
-                // ---------------------------------------------------------------------------
-
-              // verifca grupo
-              //  let id_categoria_mobile = 0;
-              //  const [resultVerifyCategory] = await dbConn.query(`SELECT * FROM ${MOBILE}.categorias_enviadas WHERE codigo_sistema = ${grupoErp};`);
-              //  const arrVerifyCategory = resultVerifyCategory as table_enviados[];
-              //  if (arrVerifyCategory.length === 0) {
-              //          const resultPostCategory = await postCategory(grupoErp)  as any
-              //          if ( resultPostCategory &&  resultPostCategory.sucess &&  resultPostCategory.data) {
-              //          id_categoria_mobile =   resultPostCategory.data.codigo ? resultPostCategory.data.codigo : 0
-              //          } 
-              //          
-              //  } else {
-              //          id_categoria_mobile = arrVerifyCategory[0].id_mobile
-              //  }
-//
-              //  const grupo =  id_categoria_mobile  ;
-
-                // ---------------------------------------------------------------------------
+ 
 
                 const [resultVerifyProduct] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`);
                 const arrVerifyItems = resultVerifyProduct as produtos_enviados[]
@@ -152,7 +117,7 @@ export async function serviceSendProduct(event: event) {
                         let item = { ...arrProduct[0],  id: String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } 
                         item.codigo = Number(arrVerifyItems[0].id_mobile);
 
-                        const arrStock = await findStock(arrProduct[0].codigo);
+                        const arrStock = await ProdSetorRepository.findStock(arrProduct[0].codigo);
                         item.estoque = 0
                         if (arrStock.length > 0) item.estoque = arrStock[0].ESTOQUE;
 
@@ -174,7 +139,7 @@ export async function serviceSendProduct(event: event) {
                         console.log(` Enviando   produto ${event.id_registro}...`,)
 
                         let item = { ...arrProduct[0], id:String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } as postProductMobile
-                        const arrStock = await findStock(arrProduct[0].codigo);
+                        const arrStock = await ProdSetorRepository.findStock(arrProduct[0].codigo);
                         item.estoque = 0
                         if (arrStock.length > 0) item.estoque = arrStock[0].ESTOQUE;
 

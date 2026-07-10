@@ -1,6 +1,6 @@
 import dbConn, { ESTOQUE, MOBILE  } from "../../database/connection/database-connection.ts";
 import { type event } from "../../contracts/event.ts";
-import { type prod_setor } from "../../contracts/prod_setor.ts";
+import { type prod_setor } from "./contracts/prod_setor.ts";
 import { delay } from "../../utils/delay.ts";
 import { api } from "../../services/api.ts";
 
