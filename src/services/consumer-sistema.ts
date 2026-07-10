@@ -62,7 +62,7 @@ export async function consumer_sistema(): Promise<any> {
                break;
 
             case 'lote_serie_setor':
-                SendLoteSerieSetor(data)
+              await   SendLoteSerieSetor(data)
                 channel.ack(msg);
                break;
             case 'cad_prod':

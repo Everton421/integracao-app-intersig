@@ -11,6 +11,7 @@ type resultLotesSeries ={
     }
 
 export async function SendLoteSerieSetor(event: event) {
+     const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
     
     const sql = `SELECT * FROM ${ESTOQUE}.lote_serie_setor WHERE id =${event.id_registro};`;
 
@@ -27,7 +28,14 @@ export async function SendLoteSerieSetor(event: event) {
                              produto: Number(PRODUTO),
                              lote_serie: Number(LOTE_SERIE),
                              estoque: Number(ESTOQUE)
-                    })
+                    },
+                
+                  {
+                            headers: {
+                                source: origin
+                            }
+                        }
+                )
                 }catch(e:any){
                     console.log(`[X] Erro ao tentar enviar lote_serie_setor ID: ${id} ${e.response?.data}`)
                 }
