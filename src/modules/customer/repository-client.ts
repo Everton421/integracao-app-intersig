@@ -26,7 +26,7 @@ export async function getAllClients (codigo?:number, ativo?:'S' | 'N'){
                                               if(params.length > 0 ){
                                                 baseSql = baseSql+ ' WHERE '+ params.join(' AND ');
                                               }
-                                                const finalSql = baseSql;
-                                                const [ resultVerifyClient  ] = await dbConn.query(finalSql,values);
+
+                                                const [ resultVerifyClient  ] = await dbConn.query(baseSql,values);
                                                 return resultVerifyClient as cad_clie[];
 }

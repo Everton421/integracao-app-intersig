@@ -3,6 +3,7 @@ import { ServiceSyncCustomers } from "../customer/service-sync-customers.ts";
 import { DateService } from "../../utils/date.ts";
 import dbConn, { VENDAS } from "../../database/connection/database-connection.ts";
 import { SalesOrderRepository } from "./repository-pedido.ts";
+import { ServiceSendCustomer } from "../customer/service-send-customer.ts";
 
 
 type typeresultDefaultSector = { SETOR:number};
@@ -25,7 +26,7 @@ export class OrderMapper {
                 if(arrClient.length === 0 ){
                     console.log(`[X] Não foi encontrado registro do envio do cliente do pedido de venda codigo: ${codigo_sistema}.`)
                     console.log(`[V] Verificando possibilidade de envio do cliente[ERP] ${erp_order.CLIENTE}.`)
-                        const resultServiceSyncCustomer = await ServiceSyncCustomers.syncData({ id_registro: erp_order.CLIENTE, criado_em:'', dados_json:'', id:0, id_evento:0, id_message:'', setor:0, status:'PENDENTE', tabela:0, tabela_origem:'cad_clie', tipo_evento:'UPDATE'})
+                        const resultServiceSyncCustomer = await ServiceSendCustomer.send(erp_order.CLIENTE);  
                         if(resultServiceSyncCustomer.success){
                             arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
                         }else{

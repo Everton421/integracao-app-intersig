@@ -43,6 +43,8 @@
     "test-service-update-category": "tsx --env-file .env --watch  --experimental-strip-types src/modules/category/__test__/service-update-category.test.ts",    
     "test-service-sync-categories": "tsx --env-file .env --watch  --experimental-strip-types src/modules/category/__test__/service-sync-categories.test.ts",    
     
+    
+    "test-customer-repository": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/customer-repository.test.ts",    
     "test-service-send-customer": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/service-send-customer.test.ts",    
     "test-service-delete-customer": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/service-delete-customer.test.ts",    
     "test-service-update-customer": "tsx --env-file .env --watch  --experimental-strip-types src/modules/customer/__test__/service-update-customer.test.ts",    
