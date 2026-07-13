@@ -113,6 +113,8 @@ export async function consumer_sistema(): Promise<any> {
                     console.log(`[V] Pedido de  venda ${data.id_registro} processado com sucesso / ${resultOrder.message}`)
                     channel.ack(msg) 
                   }else{
+                    console.log(`[X] Erro no processamento do pedido de venda ${data.id_registro}  ${resultOrder.message}`)
+
                         channel.nack(msg)
                   }
                break;
@@ -122,7 +124,8 @@ export async function consumer_sistema(): Promise<any> {
                     console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultPurchaseOrder.message}`)
                     channel.ack(msg) 
                   }else{
-                        channel.nack(msg)
+                    console.log(`[X] Erro no processamento do pedido de compra ${data.id_registro}  ${resultPurchaseOrder.message}`)
+                    channel.nack(msg)
                   }
                // channel.ack(msg);
                break;
