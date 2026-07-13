@@ -110,27 +110,27 @@ export async function consumer_sistema(): Promise<any> {
             
               case 'cad_orca':
                 const resultOrder = await ServiceSyncSalesOrder.syncData(data)
-                 //  if(resultOrder.sucess ){
-                //    console.log(`[V] Pedido de  venda ${data.id_registro} processado com sucesso / ${resultOrder.message}`)
+                   if(resultOrder.sucess ){
+                     console.log(`[V] Pedido de  venda ${data.id_registro} processado com sucesso / ${resultOrder.message}`)
                     channel.ack(msg) 
-                 //  }else{
-                 //   console.log(`[X] Erro no processamento do pedido de venda ${data.id_registro}  ${resultOrder.message}`)
+                    }else{
+                     console.log(`[X] Erro no processamento do pedido de venda ${data.id_registro}  ${resultOrder.message}`)
 
                 //        channel.nack(msg)
-               //   }
+                   }
                break;
                case 'cad_comp':
                 let tentativa =1;
                  // while( tentativa < 5 ){
                       tentativa > 1  && await delay(1000)
                     const resultPurchaseOrder = await ServiceSendPurchaseOrder.send(data)
-                  //  if(resultPurchaseOrder.sucess ){
-                 //     console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultPurchaseOrder.message}`)
+                     if(resultPurchaseOrder.sucess ){
+                      console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultPurchaseOrder.message}`)
                       channel.ack(msg) 
-                  //  }else{
-                   //   console.log(`[X] Erro no processamento do pedido de compra ${data.id_registro}  ${resultPurchaseOrder.message}`)
+                     }else{
+                      console.log(`[X] Erro no processamento do pedido de compra ${data.id_registro}  ${resultPurchaseOrder.message}`)
                   //    channel.nack(msg)
-                 //   }
+                    }
                     
                  // tentativa ++;
               //  }
