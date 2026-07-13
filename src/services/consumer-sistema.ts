@@ -16,6 +16,7 @@ import { ServiceSyncLotesSeries } from '../modules/lotes-series/service-sync-lot
 import { ServiceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
 import { ServiceSyncSalesOrder } from '../modules/sales-order/service-sync-sales-orders.ts';
 import { delay } from '../utils/delay.ts';
+import { retryAsync } from '../utils/retry.ts';
 
 
 export async function consumer_sistema(): Promise<any> {
@@ -109,32 +110,24 @@ export async function consumer_sistema(): Promise<any> {
               break;
             
               case 'cad_orca':
-                const resultOrder = await ServiceSyncSalesOrder.syncData(data)
-                   if(resultOrder.sucess ){
-                     console.log(`[V] Pedido de  venda ${data.id_registro} processado com sucesso / ${resultOrder.message}`)
-                    channel.ack(msg) 
-                    }else{
-                     console.log(`[X] Erro no processamento do pedido de venda ${data.id_registro}  ${resultOrder.message}`)
-
-                //        channel.nack(msg)
-                   }
+                try {
+                  const resultOrder = await retryAsync(() => ServiceSyncSalesOrder.syncData(data));
+                  console.log(`[V] Pedido de venda ${data.id_registro} processado com sucesso / ${resultOrder.message}`);
+                  channel.ack(msg);
+                } catch (error) {
+                  console.log(`[X] Falha definitiva no pedido de venda ${data.id_registro} após 3 tentativas: ${error}`);
+                  channel.ack(msg);
+                }
                break;
                case 'cad_comp':
-                let tentativa =1;
-                 // while( tentativa < 5 ){
-                      tentativa > 1  && await delay(1000)
-                    const resultPurchaseOrder = await ServiceSendPurchaseOrder.send(data)
-                     if(resultPurchaseOrder.sucess ){
-                      console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultPurchaseOrder.message}`)
-                      channel.ack(msg) 
-                     }else{
-                      console.log(`[X] Erro no processamento do pedido de compra ${data.id_registro}  ${resultPurchaseOrder.message}`)
-                  //    channel.nack(msg)
-                    }
-                    
-                 // tentativa ++;
-              //  }
-
+                try {
+                  const resultPurchaseOrder = await retryAsync(() => ServiceSendPurchaseOrder.send(data));
+                  console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultPurchaseOrder.message}`);
+                  channel.ack(msg);
+                } catch (error) {
+                  console.log(`[X] Falha definitiva no pedido de compra ${data.id_registro} após 3 tentativas: ${error}`);
+                  channel.ack(msg);
+                }
                break;
                
             default:
