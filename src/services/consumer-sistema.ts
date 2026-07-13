@@ -110,7 +110,7 @@ export async function consumer_sistema(): Promise<any> {
               case 'cad_orca':
                 const resultOrder = await ServiceSyncSalesOrder.syncData(data)
                    if(resultOrder.sucess ){
-                    console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultOrder.message}`)
+                    console.log(`[V] Pedido de  venda ${data.id_registro} processado com sucesso / ${resultOrder.message}`)
                     channel.ack(msg) 
                   }else{
                         channel.nack(msg)
