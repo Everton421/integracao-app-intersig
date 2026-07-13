@@ -23,12 +23,11 @@
     "teste-receive-lote-serie-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lote-serie-setor/__test__/receive-lote-series-setor.test.ts",
    
     "teste-service-receive-sales-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-receive-sales-order-separation.test.ts",  
-    "test-service-sync-sales-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-sync-sales-orders.ts",    
+    "test-service-send-sales-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-send-sales-order.test.ts",    
    
 
     "teste-service-receive-purchase-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-receive-purchase-order-separation.test.ts",  
     "test-service-send-purchase-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-send-purchase-order.test.ts",    
-
 
     "teste-update-prod-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/update-prod-setor.test.ts",    
    

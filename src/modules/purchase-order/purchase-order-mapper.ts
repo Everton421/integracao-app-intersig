@@ -135,7 +135,8 @@ export class PurchaseOrderMapper {
                 servicos: [],
                 parcelas: parcelas,
                 operacao: 'C',
-                setor: setor || 1
+                setor: setor || 1,
+                filial: erp_order.FILIAL
 
             }
             return obj;

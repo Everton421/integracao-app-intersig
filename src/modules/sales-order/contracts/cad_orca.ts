@@ -34,4 +34,5 @@ export type cad_orca = {
   TIPO_OS: number
   TIPO: number
   SETOR:number
+  FILIAL:number
 }

@@ -131,7 +131,8 @@ export class OrderMapper {
                                              servicos : [],
                                              parcelas :   parcelas,
                                              operacao : 'V',
-                                              setor: setor || 1  
+                                            setor: setor || 1, 
+                                            filial: erp_order.FILIAL
                                         }
                                         
                                      

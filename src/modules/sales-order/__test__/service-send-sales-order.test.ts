@@ -12,7 +12,7 @@ test('service-send-sales-order', async (t) => {
             id: 1,
             id_evento: 1,
             id_message: '',
-            id_registro: 1943148,
+            id_registro: 1944061,
             setor: 0,
             status: 'PROCESSADO',
             tabela: 0,
