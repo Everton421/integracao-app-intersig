@@ -109,13 +109,22 @@ export async function consumer_sistema(): Promise<any> {
             
               case 'cad_orca':
                 const resultOrder = await ServiceSyncSalesOrder.syncData(data)
-               //resultOrder.sucess ?    channel.ack(msg)  : channel.nack(msg);
-                channel.ack(msg);
+                   if(resultOrder.sucess ){
+                    console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultOrder.message}`)
+                    channel.ack(msg) 
+                  }else{
+                        channel.nack(msg)
+                  }
                break;
                case 'cad_comp':
                   const resultPurchaseOrder = await ServiceSendPurchaseOrder.send(data)
-               //resultOrder.sucess ?    channel.ack(msg)  : channel.nack(msg);
-                channel.ack(msg);
+                  if(resultPurchaseOrder.sucess ){
+                    console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultPurchaseOrder.message}`)
+                    channel.ack(msg) 
+                  }else{
+                        channel.nack(msg)
+                  }
+               // channel.ack(msg);
                break;
                
             default:
