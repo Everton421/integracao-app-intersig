@@ -11,7 +11,7 @@ module.exports = {
             "src/index.ts" // O arquivo que o tsx deve processar, passado como argumento final para o tsx
           ],
          
-          exec_mode: "fork",
+          exec_mode: "cluster",
           watch: false,
           max_memory_restart: "250M",
           instances: 2,
