@@ -1,4 +1,4 @@
-import { delay } from './delay';
+import { delay } from "./delay.ts";
 
 export async function retryAsync<T>(
   fn: () => Promise<T>,
