@@ -2,7 +2,7 @@ import { type event } from "../../contracts/event.ts";
 import { type table_enviados } from "../../contracts/table-enviados.ts";
 import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
 import { api } from "../../services/api.ts";
-import { LogsRepository } from "../logs/logs-repository.ts";
+//import { LogsRepository } from "../logs/logs-repository.ts";
 import { OrderMapper } from "./order-mapper.ts";
  
 
