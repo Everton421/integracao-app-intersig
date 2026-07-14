@@ -183,7 +183,7 @@ async function postProduct(data: postProductMobile){
                                 status: 'erro',
                                 json_payload: JSON.stringify(data),
                                 detalhes_erro: String(error),
-                                id_registro: data.id || 0,
+                                id_registro: data.codigo || 0,
                                 tabela_origem: 'cad_prod',
                                 tipo_evento: 'POST API'
                         })
@@ -233,7 +233,8 @@ async function deleteProduct( codigo:number) {
                         id_registro: codigo || 0,
                         tabela_origem: 'cad_prod',
                         tipo_evento: 'DELETE API'
-                })finally{
+                })
+        }finally{
                 return status; 
 
         }
