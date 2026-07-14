@@ -3,6 +3,7 @@ import { type event } from "../../contracts/event.ts";
 import { type prod_setor } from "./contracts/prod_setor.ts";
 import { delay } from "../../utils/delay.ts";
 import { api } from "../../services/api.ts";
+import { serviceSendProduct } from "../products/service-send-product.ts";
 
 type produtos_enviados = {
         id:number  
@@ -23,9 +24,22 @@ export async function serviceSendProdSetor(event: event) {
                                                 const arrProdSetorSistema = resultProdSetorSistema as prod_setor[]
                                                 const PROD_SETOR = arrProdSetorSistema[0] as prod_setor;
                                                 
-                                                const [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`)   ; 
-                                                const arrVerifyItems = resultVerifyProduct as produtos_enviados[]
-                                                if(arrVerifyItems.length > 0 ){
+                                                let [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`)   ; 
+                                                let arrVerifyItems = resultVerifyProduct as produtos_enviados[]
+
+                                                        let resultPostProduct ;
+
+                                                        if(arrVerifyItems.length == 0 ){
+                                                            console.log(`[X] Produto ${PROD_SETOR.PRODUTO} ainda não foi enviado, efetuando tentativa de envio...`)
+                                                                  resultPostProduct = await serviceSendProduct({ criado_em:'', dados_json:'', tabela_origem:'cad_prod', id:0, id_evento: 0 ,id_message:'',id_registro: event.id_registro, 
+                                                                        setor: event.setor,status:'PENDENTE',tabela:0, tipo_evento:'INSERT' 
+                                                                })
+                                                           
+                                                        }
+                                          [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`)   ; 
+                                          arrVerifyItems = resultVerifyProduct as produtos_enviados[]
+                                              
+                                                  if(arrVerifyItems.length > 0 ){
                                                         const data = {
                                                                 produto: Number(arrVerifyItems[0].id_mobile),
                                                                 setor: Number(PROD_SETOR.SETOR),
