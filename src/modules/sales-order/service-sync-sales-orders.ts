@@ -34,17 +34,17 @@ export class ServiceSyncSalesOrder {
                                                 resultFunction.sucess = true
                                         }
                                 } catch (e:any) {
-                                        await LogsRepository.registerLogs(
-                                                { 
-                                                json_payload: JSON.stringify(objOrderToSend), 
-                                                 detalhes_erro: String(e.response),
-                                                 id_message: event.id_message || '',
-                                                 tabela_origem: event.tabela_origem,
-                                                 status: 'erro',
-                                                 id_registro: event.id_registro || 0,
-                                                  tipo_evento: 'POST API '       
-                                                }
-                                        )
+                                        //await LogsRepository.registerLogs(
+                                        //        { 
+                                        //        json_payload: JSON.stringify(objOrderToSend), 
+                                        //         detalhes_erro: String(e.response),
+                                        //         id_message: event.id_message || '',
+                                        //         tabela_origem: event.tabela_origem,
+                                        //         status: 'erro',
+                                        //         id_registro: event.id_registro || 0,
+                                        //          tipo_evento: 'POST API '       
+                                        //        }
+                                        // )
                                         console.log(e)
                                         resultFunction.sucess = false;
                                         resultFunction.message = String(e);
@@ -72,17 +72,17 @@ export class ServiceSyncSalesOrder {
                                                 resultFunction.sucess = true;
                                         }
                                 } catch (e: any) {
-                                           await LogsRepository.registerLogs(
-                                                { 
-                                                json_payload: JSON.stringify(objOrderToSend), 
-                                                 detalhes_erro: String(e.response),
-                                                 id_message: event.id_message || '',
-                                                 tabela_origem: event.tabela_origem,
-                                                 status: 'erro',
-                                                 id_registro: event.id_registro || 0,
-                                                  tipo_evento: 'POST API '       
-                                                }
-                                        )
+                                         //  await LogsRepository.registerLogs(
+                                         //       { 
+                                         //       json_payload: JSON.stringify(objOrderToSend), 
+                                         //        detalhes_erro: String(e.response),
+                                         //        id_message: event.id_message || '',
+                                         //        tabela_origem: event.tabela_origem,
+                                         //        status: 'erro',
+                                         //        id_registro: event.id_registro || 0,
+                                         //         tipo_evento: 'POST API '       
+                                         //       }
+                                         //         )
 
                                         console.log(e.response)
                                         resultFunction.sucess = false;
