@@ -168,5 +168,3 @@ async function jobSendData(){
             console.log("[X] fim do processo.") 
                 return
         }
-
-        await jobSendData();

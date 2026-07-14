@@ -29,11 +29,11 @@ type typePostProductMobile = typeProductMobileRequest & { id: number }
 export  function requestMobileProduct   () {
 
        const postProductMobile = async (data:  typePostProductMobile )=>{   
-            let responseRequestMobile = {sucess: false, message:'' , data: null };
+            let responseRequestMobile = {success: false, message:'' , data: null };
             try {
                 const resultPost = await api.post('/produto', data);
                     if(resultPost.status === 200 || resultPost.status === 201  ){
-                             responseRequestMobile.sucess = true 
+                             responseRequestMobile.success = true 
                              responseRequestMobile.data = resultPost.data; 
                             }               
     
@@ -51,12 +51,12 @@ export  function requestMobileProduct   () {
     }
     
      const putProductMobile = async ( data:typePostProductMobile) =>{
-            let responseRequestMobile = {sucess: false, data: null, message:'' };
+            let responseRequestMobile = {success: false, data: null, message:'' };
     
             try {
                       const resultPutRequest = await api.put('/produto', data);
                     if(resultPutRequest.status === 200 || resultPutRequest.status === 201  ){
-                             responseRequestMobile.sucess = true;
+                             responseRequestMobile.success = true;
                              responseRequestMobile.data = resultPutRequest.data;
                     }
             } catch (error ) {
@@ -74,12 +74,12 @@ export  function requestMobileProduct   () {
     
     
     const  deleteProductMobile = async ( codigo:number) =>{
-            let responseRequestMobile = {sucess: false, message:'' };
+            let responseRequestMobile = {success: false, message:'' };
     
             try {
                       const resultPost = await api.delete(`/produto:/${codigo}` );
                     if(resultPost.status === 200  ){
-                             responseRequestMobile.sucess = true 
+                             responseRequestMobile.success = true 
                     }
             } catch (error) {
                 let responseAxiosMessageError ='';   

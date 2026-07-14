@@ -4,6 +4,7 @@ import dbConn, { MOBILE, PUBLICO } from "../../database/connection/database-conn
  
 import { api } from "../../services/api.ts";
 import { ProdSetorRepository } from "../product-sector/repository-prod-setor.ts";
+import { LogsRepository } from "../logs-integration/logs-repository.ts";
 
 type produtos_enviados = {
         id: number
@@ -36,7 +37,7 @@ type postProductMobile = resultProductMobile
 
 export async function serviceSendProduct(event: event) {
         //await delay(250)
-        let status = {sucess: true, message:'' , data: null };
+        let status = {success: true, message:'' , data: null };
         try {
                 if (event.tipo_evento === 'DELETE'){
                         console.log(`[V] Excluindo produto ${event.id_registro}`)
@@ -46,23 +47,23 @@ export async function serviceSendProduct(event: event) {
                         if (arrVerifyItems.length > 0) {
 
                         const result = await deleteProduct(arrVerifyItems[0].id_mobile);
-                                 if( result.sucess){
+                                 if( result.success){
                    
                                    const [resultStatusDelete] = await dbConn.query(`DELETE FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`);
                                         const resultDelete  = resultStatusDelete as ResultSetHeader; 
                                         if(resultDelete.affectedRows > 0 ){
-                                                status.sucess = true  
+                                                status.success = true  
                                         }else{
-                                                status.sucess = true
+                                                status.success = true
                                                 status.message =`Ocorreu um erro ao tentar excluir o produto ${event.id_registro}`  
                                         }   
                                 
                                     } else{
-                                         status.sucess = true
+                                         status.success = true
                                          status.message =result.message  
                                     }        
                           }else{
-                                status.sucess = true
+                                status.success = true
                                 status.message =`O produto ${event.id_registro} não foi encontrado na tabela de enviados.`  
                          }
 
@@ -124,12 +125,12 @@ export async function serviceSendProduct(event: event) {
                         item.preco = Number(arrProduct[0].preco);
 
                         const result = await putProduct(item);
-                                if( result.sucess ){
-                                        status.sucess = true  
-                                        console.log(`[V] Produto: ${arrProduct[0].codigo} atualizado com sucesso!`)
+                                if( result.success ){
+                                        status.success = true  
+                                        console.log(`[V] Produto: ${arrProduct[0].codigo} atualizado com successo!`)
 
                                 }else{
-                                        status.sucess = false  
+                                        status.success = false  
                                 }
 
                 } else {
@@ -144,13 +145,13 @@ export async function serviceSendProduct(event: event) {
                         if (arrStock.length > 0) item.estoque = arrStock[0].ESTOQUE;
 
                         const result = await postProduct(item);
-                                if( result.sucess && result.data ){
+                                if( result.success && result.data ){
                                         const data = result.data as any
                                         await dbConn.query(`INSERT INTO ${MOBILE}.produtos_enviados set codigo_sistema = ${arrProduct[0].codigo}, id_mobile= ${data.codigo}`);
-                                        status.sucess =true  
-                                        console.log(`[V] Produto: ${arrProduct[0].codigo} enviado com sucesso!`)
+                                        status.success =true  
+                                        console.log(`[V] Produto: ${arrProduct[0].codigo} enviado com successo!`)
                                         }else{
-                                        status.sucess = false  
+                                        status.success = false  
                                 }
                                 }
                 }
@@ -159,7 +160,7 @@ export async function serviceSendProduct(event: event) {
 
         } catch (e) {
                 console.log("Erro : ", e)
-                      status.sucess = false  
+                      status.success = false  
         }finally{
                 return status;
         } 
@@ -167,32 +168,48 @@ export async function serviceSendProduct(event: event) {
 }
 
 async function postProduct(data: postProductMobile){   
-        let status = {sucess: true, message:'' , data: null };
+        let status = {success: true, message:'' , data: null };
         try {
             const resultPost = await api.post('/produtos', data);
                 if(resultPost.status === 200 || resultPost.status === 201  ){
-                         status.sucess = true 
+                         status.success = true 
                         status.data = resultPost.data; 
                         }               
 
         } catch (error) {
-                         status.sucess = true 
+                         status.success = true 
                         status.message = String(error)
+                        await LogsRepository.registerLogs({
+                                status: 'erro',
+                                json_payload: JSON.stringify(data),
+                                detalhes_erro: String(error),
+                                id_registro: data.id || 0,
+                                tabela_origem: 'cad_prod',
+                                tipo_evento: 'POST API'
+                        })
         }finally{
                 return status; 
         }
 }
 
 async function putProduct( data:postProductMobile) {
-        let status = {sucess: true, message:'' };
+        let status = {success: true, message:'' };
 
         try {
                   const resultPost = await api.put('/produtos', data);
                 if(resultPost.status === 200 || resultPost.status === 201  ){
-                         status.sucess = true 
+                         status.success = true 
                 }
         } catch (error) {
                         console.log(error)
+                        await LogsRepository.registerLogs({
+                                status: 'erro',
+                                json_payload: JSON.stringify(data),
+                                detalhes_erro: String(error),
+                                id_registro: data.codigo || 0,
+                                tabela_origem: 'cad_prod',
+                                tipo_evento: 'PUT API'
+                        })
         }finally{
                 return status; 
 
@@ -202,16 +219,21 @@ async function putProduct( data:postProductMobile) {
 
 
 async function deleteProduct( codigo:number) {
-        let status = {sucess: true, message:'' };
+        let status = {success: true, message:'' };
 
         try {
                   const resultPost = await api.delete(`/produtos:/${codigo}` );
                 if(resultPost.status === 200  ){
-                         status.sucess = true 
+                         status.success = true 
                 }
         } catch (error) {
-                
-        }finally{
+                await LogsRepository.registerLogs({
+                        status: 'erro',
+                        detalhes_erro: String(error),
+                        id_registro: codigo || 0,
+                        tabela_origem: 'cad_prod',
+                        tipo_evento: 'DELETE API'
+                })finally{
                 return status; 
 
         }

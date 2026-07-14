@@ -23,7 +23,7 @@ export class UpdatePurchaseOrderSeparation {
                                             
                                       if( verify.length > 0 ){
                                           const resultUpdateSeparationOrder = await PurchaseOrderRepository.updateSeparationPurchaseOrder(resultRequestOrder.data, verify[0].codigo_sistema )    
-                                          if(resultUpdateSeparationOrder.sucess ){                                            
+                                          if(resultUpdateSeparationOrder.success ){                                            
                                             resultFunctionUpdateErpOrder.success = true;
                                           }else{
                                             resultFunctionUpdateErpOrder.message = resultUpdateSeparationOrder.message || `[X] Algo de inesperado ocorreu ao tentar processar pedido de compra [MOBILE]  ${order.codigo}`;

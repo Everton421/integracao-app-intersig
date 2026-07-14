@@ -6,37 +6,31 @@ import amqplib from 'amqplib';
  * @param exec função que recebera a mensagem e fará o processamento
  */
 
- 
+const RECONNECT_DELAY = 5000;
 
 export async function consumerMobile(domain: string, exec:( message:any )=> Promise<{success:boolean, message:string | null }> , ack: boolean) {
 
-  try {
+  const BROKER_URL_MOBILE = process.env.BROKER_URL_MOBILE;
+  const BASE_QUEUE_NAME_MOBILE = process.env.QUEUE_NAME_MOBILE
+  const CNPJ = process.env.CNPJ;
+  const EXCHANGE_NAME = process.env.EXCHANGE_NAME_MOBILE!
+  const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
 
-    const BROKER_URL_MOBILE = process.env.BROKER_URL_MOBILE;
+  if (!BASE_QUEUE_NAME_MOBILE || !CNPJ || !EXCHANGE_NAME) {
+    throw new Error("Verificar variaveis de ambiente [ BASE_QUEUE_NAME, CNPJ,  EXCHANGE_NAME] ");
+  }
+
+  const uniqueQueueName = `${BASE_QUEUE_NAME_MOBILE}_${domain.replace(/\./g, '_')}`;
+  const routingKey = `tenant.${CNPJ}.${domain}`
+
+  async function startConsumer() {
 
     const conn = await amqplib.connect(BROKER_URL_MOBILE!);
-
     const channel = await conn.createChannel();
 
-    const BASE_QUEUE_NAME_MOBILE = process.env.QUEUE_NAME_MOBILE
-    const CNPJ = process.env.CNPJ;
-    const EXCHANGE_NAME = process.env.EXCHANGE_NAME_MOBILE
-    const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
-
-    const origin_api = process.env.API_ORIGIN_RECEIVED
-    if (!BASE_QUEUE_NAME_MOBILE || !CNPJ || !EXCHANGE_NAME) {
-      throw new Error("Verificar variaveis de ambiente [ BASE_QUEUE_NAME, CNPJ,  EXCHANGE_NAME] ");
-    }
-
-    // substitui [ . ] por [ _ ]
-    const uniqueQueueName = `${BASE_QUEUE_NAME_MOBILE}_${domain.replace(/\./g, '_')}`;
-
     await channel.assertExchange(EXCHANGE_NAME, 'topic', { durable: true })
-    // 2. cria uma fila unica para este worker
     const q = await channel.assertQueue(uniqueQueueName, { durable: true });
 
-    // 3. bind 
-    const routingKey = `tenant.${CNPJ}.${domain}`
     await channel.bindQueue(q.queue, EXCHANGE_NAME, routingKey);
 
     console.log(`[*] Worker iniciado na fila [${uniqueQueueName} ] ouvindo  ${routingKey}`);
@@ -56,11 +50,7 @@ export async function consumerMobile(domain: string, exec:( message:any )=> Prom
             const resultExecFunction =  await exec(conteudo.data);
 
             if (ack) {
-                //if( resultExecFunction && resultExecFunction.success){
-                  channel.ack(msg)
-                //}else{
-                //  console.log(resultExecFunction.message);
-                //}
+                channel.ack(msg)
               }
           } else {
 
@@ -77,8 +67,20 @@ export async function consumerMobile(domain: string, exec:( message:any )=> Prom
       }
     }, { noAck: false });
 
-  } catch (e) {
-    console.log('ERRO ', e);
+    conn.on('error', (err) => {
+      console.error(`[!] Erro na conexão RabbitMQ (${domain}): ${err.message}`);
+    });
+
+    conn.on('close', () => {
+      console.warn(`[!] Conexão RabbitMQ (${domain}) perdida. Reconectando em ${RECONNECT_DELAY / 1000}s...`);
+      setTimeout(startConsumer, RECONNECT_DELAY);
+    });
+
+    channel.on('error', (err) => {
+      console.error(`[!] Erro no channel RabbitMQ (${domain}): ${err.message}`);
+    });
   }
+
+  await startConsumer();
 
 }

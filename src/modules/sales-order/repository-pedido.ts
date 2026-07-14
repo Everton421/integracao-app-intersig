@@ -66,7 +66,7 @@ export interface IPedidoSistema {
 export class SalesOrderRepository {
 
   static async updateSeparationOrder(orcamento: IPedidoSistema, codigoPedido: number) {
-    let resultFunction = { sucess: true, message: '' };
+    let resultFunction = { success: true, message: '' };
 
     try {
       let sql = `
@@ -136,19 +136,19 @@ export class SalesOrderRepository {
             }
 
           }
-          resultFunction.sucess = true;
+          resultFunction.success = true;
 
         }
 
       } else {
         resultFunction.message = "Nenhuma alteração ocorreu no pedido.";
-        resultFunction.sucess = false;
+        resultFunction.success = false;
       }
 
       return resultFunction
 
     } catch (e) {
-      resultFunction.sucess = false;
+      resultFunction.success = false;
       resultFunction.message = e as any;
       return resultFunction
 
@@ -205,7 +205,7 @@ export class SalesOrderRepository {
     const veiculo = orcamento.veiculo && orcamento.veiculo.codigo ? orcamento.veiculo.codigo : 0;
     const codigo_site = orcamento.codigo;
 
-    let resultFunction = { sucess: true, message: '' };
+    let resultFunction = { success: true, message: '' };
 
     try {
 
@@ -260,10 +260,10 @@ export class SalesOrderRepository {
             await repositoryItensSalesOrder.insertProductsSalesOrder(produtos, codigoPedido)
           }
         }
-        resultFunction.sucess = true;
+        resultFunction.success = true;
       } else {
         resultFunction.message = "Nenhuma alteração ocorreu no pedido.";
-        resultFunction.sucess = false;
+        resultFunction.success = false;
 
       }
 
@@ -271,7 +271,7 @@ export class SalesOrderRepository {
       return resultFunction
 
     } catch (e) {
-      resultFunction.sucess = false;
+      resultFunction.success = false;
       resultFunction.message = e as any;
       return resultFunction
 

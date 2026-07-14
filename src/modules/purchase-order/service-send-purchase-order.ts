@@ -3,6 +3,7 @@ import { type table_enviados } from "../../contracts/table-enviados.ts";
 import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
 import { api } from "../../services/api.ts";
 import { PurchaseOrderMapper } from "./purchase-order-mapper.ts";
+import { LogsRepository } from "../logs-integration/logs-repository.ts";
 
 
  
@@ -18,7 +19,7 @@ export class ServiceSendPurchaseOrder{
 
         const obj = await PurchaseOrderMapper.mapping(event.id_registro);
 
-        let resultFunction = { sucess: false, message: '' };
+        let resultFunction = { success: false, message: '' };
 
         if (verifyOrder.length > 0) {
                 console.log(`[V] Pedido de compra [ERP] ${event.id_registro} já foi enviado, atualizando pedido...`)
@@ -33,14 +34,22 @@ export class ServiceSendPurchaseOrder{
                                 )
 
                                 if (result.status === 200 || result.status === 201) {
-                                       resultFunction.sucess = true;
-                                   resultFunction.message = `[V] Pedido de compra [ERP]: ${event.id_registro} atualizado com sucesso `;
+                                       resultFunction.success = true;
+                                   resultFunction.message = `[V] Pedido de compra [ERP]: ${event.id_registro} atualizado com successo `;
 
                                 }
                         } catch (e) {
                                 console.log(e)
-                                resultFunction.sucess = false;
+                                resultFunction.success = false;
                                 resultFunction.message = String(e);
+                                await LogsRepository.registerLogs({
+                                        status: 'erro',
+                                        json_payload: JSON.stringify(obj),
+                                        detalhes_erro: String(e),
+                                        id_registro: event.id_registro || 0,
+                                        tabela_origem: 'cad_comp',
+                                        tipo_evento: 'POST API UPDATE'
+                                })
                         }
                 }
 
@@ -63,12 +72,20 @@ export class ServiceSendPurchaseOrder{
                                         const SQL = `INSERT INTO ${MOBILE}.pedidos_compra SET id_mobile = ? , codigo_sistema = ? ;`;
                                         const values = [resultId, event.id_registro]
                                         await dbConn.query(SQL, values)
-                                        resultFunction.sucess = true;
+                                        resultFunction.success = true;
                                 }
                         } catch (e) {
                                 console.log(e)
-                                resultFunction.sucess = false;
+                                resultFunction.success = false;
                                 resultFunction.message = String(e);
+                                await LogsRepository.registerLogs({
+                                        status: 'erro',
+                                        json_payload: JSON.stringify(obj),
+                                        detalhes_erro: String(e),
+                                        id_registro: event.id_registro || 0,
+                                        tabela_origem: 'cad_comp',
+                                        tipo_evento: 'POST API INSERT'
+                                })
 
                         }
                 }

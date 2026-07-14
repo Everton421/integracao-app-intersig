@@ -4,6 +4,7 @@ import { type prod_setor } from "./contracts/prod_setor.ts";
 import { delay } from "../../utils/delay.ts";
 import { api } from "../../services/api.ts";
 import { serviceSendProduct } from "../products/service-send-product.ts";
+import { LogsRepository } from "../logs-integration/logs-repository.ts";
 
 type produtos_enviados = {
         id:number  
@@ -15,7 +16,7 @@ type produtos_enviados = {
 
  
 export async function serviceSendProdSetor(event: event) {
-        let status = {sucess: true, message:'' , data: null };
+        let status = {success: true, message:'' , data: null };
 
                 try{
                         const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
@@ -61,22 +62,29 @@ export async function serviceSendProdSetor(event: event) {
                                                                         }
                                                                 )
                                                             if( result.status === 200 || result.status === 201){
-                                                                status.sucess = true;
+                                                                status.success = true;
                                                                 }else{
-                                                                status.sucess = false;
+                                                                status.success = false;
                                                              }
 
                                                 }else{
                                                         console.log(`[X] Produto ${PROD_SETOR.PRODUTO} nao foi enviado.`)
-                                                                status.sucess = false;
+                                                                status.success = false;
                                                           status.message =`[X] Produto ${PROD_SETOR.PRODUTO} nao foi enviado.`;
                                                  }
                        
                 }catch(e){
                         console.log("Erro : ",e)
-                                                                status.sucess = false;
-
-                                                          status.message = String(e);
+                        status.success = false;
+                        status.message = String(e);
+                        await LogsRepository.registerLogs({
+                                status: 'erro',
+                                json_payload: JSON.stringify(event),
+                                detalhes_erro: String(e),
+                                id_registro: event.id_registro || 0,
+                                tabela_origem: 'prod_setor',
+                                tipo_evento: 'PUT API'
+                        })
 
                 }finally{
                         return status;

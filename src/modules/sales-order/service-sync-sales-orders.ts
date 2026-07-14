@@ -16,7 +16,7 @@ export class ServiceSyncSalesOrder {
 
                 const objOrderToSend =  await OrderMapper.mapping(event.id_registro);
 
-                let resultFunction = { sucess: false, message: '' };
+                let resultFunction = { success: false, message: '' };
 
                 if (verifyOrder.length > 0) {
                         if (objOrderToSend !== undefined) {
@@ -31,7 +31,7 @@ export class ServiceSyncSalesOrder {
 
                                         if (result.status === 200 || result.status === 201) {
                                                 const resultId = result.data.results[0].codigo;
-                                                resultFunction.sucess = true
+                                                resultFunction.success = true
                                         }
                                 } catch (e:any) {
                                          await LogsRepository.registerLogs(
@@ -46,7 +46,7 @@ export class ServiceSyncSalesOrder {
                                                  }
                                           )
                                         console.log(e)
-                                        resultFunction.sucess = false;
+                                        resultFunction.success = false;
                                         resultFunction.message = String(e);
                                 }
                         }
@@ -71,7 +71,7 @@ export class ServiceSyncSalesOrder {
                                                 ;`;
                                                 const values = [resultId, event.id_registro, resultId, event.id_registro ]
                                                 await dbConn.query(SQL, values)
-                                                resultFunction.sucess = true;
+                                                resultFunction.success = true;
                                         }
                                 } catch (e: any) {
                                             await LogsRepository.registerLogs(
@@ -87,7 +87,7 @@ export class ServiceSyncSalesOrder {
                                                    )
 
                                         console.log(e.response)
-                                        resultFunction.sucess = false;
+                                        resultFunction.success = false;
                                         resultFunction.message = String(e);
 
                                 }

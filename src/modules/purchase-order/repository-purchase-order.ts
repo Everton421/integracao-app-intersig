@@ -63,7 +63,7 @@ export class PurchaseOrderRepository{
 
 static async   updateSeparationPurchaseOrder(orcamento: IPedidoSistema, codigoPedido: number) {
   const produtos = orcamento.produtos as IProdutoPedidoSistema[];
-  let  resultFunction  =  { sucess: true, message: ''};
+  let  resultFunction  =  { success: true, message: ''};
   try{
 
     let sql = `
@@ -88,19 +88,19 @@ static async   updateSeparationPurchaseOrder(orcamento: IPedidoSistema, codigoPe
             await dbConn.query(sql)
 
           }
-          resultFunction.sucess = true;
+          resultFunction.success = true;
 
           }
         }else{
           resultFunction.message = "Nenhuma alteração ocorreu no pedido.";
-          resultFunction.sucess = false;
+          resultFunction.success = false;
           
         }
 
         return    resultFunction 
       
   }catch(e){
-          resultFunction.sucess = false;
+          resultFunction.success = false;
           resultFunction.message = e as any;
         return    resultFunction 
 
