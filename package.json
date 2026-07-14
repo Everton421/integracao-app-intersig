@@ -66,6 +66,8 @@
     
     "test-service-sync-supplier": "tsx --env-file .env --watch  --experimental-strip-types src/modules/supplier/__test__/service-sync-supplier.test.ts",
 
+    "test-log-repository": "tsx --env-file .env --watch  --experimental-strip-types src/modules/logs/__test__/log-repository.test.ts",
+
     
 
 

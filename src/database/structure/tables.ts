@@ -26,6 +26,22 @@
                KEY  codigo_sistema  ( codigo_sistema , id_mobile )
           ) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
              `,
+             `
+             CREATE TABLE IF NOT EXISTS ${database_mobile}.logs (
+                id  int(11) NOT NULL AUTO_INCREMENT,
+                status  varchar(255) DEFAULT NULL,
+                id_message  varchar(255) DEFAULT NULL,
+                id_registro  int(11) DEFAULT NULL,
+                dados_sql  blob DEFAULT NULL,
+                json_payload  blob DEFAULT NULL,
+                detalhes_erro  blob DEFAULT NULL,
+                detalhes  varchar(255) DEFAULT '0',
+                tabela_origem  varchar(50) DEFAULT NULL,
+                tipo_evento  varchar(50) DEFAULT NULL,
+                criado_em  timestamp NULL DEFAULT current_timestamp(),
+               PRIMARY KEY ( id )
+               ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+             `,
             `CREATE TABLE  IF NOT EXISTS ${database_mobile}.clientes_enviados  (
                id  int(11) NOT NULL AUTO_INCREMENT,
                id_mobile  varchar(255) NOT NULL DEFAULT '0',
