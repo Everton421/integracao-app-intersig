@@ -40,8 +40,10 @@ export class ServiceSendCustomer {
                         if( resultResquest.data &&  resultResquest.data.codigo){
                             const { codigo } = resultResquest.data;
 
-                            const sqlInsert =`INSERT INTO ${MOBILE}.clientes_enviados ( id_mobile ,  codigo_sistema ) VALUES ( ? , ? )`;
-                            const values = [ codigo , codeCustomerErp];
+                            const sqlInsert =`INSERT INTO ${MOBILE}.clientes_enviados ( id_mobile ,  codigo_sistema ) VALUES ( ? , ? ) ON DUPLICATE KEY UPDATE 
+                               id_mobile = ? ,  codigo_sistema = ?
+                                `;
+                            const values = [ codigo , codeCustomerErp, codigo , codeCustomerErp ];
                             const [{ insertId }] = await dbConn.query(sqlInsert, values ) as ResultSetHeader[]; 
                             if( insertId > 0 ){
                                 resultfunction.success = true;

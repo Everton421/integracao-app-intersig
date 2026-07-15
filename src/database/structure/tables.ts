@@ -49,7 +49,7 @@
                 createdAt timestamp NULL DEFAULT current_timestamp(),
                updatedAt timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                PRIMARY KEY ( id ),
-                KEY  codigo_sistema  ( codigo_sistema , id_mobile )
+               UNIQUE KEY  codigo_sistema  ( codigo_sistema , id_mobile )
 
              ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
             `,

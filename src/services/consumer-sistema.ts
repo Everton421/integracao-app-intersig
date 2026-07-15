@@ -64,7 +64,7 @@ export async function consumer_sistema(): Promise<void> {
           if (conteudo  ) {
 
             const data = conteudo as event;
-            console.log(`[V] Mensagem recebida do sistema tabela origem ${data.tabela_origem}.`)
+            console.log(`[V] Mensagem do tipo ${data.tipo_evento} recebida do SISTEMA tabela origem ${data.tabela_origem} registro ${data.id_registro}.`)
             switch (data.tabela_origem) {
 
               case 'lotes_series':

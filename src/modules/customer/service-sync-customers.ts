@@ -27,7 +27,7 @@ export class ServiceSyncCustomers {
                                         resultFunction.success = resultUpdateCustomer.success
                                         resultFunction.message = resultUpdateCustomer.message
                                 }else{
-                                        console.log(`[X] Recebido evento ${event.tipo_evento} para tabela ${event.tabela_origem}, porem o registro ainda nao foi enviado.`)
+                                        console.log(`[X] Recebido evento ${event.tipo_evento} ID: ${event.id_registro} da tabela ${event.tabela_origem}, porem o registro ainda nao foi enviado.`)
                                          const resultServiceSendCustomer = await ServiceSendCustomer.send(event.id_registro);
                                         resultFunction.success = resultServiceSendCustomer.success
                                         resultFunction.message = resultServiceSendCustomer.message
