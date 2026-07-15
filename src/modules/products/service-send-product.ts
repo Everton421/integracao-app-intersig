@@ -111,7 +111,7 @@ export async function serviceSendProduct(event: event) {
 
  
 
-                const [resultVerifyProduct] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`);
+                const [resultVerifyProduct] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = '${event.id_registro}';`);
                 const arrVerifyItems = resultVerifyProduct as produtos_enviados[]
                 if (arrVerifyItems.length > 0 && arrProduct.length > 0 ) {
                         console.log(` Atualizando  produto ${event.id_registro}...`,)
