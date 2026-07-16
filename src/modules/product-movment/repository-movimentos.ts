@@ -21,7 +21,7 @@ type movimentos= {
 
    export async function insertMvto_produtos(mvto:message_movimento_produtos ) {
          let resultFunction = { message: null , success:false } as { success: boolean , message: string | null}
-
+      
       try{
          
                const [ verifyMvtos ] = await dbConn.query(`SELECT * FROM ${MOBILE}.movimentos_produtos where id_mobile = '${mvto.codigo}'`)    
@@ -49,7 +49,7 @@ type movimentos= {
                                  ` INSERT INTO ${VENDAS}.ace_hist 
                                  ( ITEM, TIPO, HISTORICO, USUARIO, SETOR  )  
                                  VALUES
-                                 ( ${codigoAcerto}, '${mvto.tipo}', '${mvto.historico}',  1,  ${mvto.setor} )
+                                 ( ${codigoAcerto}, '${mvto.tipo}', '${mvto.historico}',  '${mvto.usuario}',  ${mvto.setor} )
                               `
                            const [ resultInserAce] = await dbConn.query(sqlInsertAceHist) as ResultSetHeader[];
 

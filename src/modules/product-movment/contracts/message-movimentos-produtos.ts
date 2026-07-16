@@ -1,15 +1,13 @@
 export interface message_movimento_produtos {
-   codigo:  number
-  setor: number
-  ent_sai: 'E' | 'S' 
-  unidade_medida: string
-  produto: number
-  quantidade: number
-  tipo: 'A' | string 
-  historico: string
-  data_recadastro:string  
-  usuario: number
-  id:number
-  id_produto:number ,
-	 id_setor:number
+   codigo: number,
+   produto:number
+   setor:number
+   unidade_medida: string,
+   ent_sai:string,
+   quantidade: number,
+   tipo: string,
+   historico: string,
+   data_recadastro: string,
+   usuario: number
 }
+ 

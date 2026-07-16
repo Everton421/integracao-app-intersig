@@ -51,8 +51,7 @@ app.post("/webhook", async (req: Request, res) => {
       }
       if (metadata.event == 'movimentosprodutos.inserido') {
             const data = req.body.data as message_movimento_produtos;
-            console.log(data )
-            //await insertMvto_produtos(data)
+            await insertMvto_produtos(data)
       }
 
       if (metadata.event == 'lotesserie.inserido') {
