@@ -16,13 +16,18 @@ type metadataRequest = {
       origin: string
 }
 
+
  const port = process.env.PORT_INTEGRATION || 5000;
 
 import express, { type Request } from 'express';
+import { consumer_sistema } from "./services/consumer-sistema.ts";
 
 const app = express();
 
 app.use(express.json());
+
+
+await consumer_sistema();
 
 app.post("/webhook", async (req: Request, res) => {
       const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
