@@ -27,7 +27,7 @@ const app = express();
 app.use(express.json());
 
 
-await consumer_sistema();
+  await consumer_sistema();
 
 app.post("/webhook", async (req: Request, res) => {
       const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
@@ -68,6 +68,9 @@ app.post("/webhook", async (req: Request, res) => {
       return res.status(200).json({ ok: true })
 })
 
+app.get("/webhook/health", (req, res)=>{
+      return res.status(200).json({ok: true })
+})
 
 app.listen(port, () => {
       console.log(`Server is running port: ${port}! `)
