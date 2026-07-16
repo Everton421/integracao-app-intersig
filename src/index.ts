@@ -26,7 +26,6 @@ const app = express();
 
 app.use(express.json());
 
-
   await consumer_sistema();
 
 app.post("/webhook", async (req: Request, res) => {

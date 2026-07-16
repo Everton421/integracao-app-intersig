@@ -13,8 +13,8 @@ module.exports = {
          
           exec_mode: "fork",
           watch: false,
-          max_memory_restart: "250M",
-          instances: 2,
+          max_memory_restart: "550M",
+          instances: 1,
           autorestart: true,
           restart_delay: 5000,
           error_file: "logs/error.log",
