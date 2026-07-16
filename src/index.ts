@@ -21,6 +21,7 @@ type metadataRequest = {
 
 import express, { type Request } from 'express';
 import { consumer_sistema } from "./services/consumer-sistema.ts";
+import { consumerMobile } from "./services/consumer-mobile.ts";
 
 const app = express();
 
@@ -73,3 +74,16 @@ app.get("/webhook/health", (req, res)=>{
 app.listen(port, () => {
       console.log(`Server is running port: ${port}! `)
 })
+
+
+
+await consumerMobile('pedido.separado', UpdateSalesOrderSeparation.updateErpOrder, true)
+
+await consumerMobile('produtosetor.atualizado', ProdSetorRepository.updateProdSetor, true)
+
+await consumerMobile('movimentosprodutos.inserido', insertMvto_produtos, true)
+
+await consumerMobile('lotesserie.inserido', ReceiveLoteSerieService.receiveByEvent, true);
+
+await consumerMobile('loteseriesetor.atualizado', ReceiveLoteSerieSetor.receive , true);
+
