@@ -27,7 +27,7 @@ type inputPostLoteSerie = {
             try{
                 const result = await api.get(`/lotes-series/search`, {
                     params : {
-                        codigo
+                        codigo: codigo
                     }
                 });
                 return result.data as resultLoteSerieRequest[]

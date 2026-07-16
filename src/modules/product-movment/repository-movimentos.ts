@@ -124,6 +124,7 @@ type movimentos= {
            resultFunction.success =false;
            resultFunction.message = `[X] Ocorreu um erro ao tentar registrar o movimento de produto ${mvto.codigo}`;
            console.log(resultFunction.message)
+           console.log(e)
 
         }finally{
            return resultFunction

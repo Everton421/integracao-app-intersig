@@ -12,13 +12,12 @@ test('service-send-sales-order', async (t) => {
             id: 1,
             id_evento: 1,
             id_message: '',
-            id_registro: 1944061,
+            id_registro: 1944062,
             setor: 0,
             status: 'PROCESSADO',
             tabela: 0,
             tabela_origem: 'cad_orca',
             tipo_evento: "INSERT",
-
         })
     })
 })

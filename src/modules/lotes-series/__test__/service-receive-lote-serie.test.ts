@@ -15,7 +15,7 @@ test( "receive-lote-serie.test", async ( t )=>{
         
     await t.test('receiveLoteSerieService.receive', async ()=>{
         
-          const resultReceiveLoteSerieService =  await ReceiveLoteSerieService.receiveLoteSerieByCode(1500012)
+          const resultReceiveLoteSerieService =  await ReceiveLoteSerieService.receiveLoteSerieByCode(5)
  
           console.log(resultReceiveLoteSerieService)
       })

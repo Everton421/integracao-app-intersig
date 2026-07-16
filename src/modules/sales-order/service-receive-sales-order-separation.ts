@@ -17,7 +17,7 @@ export class UpdateSalesOrderSeparation {
 
                                 if(order.tipo === 1 ){
                                 
-                                    const [rows] =  await dbConn.query(`SELECT * FROM ${MOBILE}.pedidos WHERE id_mobile = ${order.codigo} `);
+                                    const [rows] =  await dbConn.query(`SELECT * FROM ${MOBILE}.pedidos WHERE id_mobile = '${order.codigo}' `);
                                     const verify = rows as pedidosRecebidos[];
                                             
                                       if( verify.length > 0 ){
@@ -42,7 +42,7 @@ export class UpdateSalesOrderSeparation {
                         }
                   
                     }else{
-                        console.log(`[x] não foi encontrado pedido ${order.pedido} na tabela de pedidos enviados.`)
+                        console.log(`[x] Valor do codigo do pedido invalido, valor informado ${order.pedido}.`)
                     }
 
                 }catch(e){

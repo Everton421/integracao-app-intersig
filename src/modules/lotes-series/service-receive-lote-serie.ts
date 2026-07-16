@@ -14,11 +14,8 @@ import { LoteSeriesRequest } from "./lotes-series-request.ts";
     
     static async receiveByEvent(event: EventLoteSerie){
          const  { codigo } = event;
-           
          const resultReceiveLoteSerieBydCode = await this.receiveLoteSerieByCode(codigo)
-
             return  resultReceiveLoteSerieBydCode
-
     }
 
 
@@ -28,27 +25,22 @@ import { LoteSeriesRequest } from "./lotes-series-request.ts";
       */
     static async receiveLoteSerieByCode(codigo: number){
 
-
      let resultFunction = { message: null, success:false } as { success:boolean, message:string |null  }
 
-     
          try{
              // consulta loteSerie na api.
              const resultApiLoteSeries = await LoteSeriesRequest.getLoteSeriesRequest(codigo);
-             
              if(resultApiLoteSeries && resultApiLoteSeries?.length > 0 ){
                  
                  const { codigo,  lote , produto, serie } = resultApiLoteSeries[0];
                      
-                     if(serie != null ){
- 
-                     }else{
+                     if(serie == null ){
                          resultFunction.message = `[X] Lote/Serie ${codigo} com valor vazio, serie: ${serie} ` 
                            return resultFunction
                      }
- 
-                   const resultVerifylotesSeriesEnviadas =  await this.verifyReceivedLoteSerie(codigo);
 
+
+                   const resultVerifylotesSeriesEnviadas =  await this.verifyReceivedLoteSerie(codigo);
                     if( resultVerifylotesSeriesEnviadas.success){
                             console.log(`[X] Lote/Serie ${codigo} já foi registrada no sistema, serie: ${serie} `);
                             resultFunction.message = `[X] Lote/Serie ${codigo} já foi registrada no sistema, serie: ${serie} ` 
@@ -74,8 +66,7 @@ import { LoteSeriesRequest } from "./lotes-series-request.ts";
                                      }else{
                                                  resultFunction.message = `[X] Algo de inesperado ocorreu ao tentar registrar o lote/serie : ${codigo} no banco de dados do sistema.`;
                                      }
-                     }
-                 
+                     } 
              }else{
                  resultFunction.message =`[X] Lote serie codigo: ${codigo} não foi encontrado na api.` 
              }

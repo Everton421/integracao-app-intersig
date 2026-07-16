@@ -1,24 +1,69 @@
-import { seed } from "./database/seed/seed.ts";
-import { ReceiveLoteSerieSetor } from "./modules/lote-serie-setor/service-receive-lote-serie-setor.ts";
+import { type LoteSerieSetorInput, ReceiveLoteSerieSetor } from "./modules/lote-serie-setor/service-receive-lote-serie-setor.ts";
+import { type EventLoteSerie } from "./modules/lotes-series/contracts/event-lote-serie.ts";
 import { ReceiveLoteSerieService } from "./modules/lotes-series/service-receive-lote-serie.ts";
+import { type message_movimento_produtos } from "./modules/product-movment/contracts/message-movimentos-produtos.ts";
 import { insertMvto_produtos } from "./modules/product-movment/repository-movimentos.ts";
+import { type message_prod_setor } from "./modules/product-sector/contracts/message-prod-setor.ts";
 import { ProdSetorRepository } from "./modules/product-sector/repository-prod-setor.ts";
+import { type MessageSeparationOrder } from "./modules/sales-order/contracts/message-separation-order.ts";
 import { UpdateSalesOrderSeparation } from "./modules/sales-order/service-receive-sales-order-separation.ts";
-import { consumerMobile } from "./services/consumer-mobile.ts";
-import { consumer_sistema } from "./services/consumer-sistema.ts";
 
-await consumer_sistema();
 
-      await seed()
+type metadataRequest = {
+      tenant_id: string,
+      event: string,
+      timestamp: string,
+      origin: string
+}
 
-      await consumerMobile('pedido.separado', UpdateSalesOrderSeparation.updateErpOrder, true );
-     
-      await consumerMobile('produtosetor.atualizado', ProdSetorRepository.updateProdSetor , true ) 
+ const port = process.env.PORT_INTEGRATION || 5000;
 
-       await consumerMobile('movimentosprodutos.inserido',insertMvto_produtos, true ) 
-   
-       await consumerMobile('lotesserie.inserido', ReceiveLoteSerieService.receiveByEvent , true ) 
- 
-       await consumerMobile('loteseriesetor.atualizado', ReceiveLoteSerieSetor.receive, true ) 
+import express, { type Request } from 'express';
 
-   
+const app = express();
+
+app.use(express.json());
+
+app.post("/webhook", async (req: Request, res) => {
+      const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
+
+      const metadata = req.body.metadata as metadataRequest;
+
+      console.log(`[WEBHOOK] Recebido mensagem ${metadata.event}...`)
+      if (metadata.origin == origin) {
+            console.log(`[WEBHOOK] Mensagem ${metadata.event} não será processada.`)
+            return
+      }
+
+
+      if (metadata.event == 'pedido.separado') {
+            const data = req.body.data as MessageSeparationOrder;
+            await UpdateSalesOrderSeparation.updateErpOrder(data);
+      }
+
+      if (metadata.event == 'produtosetor.atualizado') {
+            const data = req.body.data as message_prod_setor;
+            await ProdSetorRepository.updateProdSetor(data);
+      }
+      if (metadata.event == 'movimentosprodutos.inserido') {
+            const data = req.body.data as message_movimento_produtos;
+            console.log(data )
+            //await insertMvto_produtos(data)
+      }
+
+      if (metadata.event == 'lotesserie.inserido') {
+            const data = req.body.data as EventLoteSerie;
+
+            await ReceiveLoteSerieService.receiveByEvent(data);
+      }
+      if (metadata.event == 'loteseriesetor.atualizado') {
+            const data = req.body.data as LoteSerieSetorInput;
+            await ReceiveLoteSerieSetor.receive(data);
+      }
+      return res.status(200).json({ ok: true })
+})
+
+
+app.listen(port, () => {
+      console.log(`Server is running port: ${port}! `)
+})

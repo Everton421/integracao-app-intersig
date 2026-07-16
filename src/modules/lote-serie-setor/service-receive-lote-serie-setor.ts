@@ -22,7 +22,7 @@ export type LoteSerieSetorInput = {
             const  databaseEstoque = `\`${ESTOQUE}\``;
           
             // executa o service de validação da serie, faz a inserção caso nao tenha sido recebida anteriormente.
-            await ReceiveLoteSerieService.receiveByCode(event.lote_serie);
+            await ReceiveLoteSerieService.receiveLoteSerieByCode(event.lote_serie);
 
             const sqlLoteSeriesEnviadas = `SELECT * FROM ${MOBILE}.lotes_series_enviadas WHERE id_mobile = '${event.lote_serie}';`;
             const [ resultLoteSeriesEnviadas ] = await   dbConn.query(sqlLoteSeriesEnviadas);
