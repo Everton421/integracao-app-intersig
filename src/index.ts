@@ -5,6 +5,8 @@ import { type message_movimento_produtos } from "./modules/product-movment/contr
 import { insertMvto_produtos } from "./modules/product-movment/repository-movimentos.ts";
 import { type message_prod_setor } from "./modules/product-sector/contracts/message-prod-setor.ts";
 import { ProdSetorRepository } from "./modules/product-sector/repository-prod-setor.ts";
+import { type EventRequirement } from "./modules/requirement/contracts/event-requirement.ts";
+import { ReceiveRequirementService } from "./modules/requirement/service-receive-requirement.ts";
 import { type MessageSeparationOrder } from "./modules/sales-order/contracts/message-separation-order.ts";
 import { UpdateSalesOrderSeparation } from "./modules/sales-order/service-receive-sales-order-separation.ts";
 
@@ -87,3 +89,7 @@ await consumerMobile('lotesserie.inserido', ReceiveLoteSerieService.receiveByEve
 
 await consumerMobile('loteseriesetor.atualizado', ReceiveLoteSerieSetor.receive , true);
 
+
+await consumerMobile('requerimento.inserido', ReceiveRequirementService.receive , true);
+
+ 
