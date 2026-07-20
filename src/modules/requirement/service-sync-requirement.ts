@@ -22,7 +22,7 @@ export class ServiceSyncRequeriment{
     static async update( codeRequeriment: number ){
           try{
             
-            const [ verifyRequerimentToSend ] = await dbConn.query(`SELECT id_mobile FROM  ${MOBILE}.requerimentos where codigo_sistema = '${codeRequeriment}'`);
+            const [ verifyRequerimentToSend ] = await dbConn.query(`SELECT id_mobile FROM  ${MOBILE}.requerimentos where codigo_sistema = '${codeRequeriment}';`);
             
                     const isverifiedRequeriment = verifyRequerimentToSend as { id_mobile : number}[];
 
