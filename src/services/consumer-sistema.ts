@@ -17,6 +17,7 @@ import { ServiceSendPurchaseOrder } from '../modules/purchase-order/service-send
 import { ServiceSyncSalesOrder } from '../modules/sales-order/service-sync-sales-orders.ts';
 import { delay } from '../utils/delay.ts';
 import { retryAsync } from '../utils/retry.ts';
+import { ServiceSyncRequeriment } from '../modules/requirement/service-sync-requirement.ts';
 
 
 const RECONNECT_DELAY = 5000;
@@ -71,7 +72,11 @@ export async function consumer_sistema(): Promise<void> {
                   const resultLoteSerie = await ServiceSyncLotesSeries.syncData(data)
                   channel.ack(msg);
                  break;
-
+              case 'requerimentos': 
+               await ServiceSyncRequeriment.syncDataByEvent(data);
+                  channel.ack(msg);
+                 break;
+              
               case 'lote_serie_setor':
                 await   SendLoteSerieSetor(data)
                   channel.ack(msg);

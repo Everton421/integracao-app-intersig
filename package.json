@@ -17,21 +17,29 @@
     "send:setores": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-setores.ts",
     "send:pedidos": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-pedidos.ts",
     "send:ordem_compra": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-ordem-compra.ts",
-     
 
-    
-    
+    "teste-receive-requirement": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/receive-requirement.test.ts",
+    "teste-requirement-mapping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/requeriment-mapping.test.ts",
+    "teste-service-send-requirement": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/service-send-requirement.test.ts",
+
+
     "teste-product-moviment": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-movment/__test__/repository-movimentos.test.ts",
     
     "teste-service-send-product": "tsx --env-file .env --watch  --experimental-strip-types src/modules/products/__test__/service-send-product.test.ts",
+
     "teste-receive-lote-serie": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/service-receive-lote-serie.test.ts",
     "teste-lote-serie-request": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/lotes-series-request.test.ts",
+
     "teste-receive-lote-serie-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lote-serie-setor/__test__/receive-lote-series-setor.test.ts",
+
     "teste-service-receive-sales-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-receive-sales-order-separation.test.ts",
     "test-service-send-sales-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-send-sales-order.test.ts",
+
     "teste-service-receive-purchase-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-receive-purchase-order-separation.test.ts",
     "test-service-send-purchase-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-send-purchase-order.test.ts",
+
     "teste-update-prod-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/update-prod-setor.test.ts",
+
     "test-service-send-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-send-brand.test.ts",
     "test-service-update-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-update-brand.test.ts",
     "test-brand-resquest": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/brand-resquest.test.ts",

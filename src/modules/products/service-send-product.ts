@@ -167,10 +167,18 @@ export async function serviceSendProduct(event: event) {
 
 }
 
-async function postProduct(data: postProductMobile){   
+async function postProduct(data: postProductMobile){ 
+    const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
+
         let status = {success: true, message:'' , data: null };
         try {
-            const resultPost = await api.post('/produtos', data);
+            const resultPost = await api.post('/produtos', data, 
+                      {
+                    headers: {
+                        source: origin
+                        }
+                    }
+            );
                 if(resultPost.status === 200 || resultPost.status === 201  ){
                          status.success = true 
                         status.data = resultPost.data; 
@@ -193,10 +201,16 @@ async function postProduct(data: postProductMobile){
 }
 
 async function putProduct( data:postProductMobile) {
+    const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
+
         let status = {success: true, message:'' };
 
         try {
-                  const resultPost = await api.put('/produtos', data);
+                  const resultPost = await api.put('/produtos', data,{
+                    headers: {
+                        source: origin
+                        }
+                  });
                 if(resultPost.status === 200 || resultPost.status === 201  ){
                          status.success = true 
                 }
@@ -220,9 +234,16 @@ async function putProduct( data:postProductMobile) {
 
 async function deleteProduct( codigo:number) {
         let status = {success: true, message:'' };
+    const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
 
         try {
-                  const resultPost = await api.delete(`/produtos:/${codigo}` );
+                  const resultPost = await api.delete(`/produtos:/${codigo}`,
+                      {
+                    headers: {
+                        source: origin
+                        }
+                  }
+                   );
                 if(resultPost.status === 200  ){
                          status.success = true 
                 }

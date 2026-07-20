@@ -1,6 +1,7 @@
 import { type ResultSetHeader } from "mysql2";
-import dbConn, { VENDAS } from "../../database/connection/database-connection.ts";
+import dbConn, { PUBLICO, VENDAS } from "../../database/connection/database-connection.ts";
 import { type EventRequirement, type ItemEventRequirement } from "./contracts/event-requirement.ts";
+import { type loteSerieRequer, type erpRequeriment, type prodRequer } from "./contracts/erpRequirement.ts";
 
 export class RequirementRepository {
 
@@ -55,5 +56,35 @@ export class RequirementRepository {
             const valuesLote = [codigoRequer, produto, lote.lote_serie, lote.quantidade];
             await dbConn.query(sqlInsertLote, valuesLote);
         }
+    }
+
+
+    static async findRequeriments(query: { codigo: number }){
+            const { codigo } = query;
+
+                const sql = `select 
+                *,
+                DATE_FORMAT(DATA_REQUER, '%Y-%m-%d') AS DATA_REQUER,
+                DATE_FORMAT(DATA_EFETUACAO, '%Y-%m-%d') AS DATA_EFETUACAO 
+
+                 from ${VENDAS}.requerimentos where codigo = ? ` ;
+                
+                const values = [ codigo ];
+        const [result] = await dbConn.query(sql, values );
+        return result as  erpRequeriment[]
+    }
+
+    static async findProductsRequeriment(codeRequeriment: number ){
+
+                 const [dataErpProdRequer] = await dbConn.query(`select pr.*, COALESCE(cp.DESCRICAO , '') as DESCRICAO  from ${VENDAS}.prod_requer as pr
+                            left join ${PUBLICO}.cad_prod cp on cp.CODIGO = pr.PRODUTO     
+                    where pr.requer = '${codeRequeriment}' `);
+           return dataErpProdRequer as prodRequer[];
+    }
+
+    static async findLoteSeriesRequeriment(codeRequeriment: number ){
+              const [ dataLoteSerieRequer ] = await dbConn.query(`SELECT * FROM ${VENDAS}.lotes_series_requer WHERE REQUER =  '${codeRequeriment}'`);
+             return  dataLoteSerieRequer as loteSerieRequer[];
+
     }
 }

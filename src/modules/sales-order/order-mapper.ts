@@ -40,7 +40,6 @@ export class OrderMapper {
 
 
                     const prod:any=[]
-                    if(arr_produtos.length >  0 ){
                         for( const i of arr_produtos ) {
                             const series = []
                              const resultSeries = await repositoryItensSalesOrder.findSeriesSalesOrder(codigo_sistema);
@@ -69,10 +68,7 @@ export class OrderMapper {
                                                 }
                             )
                         }
-                    }else{
-                    console.log(`[X] Não foi encontrado produtos do pedido codigo: ${codigo_sistema} no sistema.`)
-                        return;
-                    }
+                  
 
                     const arr_parcelas = await  repositoryItensSalesOrder.findInstallmentsSalesOrder(codigo_sistema);
 
@@ -100,7 +96,9 @@ export class OrderMapper {
                             }
 
                             let tipo = 1;
-
+                            if( erp_order.TIPO == 3 ){
+                                tipo = 3;
+                            }
 
                             const obj =  {        
                                              id :  `#V-${codigo_sistema}` , 

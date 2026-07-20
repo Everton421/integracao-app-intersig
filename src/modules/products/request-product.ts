@@ -27,11 +27,19 @@ type typePostProductMobile = typeProductMobileRequest & { id: number }
 
 
 export  function requestMobileProduct   () {
+    const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
 
        const postProductMobile = async (data:  typePostProductMobile )=>{   
             let responseRequestMobile = {success: false, message:'' , data: null };
             try {
-                const resultPost = await api.post('/produto', data);
+                const resultPost = await api.post('/produto', data, 
+                           {
+                    headers: {
+                        source: origin
+                        }
+                    }
+
+                );
                     if(resultPost.status === 200 || resultPost.status === 201  ){
                              responseRequestMobile.success = true 
                              responseRequestMobile.data = resultPost.data; 
@@ -54,7 +62,13 @@ export  function requestMobileProduct   () {
             let responseRequestMobile = {success: false, data: null, message:'' };
     
             try {
-                      const resultPutRequest = await api.put('/produto', data);
+                      const resultPutRequest = await api.put('/produto', data, 
+                             {
+                                headers: {
+                                        source: origin
+                                        }
+                                }
+                      );
                     if(resultPutRequest.status === 200 || resultPutRequest.status === 201  ){
                              responseRequestMobile.success = true;
                              responseRequestMobile.data = resultPutRequest.data;

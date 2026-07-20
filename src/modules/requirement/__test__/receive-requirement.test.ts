@@ -8,7 +8,7 @@ test("receive-requirement", async (t) => {
 
     await t.test("TESTE receive requirement", async () => {
         const mockEvent: EventRequirement = {
-            codigo: 999999,
+            codigo: 2,
             data_requerimento: "2026-07-17",
             requerente: 1,
             data_efetuacao: "2026-07-17",
@@ -20,11 +20,12 @@ test("receive-requirement", async (t) => {
             situacao: "A",
             itens: [
                 {
-                    produto: 100,
+                    produto: 55913,
                     descricao: "Produto Teste",
-                    quantidade: 10,
-                    custo: 25.50,
-                    lotes_series: []
+                    quantidade: 1,
+                    custo: 0,
+                    lotes_series: [
+                    ]
                 }
             ]
         };

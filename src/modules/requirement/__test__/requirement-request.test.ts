@@ -1,16 +1,17 @@
 import test from "node:test";
+import { api } from "../../../services/api.ts";
+import { isAxiosError } from "axios";
+import { type payloadRequestRequirement } from "../contracts/requeriment.ts";
 
 
 
-class RequirementRequest{
-    async get(requirementRequest: any){
-        
-        
-    }
-}
+
+
+
+
 
 test("", async ( t )=>{
-    await t.test("TESTE request requirement", async ()=>{
+    await t.test("TESTE POST request requirement", async ()=>{
 
     })
 
