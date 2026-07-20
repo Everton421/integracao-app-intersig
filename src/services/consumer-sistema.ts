@@ -55,6 +55,7 @@ export async function consumer_sistema(): Promise<void> {
     console.log(`[*] Worker sistema iniciado na fila [${QUEUE_NAME}] `);
 
     channel.prefetch(10);
+    const delaySyncData = 500;
 
     await channel.consume(q.queue, async (msg) => {
       if (msg) {
@@ -73,7 +74,7 @@ export async function consumer_sistema(): Promise<void> {
                   channel.ack(msg);
                  break;
               case 'requerimentos': 
-                await delay(100, `[O] Aguardando ${100/1000} segundos para processar requerimento ...`)
+                await delay(delaySyncData, `[O] Aguardando ${delaySyncData/1000} segundos para processar requerimento ...`)
                   await ServiceSyncRequeriment.syncDataByEvent(data);
                   channel.ack(msg);
                  break;
@@ -83,7 +84,7 @@ export async function consumer_sistema(): Promise<void> {
                   channel.ack(msg);
                  break;
               case 'cad_prod':
-                await delay(100, `[O] Aguardando ${100/1000} segundos para processar produto ...`)
+                await delay(delaySyncData, `[O] Aguardando ${delaySyncData/1000} segundos para processar produto ...`)
                   const resultProduct =  await serviceSendProduct(data);
                   channel.ack(msg);
                  break;
@@ -104,7 +105,7 @@ export async function consumer_sistema(): Promise<void> {
                   channel.ack(msg);
                   break;
               case 'cad_clie':
-                await delay(100, `[O] Aguardando ${100/1000} segundos para processar cliente ...`)
+                await delay(delaySyncData, `[O] Aguardando ${delaySyncData/1000} segundos para processar cliente ...`)
                 const resultClient = await ServiceSyncCustomers.syncData(data);
                   channel.ack(msg);
                  break;
@@ -117,14 +118,14 @@ export async function consumer_sistema(): Promise<void> {
                   channel.ack(msg);
                 break;
                 case 'cad_forn': 
-                await delay(100, `[O] Aguardando ${100/1000} segundos para processar fornecedor ...`)
+                await delay(delaySyncData, `[O] Aguardando ${delaySyncData/1000} segundos para processar fornecedor ...`)
                   await ServiceSyncSupplier.syncData(data);
                   channel.ack(msg);
                 break;
               
                 case 'cad_orca':
                   try {
-                await delay(100, `[O] Aguardando ${100/1000} segundos para processar pedido ...`)
+                await delay(delaySyncData, `[O] Aguardando ${delaySyncData/1000} segundos para processar pedido ...`)
                     const resultOrder = await retryAsync(() => ServiceSyncSalesOrder.syncData(data));
                     console.log(`[V] Pedido de venda ${data.id_registro} processado com sucesso / ${resultOrder.message}`);
                     channel.ack(msg);
@@ -135,7 +136,7 @@ export async function consumer_sistema(): Promise<void> {
                  break;
                  case 'cad_comp':
                   try {
-                await delay(100, `[O] Aguardando ${100/1000} segundos para processar pedido de compra...`)
+                await delay(delaySyncData, `[O] Aguardando ${delaySyncData/1000} segundos para processar pedido de compra...`)
                     const resultPurchaseOrder = await retryAsync(() => ServiceSendPurchaseOrder.send(data));
                     console.log(`[V] Pedido de compra ${data.id_registro} processado com sucesso / ${resultPurchaseOrder.message}`);
                     channel.ack(msg);
