@@ -22,7 +22,7 @@ export class OrderMapper {
                 
                 
                 
-                let [resultArrClient]  = await  dbConn.query( `SELECT * FROM ${MOBILE}.clientes_enviados WHER codigo_sistema = '${erp_order.CLIENTE}';`);
+                let [resultArrClient]  = await  dbConn.query( `SELECT * FROM ${MOBILE}.clientes_enviados WHERE codigo_sistema = '${erp_order.CLIENTE}';`);
                 let arrClient =  resultArrClient as any[];
 
                 if(arrClient.length === 0 ){
