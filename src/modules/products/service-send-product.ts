@@ -113,7 +113,10 @@ export async function serviceSendProduct(event: event) {
 
                 const [resultVerifyProduct] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = '${event.id_registro}';`);
                 const arrVerifyItems = resultVerifyProduct as produtos_enviados[]
-                if (arrVerifyItems.length > 0 && arrProduct.length > 0 ) {
+
+                if (arrVerifyItems.length > 0    ) {
+                        if(arrProduct.length > 0){
+
                         console.log(` Atualizando  produto ${event.id_registro}...`,)
                         let item = { ...arrProduct[0],  id: String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } 
                         item.codigo = Number(arrVerifyItems[0].id_mobile);
@@ -132,12 +135,15 @@ export async function serviceSendProduct(event: event) {
                                 }else{
                                         status.success = false  
                                 }
+                        }else{
+                                console.log(`[V] Produto: ${event.id_registro} foi enviado anteriormente mas não foi encontrado no sistema!`)
+
+                        }
 
                 } else {
                         if(  arrProduct.length > 0){
-                                
                         //post produto 
-                        console.log(` Enviando   produto ${event.id_registro}...`,)
+                        console.log(` [V] Enviando produto ${event.id_registro}...`,)
 
                         let item = { ...arrProduct[0], id:String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } as postProductMobile
                         const arrStock = await ProdSetorRepository.findStock(arrProduct[0].codigo);

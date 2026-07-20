@@ -1,7 +1,7 @@
 import { repositoryItensSalesOrder   } from "./repository-itens-pedido.ts";
 import { ServiceSyncCustomers } from "../customer/service-sync-customers.ts";
 import { DateService } from "../../utils/date.ts";
-import dbConn, { VENDAS } from "../../database/connection/database-connection.ts";
+import dbConn, { MOBILE, VENDAS } from "../../database/connection/database-connection.ts";
 import { SalesOrderRepository } from "./repository-pedido.ts";
 import { ServiceSendCustomer } from "../customer/service-send-customer.ts";
 
@@ -20,20 +20,21 @@ export class OrderMapper {
                 const erp_order =   result_erp_order[0];
                 const arr_produtos = await repositoryItensSalesOrder.findItemsSalesOrder(codigo_sistema);
                 
-                let arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
                 
+                
+                let [resultArrClient]  = await  dbConn.query( `SELECT * FROM ${MOBILE}.clientes_enviados WHER codigo_sistema = '${erp_order.CLIENTE}';`);
+                let arrClient =  resultArrClient as any[];
 
                 if(arrClient.length === 0 ){
                     console.log(`[X] Não foi encontrado registro do envio do cliente do pedido de venda codigo: ${codigo_sistema}.`)
                     console.log(`[V] Verificando possibilidade de envio do cliente[ERP] ${erp_order.CLIENTE}.`)
                         const resultServiceSyncCustomer = await ServiceSendCustomer.send(erp_order.CLIENTE);  
                         if(resultServiceSyncCustomer.success){
-                            arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
                         }else{
                             console.log(`[X] Não foi possivel enviar o cliente [ERP] ${erp_order.CLIENTE}, resultado da tentativa de envio ${resultServiceSyncCustomer.message}`)
-                            console.log(`[X]  Pedido de venda [ERP] ${erp_order.CODIGO} não poderá ser enviado`)
-                            return;
                         }
+                            arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
+
                     }
 
                    arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
