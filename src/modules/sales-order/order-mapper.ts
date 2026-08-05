@@ -19,14 +19,16 @@ export class OrderMapper {
             if(result_erp_order.length > 0 ){
                 const erp_order =   result_erp_order[0];
                 const arr_produtos = await repositoryItensSalesOrder.findItemsSalesOrder(codigo_sistema);
-                
-                
-                
+
+                 let    codigoClienteMobile = 0 ;
+                 
+                if(erp_order.CLIENTE != 0 ){
+                    
                 let [resultArrClient]  = await  dbConn.query( `SELECT * FROM ${MOBILE}.clientes_enviados WHERE codigo_sistema = '${erp_order.CLIENTE}';`);
                 let arrClient =  resultArrClient as any[];
-
+                
                 if(arrClient.length === 0 ){
-                    console.log(`[X] Não foi encontrado registro do envio do cliente do pedido de venda codigo: ${codigo_sistema}.`)
+                    console.log(`[X] Não foi encontrado registro do envio do cliente do pedido de venda [ERP] codigo: ${codigo_sistema} cliente ${erp_order.CLIENTE} .`)
                     console.log(`[V] Verificando possibilidade de envio do cliente[ERP] ${erp_order.CLIENTE}.`)
                         const resultServiceSyncCustomer = await ServiceSendCustomer.send(erp_order.CLIENTE);  
                         if(resultServiceSyncCustomer.success){
@@ -34,10 +36,11 @@ export class OrderMapper {
                             console.log(`[X] Não foi possivel enviar o cliente [ERP] ${erp_order.CLIENTE} do pedido ${codigo_sistema}, resultado da tentativa de envio ${resultServiceSyncCustomer.message}`)
                         }
                             arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
-
+                              arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
+                            codigoClienteMobile = arrClient[0].id_mobile;
                     }
 
-                   arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
+                }
 
 
                     const prod:any=[]
@@ -119,7 +122,7 @@ export class OrderMapper {
                                              total_produtos : erp_order.TOTAL_PRODUTOS ,
                                              total_servicos :  erp_order.TOTAL_SERVICOS ,
                                              cliente : {
-                                                 codigo :  Number(arrClient[0].id_mobile)   
+                                                 codigo :  Number(codigoClienteMobile)   
                                             },
                                              veiculo :  erp_order.VEICULO ,
                                              data_cadastro :    erp_order.DATA_CADASTRO ,

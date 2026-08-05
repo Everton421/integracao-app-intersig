@@ -13,7 +13,7 @@ export class ServiceSyncSalesOrder {
 
                 const [arrVerifyOrder] = await dbConn.query(`SELECT * FROM ${MOBILE}.pedidos WHERE codigo_sistema = ${event.id_registro};`)
                 const verifyOrder = arrVerifyOrder as table_enviados[];
-
+                console.log(`[V] Processando pedido [ERP] ${event.id_registro}, id evento [ ${event.id}]... `)
                 const objOrderToSend =  await OrderMapper.mapping(event.id_registro);
 
                 let resultFunction = { success: false, message: '' };
