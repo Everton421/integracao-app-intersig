@@ -100,6 +100,44 @@ export class ProdSetorRepository{
                           
  }
 
+    static async findStockByProductAndSector(produto:number, setor:number){
+            const sqlStock = `SELECT * FROM  ${ESTOQUE}.prod_setor WHERE PRODUTO = ? AND SETOR = ? `;
+           const [arrCurrentStockAtDestinationSector] = await dbConn.query(sqlStock, [ produto,  setor]);
+           return arrCurrentStockAtDestinationSector as prod_setor[]
+   }
+ 
+        static async updateStockBySectorAndProduct(product:number, sector:number, quantity: number){
+        
+            let resultFunction = {success: false, message:null } as { success: boolean, message: null | string  };
+
+            console.log(`[SQl] Atualizando prod_setor produto: ${product} `)
+            const sqlProd_setor = `  
+                     INSERT INTO ${ESTOQUE}.prod_setor  
+                                set
+                                ESTOQUE = '${quantity}',
+                                DATA_RECAD =   NOW() ,
+                                PRODUTO = '${product}',
+                                SETOR = '${sector}'
+                                ON DUPLICATE KEY UPDATE
+                                ESTOQUE = '${quantity}',
+                                DATA_RECAD =   NOW()  
+                            `;
+                         try{
+                            const [ result ]   = await dbConn.query(sqlProd_setor) as ResultSetHeader[]
+                            if(result && result.affectedRows > 0 ){
+                                resultFunction.success = true;
+                            }
+                         }catch( e ){
+                            resultFunction.success = false;
+                            resultFunction.message = "[X] Erro ao tentar atualizar prod_setor: ", e;
+                            console.log("[X] Erro ao tentar atualizar prod_setor: ", e)
+                         }finally{
+                            return resultFunction;
+                         }
+                          
+ }
+
+
     static async findStock( codigo:number, setor?:number){
         let sql = `
                   SELECT  

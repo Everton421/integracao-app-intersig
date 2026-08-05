@@ -24,12 +24,12 @@ type metadataRequest = {
 import express, { type Request } from 'express';
 import { consumer_sistema } from "./services/consumer-sistema.ts";
 import { consumerMobile } from "./services/consumer-mobile.ts";
+import { UpdateReceivedRequirementService } from "./modules/requirement/service-update-received-requirement.ts";
 
 const app = express();
 
 app.use(express.json());
 
-  await consumer_sistema();
 
 app.post("/webhook", async (req: Request, res) => {
       const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
@@ -79,6 +79,9 @@ app.listen(port, () => {
 
 
 
+  await consumer_sistema();
+
+
 await consumerMobile('pedido.separado', UpdateSalesOrderSeparation.updateErpOrder, true)
 
 await consumerMobile('produtosetor.atualizado', ProdSetorRepository.updateProdSetor, true)
@@ -91,5 +94,9 @@ await consumerMobile('loteseriesetor.atualizado', ReceiveLoteSerieSetor.receive 
 
 
 await consumerMobile('requerimento.inserido', ReceiveRequirementService.receive , true);
+
+
+//await consumerMobile('requerimento.efetuado', UpdateReceivedRequirementService.receive , false);
+//await consumerMobile('requerimento.atualizado', UpdateReceivedRequirementService.receive , false);
 
  

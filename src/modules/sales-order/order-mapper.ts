@@ -31,7 +31,7 @@ export class OrderMapper {
                         const resultServiceSyncCustomer = await ServiceSendCustomer.send(erp_order.CLIENTE);  
                         if(resultServiceSyncCustomer.success){
                         }else{
-                            console.log(`[X] Não foi possivel enviar o cliente [ERP] ${erp_order.CLIENTE}, resultado da tentativa de envio ${resultServiceSyncCustomer.message}`)
+                            console.log(`[X] Não foi possivel enviar o cliente [ERP] ${erp_order.CLIENTE} do pedido ${codigo_sistema}, resultado da tentativa de envio ${resultServiceSyncCustomer.message}`)
                         }
                             arrClient  = await SalesOrderRepository.findCustomerSalesOrder(erp_order.CLIENTE);
 

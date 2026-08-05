@@ -45,7 +45,7 @@ export class ServiceSyncSalesOrder {
                                                    tipo_evento: 'POST API '       
                                                  }
                                           )
-                                        console.log(e)
+                                        console.log(`[X] Erro ao processar pedido de venda ${event.id_registro} evento: ${event.id}${e}`  )
                                         resultFunction.success = false;
                                         resultFunction.message = String(e);
                                 }
@@ -86,7 +86,8 @@ export class ServiceSyncSalesOrder {
                                                  }
                                                    )
 
-                                        console.log(e.response)
+                                        console.log(`[X] Erro ao processar pedido de venda ${event.id_registro} evento: ${event.id}${e}`  )
+
                                         resultFunction.success = false;
                                         resultFunction.message = String(e);
 
