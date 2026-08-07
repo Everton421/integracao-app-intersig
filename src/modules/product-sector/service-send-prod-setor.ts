@@ -17,14 +17,15 @@ type produtos_enviados = {
  
 export async function serviceSendProdSetor(event: event) {
         let status = {success: true, message:'' , data: null };
-                          console.log(`SELECT * FROM ${ESTOQUE}.prod_setor WHERE produto = '${event.id_registro}' AND SETOR = '${event.setor}' ;`)
-
+                   
                 try{
                         const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
                         
                           const [resultProdSetorSistema] = await dbConn.query(`SELECT * FROM ${ESTOQUE}.prod_setor WHERE produto = '${event.id_registro}' AND SETOR = '${event.setor}' ;`)
                                                 const arrProdSetorSistema = resultProdSetorSistema as prod_setor[]
-                                                const PROD_SETOR = arrProdSetorSistema[0] as prod_setor;
+
+                                                if(arrProdSetorSistema.length > 0 ){
+                                                         const PROD_SETOR = arrProdSetorSistema[0] as prod_setor;
                                                 
                                                 let [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = '${event.id_registro}';`)   ; 
                                                 let arrVerifyItems = resultVerifyProduct as produtos_enviados[]
@@ -37,46 +38,50 @@ export async function serviceSendProdSetor(event: event) {
                                                                         setor: event.setor,status:'PENDENTE',tabela:0, tipo_evento:'INSERT' 
                                                                 })
                                                            
-                                                        }
-                                          [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`)   ; 
-                                          arrVerifyItems = resultVerifyProduct as produtos_enviados[]
-                                              
-                                                  if(arrVerifyItems.length > 0 ){
-                                                        const data = {
-                                                                produto: Number(PROD_SETOR.PRODUTO),
-                                                                setor: Number(PROD_SETOR.SETOR),
-                                                                data_recadastro: PROD_SETOR.DATA_RECAD,
-                                                                estoque: Number(PROD_SETOR.ESTOQUE),
-                                                                local1_produto: PROD_SETOR.LOCAL1_PRODUTO || '',
-                                                                local2_produto: PROD_SETOR.LOCAL2_PRODUTO || '',
-                                                                local3_produto: PROD_SETOR.LOCAL3_PRODUTO || '',
-                                                                local4_produto: PROD_SETOR.LOCAL4_PRODUTO || '',
-                                                                local_produto: PROD_SETOR.LOCAL_PRODUTO || ''
-                                                        }
-                                                        console.log(` Enviando saldo produto ${PROD_SETOR.PRODUTO}...`, )
-                                                        console.log(data)
-                                                        const result = await api.put("/produtos-setor", data,
-                                                                        {
-                                                                        headers:{
-                                                                                source: origin
-                                                                                }
                                                                         }
-                                                                )
-                                                            if( result.status === 200 || result.status === 201){
+                                                        [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`)   ; 
+                                                        arrVerifyItems = resultVerifyProduct as produtos_enviados[]
+                                                        
+                                                                if(arrVerifyItems.length > 0 ){
+                                                                        const data = {
+                                                                                produto: Number(PROD_SETOR.PRODUTO),
+                                                                                setor: Number(PROD_SETOR.SETOR),
+                                                                                data_recadastro: PROD_SETOR.DATA_RECAD,
+                                                                                estoque: Number(PROD_SETOR.ESTOQUE),
+                                                                                local1_produto: PROD_SETOR.LOCAL1_PRODUTO || '',
+                                                                                local2_produto: PROD_SETOR.LOCAL2_PRODUTO || '',
+                                                                                local3_produto: PROD_SETOR.LOCAL3_PRODUTO || '',
+                                                                                local4_produto: PROD_SETOR.LOCAL4_PRODUTO || '',
+                                                                                local_produto: PROD_SETOR.LOCAL_PRODUTO || ''
+                                                                        }
+                                                                        console.log(` Enviando saldo produto ${PROD_SETOR.PRODUTO}...`, )
+                                                          
+                                                                        const result = await api.put("/produtos-setor", data,
+                                                                                        {
+                                                                                        headers:{
+                                                                                                source: origin
+                                                                                                }
+                                                                                        }
+                                                                                )
+                                                                        if( result.status === 200 || result.status === 201){
 
-                                                                status.success = true;
-                                                                status.message = result.data.message
+                                                                                status.success = true;
+                                                                                status.message = result.data.message
+                                                                                }else{
+                                                                                status.success = false;
+                                                                                status.message = result.data.message
+
+                                                                        }
+
                                                                 }else{
-                                                                status.success = false;
-                                                                status.message = result.data.message
-
-                                                             }
-
+                                                                        console.log(`[X] Produto ${PROD_SETOR.PRODUTO} nao foi enviado.`)
+                                                                                status.success = false;
+                                                                        status.message =`[X] Produto ${PROD_SETOR.PRODUTO} nao foi enviado.`;
+                                                                }
                                                 }else{
-                                                        console.log(`[X] Produto ${PROD_SETOR.PRODUTO} nao foi enviado.`)
-                                                                status.success = false;
-                                                          status.message =`[X] Produto ${PROD_SETOR.PRODUTO} nao foi enviado.`;
-                                                 }
+                                                        console.log(`[X] Não foi encontrado produto ${event.id_registro} no setor   ${event.setor}.`)
+                                                }       
+                                           
                        
                 }catch(e){
                         console.log("Erro : ",e)
