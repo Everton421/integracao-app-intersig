@@ -18,7 +18,9 @@
     "send:pedidos": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-pedidos.ts",
     "send:ordem_compra": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-ordem-compra.ts",
 
-    "teste-receive-requirement": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/receive-requirement.test.ts",
+    
+    "teste-receive-requirement-submitted": "tsx --env-file .env    --experimental-strip-types src/modules/requirement/__test__/receive-requirement-submitted.test.ts",
+    "teste-receive-requirement": "tsx --env-file .env    --experimental-strip-types src/modules/requirement/__test__/receive-requirement.test.ts",
     "teste-requirement-mapping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/requeriment-mapping.test.ts",
     "teste-service-send-requirement": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/service-send-requirement.test.ts",
     "teste-service-update-received-requirement": "tsx --env-file .env    --experimental-strip-types src/modules/requirement/__test__/service-update-received-requirement.test.ts",

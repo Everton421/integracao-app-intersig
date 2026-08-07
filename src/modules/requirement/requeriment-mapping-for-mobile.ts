@@ -3,6 +3,7 @@ import { type payloadRequestRequirement } from "./contracts/requeriment.ts"
 
 export class RequerimentMapping{
      static mapping(erpRequeriment: erpRequeriment , prodErpRequeriment:prodRequer[], loteSerieRequer:loteSerieRequer[]) {
+
         return { 
             codigo:erpRequeriment.CODIGO,
             situacao: erpRequeriment.SITUACAO,
@@ -16,13 +17,11 @@ export class RequerimentMapping{
                 return { 
                     custo: product.CUSTO || 0,
                     descricao: product.DESCRICAO,
-                    lotes_series:  loteSerieRequer.map( (loteserie)=>{
-                       if(loteserie.PRODUTO == product.PRODUTO ) { return { 
-                            lote_serie: loteserie.LOTE_SERIE,
-                            quantidade: loteserie.QUANTIDADE
-                            }
-                        }
-                    }),
+                    lotes_series:  loteSerieRequer.filter(( loteSerie )=> loteSerie.PRODUTO == product.PRODUTO)
+                    .map((loteSerie)=> ({ 
+                        lote_serie:loteSerie.LOTE_SERIE,
+                        quantidade:  loteSerie.QUANTIDADE
+                    })) ,
                     produto: product.PRODUTO,
                     quantidade: product.QUANTIDADE
                 }

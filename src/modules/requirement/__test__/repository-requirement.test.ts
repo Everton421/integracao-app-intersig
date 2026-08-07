@@ -1,10 +1,10 @@
 import test from "node:test"
-import { RequirementRepository } from "../repository-requirement.ts";
+import { RequirementDataAcess } from "../requirement-data-acess.ts";
 
 test("", async ( t )=>{
   await  t.test("", async ( t )=>{
 
-        //const result = await RequirementRepository.checkExistsInternalMovementByCodeRequirement(855898);
+        //const result = await RequirementDataAcess.checkExistsInternalMovementByCodeRequirement(855898);
         //console.log(result);
        //         const event =  {
        //              codigo: 855897,
@@ -32,7 +32,7 @@ test("", async ( t )=>{
        //                 } 
        //             ]
        //         }
-       //  const result = await RequirementRepository.insertInternalMovementErp( 41855921, event );
+       //  const result = await RequirementDataAcess.insertInternalMovementErp( 41855921, event );
         
     });
 

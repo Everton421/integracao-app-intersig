@@ -1,5 +1,5 @@
 import test from "node:test";
-import { UpdateReceivedRequirementService } from "../service-update-received-requirement.ts";
+import { UpdateReceivedRequirementService } from "../use-cases/update-received-requirement.ts";
 
 
 
@@ -9,30 +9,34 @@ test("", async ( t )=>{
       
                 await UpdateReceivedRequirementService.receive(
                     {
-                     codigo: 855923,
-                     data_requerimento: "2026-07-30",
-                     requerente: 999,
-                     data_efetuacao: "2026-07-30",
-                     responsavel: 999,
-                     pedido: 0,
-                     setor_origem: 1,
-                     setor_destino: 448,
-                     historico: "",
-                     situacao: "A",
-                     itens: [
-                        {
-                            produto: 56101,
-                            descricao: "teste",
-                            quantidade: 2,
-                            custo: 0,
-                            lotes_series: [
-                            {
-                                lote_serie: 1500024,
-                                quantidade: 1
-                            } 
-                         ]
-                        } 
-                    ]
+                    codigo: 855929,
+                            data_requerimento: "2026-07-17",
+                            requerente: 1,
+                            data_efetuacao: "2026-07-17",
+                            responsavel: 1,
+                            pedido: null,
+                            setor_origem: 1,
+                            setor_destino: 2,
+                            historico: "Teste de recebimento de requerimento",
+                            situacao: "A",
+                            itens: [
+                                {
+                                    produto: 55913,
+                                    descricao: "Produto Teste",
+                                    quantidade: 2,
+                                    custo: 0,
+                                    lotes_series: [
+                                    {
+                                        lote_serie: 1500015,
+                                        quantidade: 1
+                                    },{
+                                        lote_serie: 1500016,
+                                        quantidade: 1
+                                        
+                                    }                        
+                                    ]
+                                }
+                            ]
                 }
             )
  

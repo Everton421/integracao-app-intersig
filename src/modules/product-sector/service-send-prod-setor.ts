@@ -17,15 +17,16 @@ type produtos_enviados = {
  
 export async function serviceSendProdSetor(event: event) {
         let status = {success: true, message:'' , data: null };
+                          console.log(`SELECT * FROM ${ESTOQUE}.prod_setor WHERE produto = '${event.id_registro}' AND SETOR = '${event.setor}' ;`)
 
                 try{
                         const origin = process.env.API_ORIGIN_NAME || 'erp_integration';
- 
-                          const [resultProdSetorSistema] = await dbConn.query(`SELECT * FROM ${ESTOQUE}.prod_setor WHERE produto = ${event.id_registro} ;`)
+                        
+                          const [resultProdSetorSistema] = await dbConn.query(`SELECT * FROM ${ESTOQUE}.prod_setor WHERE produto = '${event.id_registro}' AND SETOR = '${event.setor}' ;`)
                                                 const arrProdSetorSistema = resultProdSetorSistema as prod_setor[]
                                                 const PROD_SETOR = arrProdSetorSistema[0] as prod_setor;
                                                 
-                                                let [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = ${event.id_registro};`)   ; 
+                                                let [ resultVerifyProduct ] = await dbConn.query(`SELECT * FROM ${MOBILE}.produtos_enviados WHERE codigo_sistema = '${event.id_registro}';`)   ; 
                                                 let arrVerifyItems = resultVerifyProduct as produtos_enviados[]
 
                                                         let resultPostProduct ;
@@ -42,7 +43,7 @@ export async function serviceSendProdSetor(event: event) {
                                               
                                                   if(arrVerifyItems.length > 0 ){
                                                         const data = {
-                                                                produto: Number(arrVerifyItems[0].id_mobile),
+                                                                produto: Number(PROD_SETOR.PRODUTO),
                                                                 setor: Number(PROD_SETOR.SETOR),
                                                                 data_recadastro: PROD_SETOR.DATA_RECAD,
                                                                 estoque: Number(PROD_SETOR.ESTOQUE),
@@ -53,7 +54,7 @@ export async function serviceSendProdSetor(event: event) {
                                                                 local_produto: PROD_SETOR.LOCAL_PRODUTO || ''
                                                         }
                                                         console.log(` Enviando saldo produto ${PROD_SETOR.PRODUTO}...`, )
-                                                        await delay(500)
+                                                        console.log(data)
                                                         const result = await api.put("/produtos-setor", data,
                                                                         {
                                                                         headers:{
@@ -62,9 +63,13 @@ export async function serviceSendProdSetor(event: event) {
                                                                         }
                                                                 )
                                                             if( result.status === 200 || result.status === 201){
+
                                                                 status.success = true;
+                                                                status.message = result.data.message
                                                                 }else{
                                                                 status.success = false;
+                                                                status.message = result.data.message
+
                                                              }
 
                                                 }else{

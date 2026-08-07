@@ -1,11 +1,16 @@
 import { type ResultSetHeader } from "mysql2";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
-import { type EventRequirement } from "./contracts/event-requirement.ts";
-import { RequirementRepository } from "./repository-requirement.ts";
+import { type table_enviados } from "../../../contracts/table-enviados.ts";
+import dbConn, { MOBILE } from "../../../database/connection/database-connection.ts";
+import { type EventRequirement } from "../contracts/event-requirement.ts";
+import { InsertRequirementErpService } from "../services/insert-requirement-erp.service.ts";
 
-export class ReceiveRequirementService {
+export class ReceiveRequirement {
 
+    /**
+     *  Recebe o evento do novo requerimento e processa no sistema.
+     * @param event 
+     * @returns 
+     */
     static async receive(event: EventRequirement): Promise<{ success: boolean; message: string | null }> {
         let resultFunction = { success: false, message: null } as { success: boolean; message: string | null };
 
@@ -21,20 +26,21 @@ export class ReceiveRequirementService {
                 return resultFunction;
             }
 
-            const codigoSistema = await RequirementRepository.insertRequirement(event);
+            const resultInsertRequirement = await  InsertRequirementErpService.execute(event);
+            if (resultInsertRequirement.success && resultInsertRequirement.data > 0) {
+            const codeRequerimentErp = resultInsertRequirement.data;
 
-            if (codigoSistema > 0) {
                 const sqlInsertMobile = `INSERT INTO ${MOBILE}.requerimentos SET id_mobile = ?, codigo_sistema = ?;`;
-                const [resultInsertMobile] = await dbConn.query(sqlInsertMobile, [event.codigo, codigoSistema]) as ResultSetHeader[];
+                const [resultInsertMobile] = await dbConn.query(sqlInsertMobile, [event.codigo, codeRequerimentErp]) as ResultSetHeader[];
 
                 if (resultInsertMobile.insertId > 0) {
-                    console.log(`[V] Requerimento ${event.codigo} registrado no sistema com código ${codigoSistema}.`);
+                    console.log(`[V] Requerimento ${event.codigo} registrado no sistema com código ${codeRequerimentErp}.`);
                     resultFunction.success = true;
                 } else {
                     resultFunction.message = `[X] Requerimento ${event.codigo} inserido no ERP mas falhou ao registrar na tabela de mapeamento.`;
                 }
             } else {
-                resultFunction.message = `[X] Falha ao inserir requerimento ${event.codigo} no ERP.`;
+                resultFunction.message = resultInsertRequirement.message;
             }
 
         } catch (e) {

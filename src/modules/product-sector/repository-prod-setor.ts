@@ -106,6 +106,20 @@ export class ProdSetorRepository{
            return arrCurrentStockAtDestinationSector as prod_setor[]
    }
  
+      static async findTotalStockProductAndSector(produto:number, setor?:number){
+         
+         let sqlStock = `SELECT ESTOQUE FROM  ${ESTOQUE}.prod_setor WHERE PRODUTO = ? `;
+         const valuesSearch = [produto];
+            
+            if(setor){
+               sqlStock += ` AND SETOR = ?  `
+               valuesSearch.push(setor);
+            }
+
+         const [arrCurrentStockAtDestinationSector] = await dbConn.query(sqlStock, valuesSearch);
+           return arrCurrentStockAtDestinationSector as {ESTOQUE: number}[]
+   }
+
         static async updateStockBySectorAndProduct(product:number, sector:number, quantity: number){
         
             let resultFunction = {success: false, message:null } as { success: boolean, message: null | string  };

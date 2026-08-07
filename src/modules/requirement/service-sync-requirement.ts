@@ -1,7 +1,7 @@
 import { type event } from "../../contracts/event.ts";
 import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
-import { RequirementRepository } from "./repository-requirement.ts";
-import { RequerimentMapping } from "./requeriment-mapping.ts";
+import { RequirementDataAcess } from "./requirement-data-acess.ts";
+import { RequerimentMapping } from "./requeriment-mapping-for-mobile.ts";
 import { RequirementRequest } from "./requirement-request.ts";
 
 export class ServiceSyncRequeriment{
@@ -29,11 +29,11 @@ export class ServiceSyncRequeriment{
                     if( isverifiedRequeriment.length > 0 ){
                                 const { id_mobile } = isverifiedRequeriment[0];
 
-                        const ErpRequirement  =  await RequirementRepository.findRequeriments({ codigo: codeRequeriment})
+                        const ErpRequirement  =  await RequirementDataAcess.findRequeriments({ codigo: codeRequeriment})
                     
-                        const ErpProdRequer  = await RequirementRepository.findProductsRequeriment(codeRequeriment);
+                        const ErpProdRequer  = await RequirementDataAcess.findProductsRequeriment(codeRequeriment);
 
-                        const loteSerieRequer =   await RequirementRepository.findLoteSeriesRequeriment(codeRequeriment);
+                        const loteSerieRequer =   await RequirementDataAcess.findLoteSeriesRequeriment(codeRequeriment);
 
                         const resultMapping =  RequerimentMapping.mapping(ErpRequirement[0], ErpProdRequer, loteSerieRequer)
                             
@@ -64,11 +64,11 @@ export class ServiceSyncRequeriment{
                         console.log(`[X] Requerimento ${codeRequeriment} já foi enviado.`)
                     }else{
 
-                        const ErpRequirement  =  await RequirementRepository.findRequeriments({ codigo: codeRequeriment})
+                        const ErpRequirement  =  await RequirementDataAcess.findRequeriments({ codigo: codeRequeriment})
                     
-                        const ErpProdRequer  = await RequirementRepository.findProductsRequeriment(codeRequeriment);
+                        const ErpProdRequer  = await RequirementDataAcess.findProductsRequeriment(codeRequeriment);
 
-                        const loteSerieRequer =   await RequirementRepository.findLoteSeriesRequeriment(codeRequeriment);
+                        const loteSerieRequer =   await RequirementDataAcess.findLoteSeriesRequeriment(codeRequeriment);
 
                         const resultMapping =  RequerimentMapping.mapping(ErpRequirement[0], ErpProdRequer, loteSerieRequer)
                             

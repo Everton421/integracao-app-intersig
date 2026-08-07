@@ -1,8 +1,9 @@
 import { type ResultSetHeader } from "mysql2";
-import dbConn, { ESTOQUE, PUBLICO, VENDAS } from "../../database/connection/database-connection.ts";
+import dbConn, { ESTOQUE, MOBILE, PUBLICO, VENDAS } from "../../database/connection/database-connection.ts";
 import { type EventRequirement, type ItemEventRequirement } from "./contracts/event-requirement.ts";
 import { type loteSerieRequer, type erpRequeriment, type prodRequer } from "./contracts/erpRequirement.ts";
 import {type  typeErpIntenalMoviment } from "./contracts/erp-internal-moviment.ts";
+import {type table_enviados } from "../../contracts/table-enviados.ts";
 
 
 type inputInsertMvtoInterno = {
@@ -19,7 +20,19 @@ type inputInsertMvtoInterno = {
     COD_REQUIS: null | number 
 }
 
-export class RequirementRepository {
+export class RequirementDataAcess {
+
+
+    static async findRequirementErpByCode( code:number ){
+            const [arrDataRequerimentErp] = await await dbConn.query(`SELECT * FROM ${VENDAS}.requerimentos WHERE CODIGO = ? `, [code]);
+               return arrDataRequerimentErp as erpRequeriment[];
+    }
+
+     static async findRequirementSubmitedByCodeMobile( code:number ){
+           const sqlVerify = `SELECT * FROM ${MOBILE}.requerimentos WHERE id_mobile = ?;`;
+            const [resultVerifyRequirementSubmited] = await dbConn.query(sqlVerify, [code]);
+           return  resultVerifyRequirementSubmited as table_enviados[];
+    }
 
     static async insertRequirement(event: EventRequirement): Promise<number> {
         const sqlInsert = `INSERT INTO ${VENDAS}.requerimentos 
@@ -41,15 +54,15 @@ export class RequirementRepository {
 
         const [result] = await dbConn.query(sqlInsert, values);
         const resultInsert = result as ResultSetHeader;
-
-        if (resultInsert.insertId > 0 && event.itens.length > 0) {
-            await this.insertItensRequerimento(resultInsert.insertId, event.itens);
-        }
-
         return resultInsert.insertId;
     }
 
-
+        /**
+         * 
+         * @param event Evento
+         * @param codigo codigo do requerimento no sistema
+         * @returns 
+         */
         static async updateRequirement(event: Omit<EventRequirement, 'codigo'>, codigo:number ): Promise<ResultSetHeader> {
         const sqlUpdate = `UPDATE   ${VENDAS}.requerimentos 
               SET DATA_REQUER = ?,
@@ -81,6 +94,11 @@ export class RequirementRepository {
         return resultInsert ;
     }
 
+    /**
+     *  registra produtos e lote series no requerimento
+     * @param codigoRequer 
+     * @param itens 
+     */
     static async insertItensRequerimento(codigoRequer: number, itens: ItemEventRequirement[]): Promise<void> {
         for (const item of itens) {
             const sqlInsertItem = `INSERT INTO ${VENDAS}.prod_requer 
@@ -96,12 +114,22 @@ export class RequirementRepository {
         }
     }
 
+    /**
+     * exclui os produtos do requerimento no sistema
+     * @param codigoRequer 
+     * @returns 
+     */
     static async deleteItensRequeriment(codigoRequer: number){
           const sqlDelete = `DELETE FROM ${VENDAS}.prod_requer WHERE REQUER = ? ;`
         const [resultDelete] =  await dbConn.query(sqlDelete, codigoRequer) ;
             return resultDelete as ResultSetHeader
         }
 
+        /**
+         * exclui os lote-series do requerimento do sistema
+         * @param codigoRequer 
+         * @returns 
+         */
     static async deleteLotesSeriesRequerimento(codigoRequer: number )  {
             const sqlDeleteLote = `DELETE  FROM ${VENDAS}.lotes_series_requer 
                  WHERE REQUER = ?;`;
@@ -110,7 +138,12 @@ export class RequirementRepository {
              return resultDelete as ResultSetHeader;
         }
 
-
+ /**
+  * registra lote series no requerimento do sistema
+  * @param codigoRequer 
+  * @param produto 
+  * @param lotesSeries 
+  */
     static async insertLotesSeriesRequerimento(codigoRequer: number, produto: number, lotesSeries: { lote_serie: number; quantidade: number }[]): Promise<void> {
         for (const lote of lotesSeries) {
             const sqlInsertLote = `INSERT INTO ${VENDAS}.lotes_series_requer SET
@@ -186,7 +219,7 @@ export class RequirementRepository {
                         const  resultInsertMoviment  = arrresultInsertMoviment as ResultSetHeader;
                          codeMovement = resultInsertMoviment.insertId;
                         for( const serie of iten.lotes_series ){
-                              await RequirementRepository.insertMovimentoLoteSerie(codeMovement, serie );
+                              await RequirementDataAcess.insertMovimentoLoteSerie(codeMovement, serie );
                             }
                  }
 

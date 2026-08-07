@@ -67,31 +67,28 @@ export async function serviceSendProduct(event: event) {
                                 status.message =`O produto ${event.id_registro} não foi encontrado na tabela de enviados.`  
                          }
 
-                      
-
                 }else{
-
 
                          const sql = ` SELECT  
                                p.CODIGO codigo,  
                                COALESCE(   ROUND(pp.preco,2 ),  0.00 ) as preco,
                                COALESCE( p.GRUPO, 0) as grupo, 
                                p.CONTR_LOTE_SERIE as controle_lote_serie,
-                               coalesce(und.SIGLA,'UND') as unidade_medida,
+                               COALESCE(und.SIGLA,'UND') as unidade_medida,
                                p.DESCRICAO descricao, 
-                               p.NUM_FABRICANTE num_fabricante,
-                               p.NUM_ORIGINAL num_original,
-                               p.OUTRO_COD sku,
+                               COALESCE(p.NUM_FABRICANTE, '') num_fabricante,
+                               COALESCE(p.NUM_ORIGINAL ,'') num_original,
+                               COALESCE(p.OUTRO_COD, '') sku,
                                COALESCE( p.MARCA, 0) as marca,
-                               p.ATIVO ativo,
+                               COALESCE(p.ATIVO, 'S') as  ativo,
                                p.TIPO tipo,
-                               cf.NCM class_fiscal,
+                               COALESCE(cf.NCM , '0000.00.00') as class_fiscal,
                                p.ORIGEM origem,
                                p.CST cst,
                                coalesce(DATE_FORMAT(p.DATA_CADASTRO, '%Y-%m-%d'),'0000-00-00 00:00:00') AS data_cadastro,
-                               CONVERT( p.OBSERVACOES1 USING utf8) as observacoes1,
-                               CONVERT(p.OBSERVACOES2 USING utf8) as observacoes2,
-                               CONVERT(p.OBSERVACOES3 USING utf8) as observacoes3
+                               COALESCE( CONVERT( p.OBSERVACOES1 USING utf8), '')  as observacoes1,
+                               COALESCE( CONVERT(p.OBSERVACOES2 USING utf8),'' ) as observacoes2,
+                               COALESCE( CONVERT(p.OBSERVACOES3 USING utf8), '') as observacoes3
                                FROM   ${PUBLICO}.cad_prod p 
                                        left join  ${PUBLICO}.prod_tabprecos pp on pp.produto = p.codigo
                                        left join  ${PUBLICO}.tab_precos tp on tp.codigo = pp.tabela
@@ -121,7 +118,7 @@ export async function serviceSendProduct(event: event) {
                         let item = { ...arrProduct[0],  id: String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } 
                         item.codigo = Number(arrVerifyItems[0].id_mobile);
 
-                        const arrStock = await ProdSetorRepository.findStock(arrProduct[0].codigo);
+                        const arrStock = await ProdSetorRepository.findTotalStockProductAndSector(arrProduct[0].codigo);
                         item.estoque = 0
                         if (arrStock.length > 0) item.estoque = arrStock[0].ESTOQUE;
 
@@ -145,7 +142,7 @@ export async function serviceSendProduct(event: event) {
                         //post produto 
                         console.log(` [V] Enviando produto ${event.id_registro}...`,)
 
-                        let item = { ...arrProduct[0], id:String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } as postProductMobile
+                        let item = { ...arrProduct[0], origem:String(arrProduct[0].origem), id:String(arrProduct[0].codigo), grupo: Number(grupoErp), marca: Number(marcaErp) } as postProductMobile
                         const arrStock = await ProdSetorRepository.findStock(arrProduct[0].codigo);
                         item.estoque = 0
                         if (arrStock.length > 0) item.estoque = arrStock[0].ESTOQUE;
@@ -157,6 +154,8 @@ export async function serviceSendProduct(event: event) {
                                         status.success =true  
                                         console.log(`[V] Produto: ${arrProduct[0].codigo} enviado com successo!`)
                                         }else{
+                                        console.log(`[X] Erro ao tentar enviar Produto: ${arrProduct[0].codigo}  ${result.message} data: ${result.data} `)
+
                                         status.success = false  
                                 }
                                 }
@@ -190,9 +189,9 @@ async function postProduct(data: postProductMobile){
                         status.data = resultPost.data; 
                         }               
 
-        } catch (error) {
-                         status.success = true 
-                        status.message = String(error)
+        } catch (error:any) {
+                         status.success = false 
+                        status.message = String(error.response.data)
                         await LogsRepository.registerLogs({
                                 status: 'erro',
                                 json_payload: JSON.stringify(data),
@@ -220,12 +219,12 @@ async function putProduct( data:postProductMobile) {
                 if(resultPost.status === 200 || resultPost.status === 201  ){
                          status.success = true 
                 }
-        } catch (error) {
+        } catch (error:any) {
                         console.log(error)
                         await LogsRepository.registerLogs({
                                 status: 'erro',
                                 json_payload: JSON.stringify(data),
-                                detalhes_erro: String(error),
+                                detalhes_erro: String(error.response.data),
                                 id_registro: data.codigo || 0,
                                 tabela_origem: 'cad_prod',
                                 tipo_evento: 'PUT API'
@@ -253,7 +252,10 @@ async function deleteProduct( codigo:number) {
                 if(resultPost.status === 200  ){
                          status.success = true 
                 }
-        } catch (error) {
+        } catch (error:any) {
+                        status.success = false;
+                        status.message = String(error.response.data)
+
                 await LogsRepository.registerLogs({
                         status: 'erro',
                         detalhes_erro: String(error),

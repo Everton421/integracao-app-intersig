@@ -5,8 +5,6 @@ import { type message_movimento_produtos } from "./modules/product-movment/contr
 import { insertMvto_produtos } from "./modules/product-movment/repository-movimentos.ts";
 import { type message_prod_setor } from "./modules/product-sector/contracts/message-prod-setor.ts";
 import { ProdSetorRepository } from "./modules/product-sector/repository-prod-setor.ts";
-import { type EventRequirement } from "./modules/requirement/contracts/event-requirement.ts";
-import { ReceiveRequirementService } from "./modules/requirement/service-receive-requirement.ts";
 import { type MessageSeparationOrder } from "./modules/sales-order/contracts/message-separation-order.ts";
 import { UpdateSalesOrderSeparation } from "./modules/sales-order/service-receive-sales-order-separation.ts";
 
@@ -22,9 +20,11 @@ type metadataRequest = {
  const port = process.env.PORT_INTEGRATION || 5000;
 
 import express, { type Request } from 'express';
-import { consumer_sistema } from "./services/consumer-sistema.ts";
 import { consumerMobile } from "./services/consumer-mobile.ts";
-import { UpdateReceivedRequirementService } from "./modules/requirement/service-update-received-requirement.ts";
+import { consumer_sistema } from "./services/consumer-sistema.ts";
+import { ReceiveRequirement } from "./modules/requirement/use-cases/receive-requirement.ts";
+import { ReceiveRequirementSubmitted } from "./modules/requirement/use-cases/receive-requirement-submitted.ts";
+import { UpdateReceivedRequirementService } from "./modules/requirement/use-cases/update-received-requirement.ts";
 
 const app = express();
 
@@ -93,10 +93,9 @@ await consumerMobile('lotesserie.inserido', ReceiveLoteSerieService.receiveByEve
 await consumerMobile('loteseriesetor.atualizado', ReceiveLoteSerieSetor.receive , true);
 
 
-await consumerMobile('requerimento.inserido', ReceiveRequirementService.receive , true);
+await consumerMobile('requerimento.inserido', ReceiveRequirement.receive , true);
 
-
-//await consumerMobile('requerimento.efetuado', UpdateReceivedRequirementService.receive , false);
-//await consumerMobile('requerimento.atualizado', UpdateReceivedRequirementService.receive , false);
+// await consumerMobile('requerimento.efetuado', ReceiveRequirementSubmitted.receive , false);
+// await consumerMobile('requerimento.atualizado', UpdateReceivedRequirementService.receive , false);
 
  

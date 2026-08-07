@@ -1,14 +1,17 @@
 import test from "node:test";
-import assert from "node:assert";
 import { type EventRequirement } from "../contracts/event-requirement.ts";
-import { ReceiveRequirement } from "../use-cases/receive-requirement.ts";
+import { ReceiveRequirementSubmitted } from "../use-cases/receive-requirement-submitted.ts";
+import assert from "node:assert";
 
+  
+  
+  
+  test("TESTE  efetuando requerimento | classe  receive-requirement-submitted", async (t) => {
+  
+      await t.test("TESTE ReceiveRequirementSubmitted.receive", async () => {
 
-test("TESTE recebimento do requerimento | classe receive-requirement", async (t) => {
-
-    await t.test("TESTE ReceiveRequirement.receive", async () => {
-        const mockEvent: EventRequirement = {
-            codigo: 855929,
+  const mockEvent: EventRequirement = {
+            codigo: 855928,
             data_requerimento: "2026-07-17",
             requerente: 1,
             data_efetuacao: "2026-07-17",
@@ -17,7 +20,7 @@ test("TESTE recebimento do requerimento | classe receive-requirement", async (t)
             setor_origem: 1,
             setor_destino: 2,
             historico: "Teste de recebimento de requerimento",
-            situacao: "A",
+            situacao: "E",
             itens: [
                 {
                     produto: 55913,
@@ -34,9 +37,11 @@ test("TESTE recebimento do requerimento | classe receive-requirement", async (t)
             ]
         };
 
-        const result = await ReceiveRequirement.receive(mockEvent);
-        console.log(result)
-        assert.strictEqual(result.success, true);
-    });
+                const result = await ReceiveRequirementSubmitted.receive(mockEvent);
+                console.log(result)
+                assert.strictEqual(result.success, true);
 
-});
+
+    })
+
+})
