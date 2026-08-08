@@ -95,7 +95,7 @@ await consumerMobile('loteseriesetor.atualizado', ReceiveLoteSerieSetor.receive 
 
 await consumerMobile('requerimento.inserido', ReceiveRequirement.receive , true);
 
-// await consumerMobile('requerimento.efetuado', ReceiveRequirementSubmitted.receive , false);
+  await consumerMobile('requerimento.efetuado', ReceiveRequirementSubmitted.receive , false);
 // await consumerMobile('requerimento.atualizado', UpdateReceivedRequirementService.receive , false);
 
  
