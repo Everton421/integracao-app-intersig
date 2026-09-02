@@ -20,7 +20,7 @@ export class OrderMapper {
                 const erp_order =   result_erp_order[0];
                 const arr_produtos = await repositoryItensSalesOrder.findItemsSalesOrder(codigo_sistema);
 
-                 let    codigoClienteMobile = 0 ;
+                 let    codigoClienteMobile = erp_order.CLIENTE || 0 ;
                  
                 if(erp_order.CLIENTE != 0 ){
                     
@@ -41,7 +41,6 @@ export class OrderMapper {
                     }
 
                 }
-
 
                     const prod:any=[]
                         for( const i of arr_produtos ) {

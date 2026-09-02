@@ -1,11 +1,8 @@
 import { delay } from "./delay.ts";
 
-export async function retryAsync<T>(
-  fn: () => Promise<T>,
-  maxAttempts: number = 3,
-  intervalMs: number = 3000
-): Promise<T> {
+export async function retryAsync<T>( fn: () => Promise<T>, maxAttempts: number = 3, intervalMs: number = 3000 ): Promise<T> {
   let lastError: any;
+  
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await fn();
