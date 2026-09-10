@@ -8,8 +8,16 @@
     "dev": "node --env-file .env --watch --experimental-strip-types src/index.ts",
     "start": "node --env-file .env --experimental-strip-types src/index.ts",
     "db:seed": "tsx --env-file .env --experimental-strip-types src/database/seed/seed.ts",
+    "test-mapping-product-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/products/__test__/mapping-product-shipping.test.ts",
+    "test-product-shipping-service": "tsx --env-file .env --watch  --experimental-strip-types src/modules/products/__test__/product-shipping-service.test.ts",
+
+
+    "prod-sector-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/prod-sector-shipping.test.ts",
+    "receive-prod-sector": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/receive-prod-sector-service.test.ts",
+      
+
     "teste:consumer": "tsx --env-file .env --watch  --experimental-strip-types src/__test__/teste-consumer-pedidos.ts",
-    "send:prod_setor": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-prod-setor.ts",
+    
     "send:produtos": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-produtos.ts",
     "send:clientes": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-clientes.ts",
     "send:marcas": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-marcas.ts",
@@ -17,35 +25,24 @@
     "send:setores": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-setores.ts",
     "send:pedidos": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-pedidos.ts",
     "send:ordem_compra": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-ordem-compra.ts",
-
-      "test:logs-erp":" tsx --env-file .env --watch  --experimental-strip-types src/modules/logs-erp/__test__/test-erp-logs-repository.test.ts",
-
+    "test:logs-erp": " tsx --env-file .env --watch  --experimental-strip-types src/modules/logs-erp/__test__/test-erp-logs-repository.test.ts",
     "teste-receive-requirement-submitted": "tsx --env-file .env    --experimental-strip-types src/modules/requirement/__test__/receive-requirement-submitted.test.ts",
     "teste-receive-requirement": "tsx --env-file .env    --experimental-strip-types src/modules/requirement/__test__/receive-requirement.test.ts",
     "teste-requirement-mapping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/requeriment-mapping.test.ts",
     "teste-service-send-requirement": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/service-send-requirement.test.ts",
     "teste-service-update-received-requirement": "tsx --env-file .env    --experimental-strip-types src/modules/requirement/__test__/service-update-received-requirement.test.ts",
     "teste-repository-requirement": "tsx --env-file .env --watch  --experimental-strip-types src/modules/requirement/__test__/repository-requirement.test.ts",
-
     "teste-product-moviment": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-movment/__test__/repository-movimentos.test.ts",
-    
     "teste-service-send-product": "tsx --env-file .env --watch  --experimental-strip-types src/modules/products/__test__/service-send-product.test.ts",
-
     "teste-receive-lote-serie": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/service-receive-lote-serie.test.ts",
     "teste-lote-serie-request": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/lotes-series-request.test.ts",
-
     "teste-receive-lote-serie-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lote-serie-setor/__test__/receive-lote-series-setor.test.ts",
-
     "teste-service-receive-sales-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-receive-sales-order-separation.test.ts",
     "test-service-send-sales-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-send-sales-order.test.ts",
-
     "teste-service-receive-purchase-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-receive-purchase-order-separation.test.ts",
     "test-service-send-purchase-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-send-purchase-order.test.ts",
-
     "teste-update-prod-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/update-prod-setor.test.ts",
     "teste-send-prod-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/service-send-prod-setor.test.ts",
-
-
     "test-service-send-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-send-brand.test.ts",
     "test-service-update-brand": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/service-update-brand.test.ts",
     "test-brand-resquest": "tsx --env-file .env --watch  --experimental-strip-types src/modules/brands/__test__/brand-resquest.test.ts",
@@ -84,7 +81,9 @@
     "amqplib": "^0.10.9",
     "axios": "^1.13.4",
     "dayjs": "^1.11.20",
+    "ejs": "^6.0.1",
     "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
     "mysql2": "^3.16.1",
     "node-cron": "^4.2.1",
     "node-schedule": "^2.1.1",
@@ -97,7 +96,9 @@
     "@faker-js/faker": "^10.4.0",
     "@tsconfig/recommended": "^1.0.13",
     "@types/amqplib": "^0.10.8",
+    "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.6",
+    "@types/express-ejs-layouts": "^2.5.4",
     "@types/node": "^25.0.9",
     "typescript": "^5.9.3"
   }

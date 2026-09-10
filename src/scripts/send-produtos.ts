@@ -1,5 +1,5 @@
-import { getProduct } from "../modules/products/repository-produto.ts";
-import { serviceSendProduct } from "../modules/products/service-send-product.ts";
+import { getProduct } from "../modules/products-old/repository-produto.ts";
+import { serviceSendProduct } from "../modules/products-old/service-send-product.ts";
 
 const data = await getProduct();
 if (data.length > 0) {

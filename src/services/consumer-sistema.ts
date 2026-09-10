@@ -4,8 +4,6 @@ import {    ServiceSyncbrand } from "../modules/brands/service-sync-brands-.ts";
 import { ServiceSyncCategories } from "../modules/category/service-sync-categories.ts";
 import { ServiceSyncCustomers } from "../modules/customer/service-sync-customers.ts";
  
-import { serviceSendProdSetor } from "../modules/product-sector/service-send-prod-setor.ts";
-import { serviceSendProduct } from "../modules/products/service-send-product.ts";
 import { ServiceSyncService } from "../modules/service/service-sync-service.ts";
 import { ServiceSyncSector } from "../modules/sector/service-sync-sector.ts";
 import { ServiceSyncServiceType } from "../modules/service-type/service-sync-service-type.ts";
@@ -18,11 +16,16 @@ import { ServiceSyncSalesOrder } from '../modules/sales-order/service-sync-sales
 import { delay } from '../utils/delay.ts';
 import { retryAsync } from '../utils/retry.ts';
 import { ServiceSyncRequeriment } from '../modules/requirement/service-sync-requirement.ts';
+import { ProductShippingService } from '../modules/products/services/product-shipping-service.ts';
+import { ProdSectorShippingService } from '../modules/product-sector/services/prod-sector-shipping-service.ts';
 
 
 const RECONNECT_DELAY = 5000;
 
-export async function consumer_sistema(): Promise<void> {
+export async function consumer_sistema(productShippingService: ProductShippingService , prodSectorShippingService :ProdSectorShippingService): Promise<void> {
+
+
+
 
   const URL = process.env.BROKER_URL_SISTEMA;
   const EXCHANGE = process.env.EXCHANGE_NAME_SISTEMA!;
@@ -85,7 +88,7 @@ export async function consumer_sistema(): Promise<void> {
                  break;
               case 'cad_prod':
                 await delay(delaySyncData, `[...] Aguardando ${delaySyncData/1000} segundos para processar produto ...`)
-                  const resultProduct =  await serviceSendProduct(data);
+                  const resultProduct =  await productShippingService.shippingProduct(data.id_registro);
                   channel.ack(msg);
                  break;
               case 'cad_serv':
@@ -101,7 +104,7 @@ export async function consumer_sistema(): Promise<void> {
                  channel.ack(msg);
                   break;
               case 'prod_setor':
-                 const resultSendProdSetor = await serviceSendProdSetor(data);
+                 const resultSendProdSetor = await prodSectorShippingService.shippingProdSector(data.id_registro , data.setor);
                   channel.ack(msg);
                   break;
               case 'cad_clie':

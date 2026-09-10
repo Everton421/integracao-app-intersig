@@ -26,6 +26,15 @@
                KEY  codigo_sistema  ( codigo_sistema , id_mobile )
           ) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
              `,
+             `CREATE TABLE IF NOT EXISTS ${database_mobile}.mapeamento_produtos  (
+                   id  int(11) NOT NULL AUTO_INCREMENT,
+                   num_fabricante varchar(255) DEFAULT NULL,
+                   num_original varchar(255) DEFAULT NULL,
+                   sku varchar(255) DEFAULT NULL,
+                   updated_at timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                  PRIMARY KEY ( id )
+                  ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+             `,
              `
              CREATE TABLE IF NOT EXISTS ${database_mobile}.logs (
                 id  int(11) NOT NULL AUTO_INCREMENT,
@@ -166,18 +175,30 @@
                 KEY  codigo_sistema  ( codigo_sistema , id_mobile )
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;`,
              
-            ` CREATE TABLE IF NOT EXISTS  ${database_mobile}.lotes_series_enviadas  (
-               id  int(11) NOT NULL AUTO_INCREMENT,
-               id_mobile  varchar(255) NOT NULL DEFAULT '0',
-               codigo_sistema  varchar(255) DEFAULT '0',
-               createdAt  timestamp NULL DEFAULT current_timestamp(),
-               updatedAt  timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-              PRIMARY KEY ( id ),
-                KEY  codigo_sistema  ( codigo_sistema , id_mobile )
+` CREATE TABLE IF NOT EXISTS  ${database_mobile}.lotes_series_enviadas  (
+                id  int(11) NOT NULL AUTO_INCREMENT,
+                id_mobile  varchar(255) NOT NULL DEFAULT '0',
+                codigo_sistema  varchar(255) DEFAULT '0',
+                createdAt  timestamp NULL DEFAULT current_timestamp(),
+                updatedAt  timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+               PRIMARY KEY ( id ),
+                 KEY  codigo_sistema  ( codigo_sistema , id_mobile )
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;`,
-          
-              
-        ] 
+            
+            ` CREATE TABLE IF NOT EXISTS  ${database_mobile}.product_mapping  (
+                id  int(11) NOT NULL AUTO_INCREMENT,
+                tenant_id  varchar(20) NOT NULL,
+                target_field  varchar(50) NOT NULL,
+                source_field  varchar(50) NOT NULL,
+                default_value  varchar(100) DEFAULT NULL,
+                is_active  tinyint(1) NOT NULL DEFAULT 1,
+                createdAt  timestamp NULL DEFAULT current_timestamp(),
+                updatedAt  timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                PRIMARY KEY ( id ),
+                UNIQUE KEY  uq_tenant_target  ( tenant_id , target_field )
+            ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;`,
+               
+        ]
 
 
 

@@ -1,11 +1,21 @@
 import { RepositoryLoteSerieSetor } from "../../lote-serie-setor/repository-lote-series-setor.ts";
-import { ProdSetorRepository } from "../../product-sector/repository-prod-setor.ts";
-
+import { ProdSectorDataAcess } from "../../product-sector/data-acess/prod-sector-data-acess.ts";
+ 
 
 /**
  * Efetua a transferencia de estoque dos produtos e series entre os setores
  */
 export class ProcessStockErp {
+
+
+    private prodSectorDataAcess: ProdSectorDataAcess;
+    private ESTOQUE:string
+
+    constructor(prodSectorDataAcess: ProdSectorDataAcess, ESTOQUE:string ){
+        this.prodSectorDataAcess =prodSectorDataAcess;
+        this.ESTOQUE = ESTOQUE
+    }
+
         /**
          *  Efetua a transferencia de estoque dos produtos 
          * @param product produto a ser atualizado nos setores de origem e destino
@@ -13,27 +23,27 @@ export class ProcessStockErp {
          * @param destinationSector codigo do setor de destino
          * @param quantity quantidade a ser ajustada no setor
          */
-        static async updateStockProductSectorsErp(product:number, originSector:number, destinationSector:number, quantity:number ){
+          async updateStockProductSectorsErp(product:number, originSector:number, destinationSector:number, quantity:number ){
                 let dataResultFunction = { success: false, message: '', data: null }
 
                 try{
                         // dados do produto no setor de destino
-                    const dataCurrentStockAtDestinationSector =  await ProdSetorRepository.findStockByProductAndSector(product, destinationSector);
+                    const dataCurrentStockAtDestinationSector =  await  this.prodSectorDataAcess.findStockByProductAndSector(this.ESTOQUE, product, destinationSector);
                         
                         // saldo estoque setor destino 
                     const currentStockAtDestinationSector = dataCurrentStockAtDestinationSector.length > 0 ? Number(dataCurrentStockAtDestinationSector[0].ESTOQUE) : 0;
                     const newStockForDestinationSector = currentStockAtDestinationSector + quantity;
                         console.log(`Atualizando produto:${product} no setor de destino ${destinationSector}, saldo atual :${currentStockAtDestinationSector}  novo saldo: ${newStockForDestinationSector}`)
-                     await ProdSetorRepository.updateStockBySectorAndProduct( product, destinationSector, newStockForDestinationSector)
+                     await this.prodSectorDataAcess.updateStockByProductAndSector( this.ESTOQUE, product,  destinationSector,newStockForDestinationSector )
 
                         // dados do produto no setor de origem
-                    const dataCurrentStockAtOriginSector =  await ProdSetorRepository.findStockByProductAndSector(product, originSector);
+                    const dataCurrentStockAtOriginSector =  await this.prodSectorDataAcess.findStockByProductAndSector(this.ESTOQUE, product, originSector);
                     
                         // saldo estoque setor origem 
                     const currentStockAtOriginSector = dataCurrentStockAtOriginSector.length > 0 ? Number(dataCurrentStockAtOriginSector[0].ESTOQUE) : 0;
                     const newStockForSourceSector = currentStockAtOriginSector -  quantity;
                   console.log(`Atualizando produto:${product} no setor de origem ${originSector}, saldo atual :${currentStockAtOriginSector}  novo saldo: ${newStockForSourceSector}`)
-                 await ProdSetorRepository.updateStockBySectorAndProduct( product, originSector, newStockForSourceSector)
+                 await this.prodSectorDataAcess.updateStockByProductAndSector(this.ESTOQUE, product, originSector, newStockForSourceSector)
 
                     
                        dataResultFunction.success = true
@@ -58,7 +68,7 @@ export class ProcessStockErp {
              * @param destinationSector codigo do setor de destino
              * @param quantity quantidade a ser ajustada no setor
              */
-        static async updateStockLoteSeriesSectors(product :number, codeSerie:number, originSector:number, destinationSector: number , quantity:number){
+          async updateStockLoteSeriesSectors(product :number, codeSerie:number, originSector:number, destinationSector: number , quantity:number){
 
                 let dataResultFunction = { success: false, message: '', data: null }
                 try{

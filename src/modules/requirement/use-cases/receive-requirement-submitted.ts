@@ -1,4 +1,5 @@
-import dbConn from "../../../database/connection/database-connection.ts";
+import dbConn, { ESTOQUE } from "../../../database/connection/database-connection.ts";
+import { ProdSectorDataAcess } from "../../product-sector/data-acess/prod-sector-data-acess.ts";
 import { type EventRequirement } from "../contracts/event-requirement.ts";
 import { RequirementDataAcess } from "../requirement-data-acess.ts";
 import { ProcessStockErp } from "../services/process-stock-erp.service.ts";
@@ -15,7 +16,10 @@ export class ReceiveRequirementSubmitted {
         let resultFunction = { success: false, message: null } as { success: boolean; message: string | null };
          
         const connection = await dbConn.getConnection();
-
+          const processStockErp = new ProcessStockErp(
+            new ProdSectorDataAcess(dbConn),
+            String(ESTOQUE)
+          )   
         try {
 
             await connection.beginTransaction();
@@ -45,11 +49,11 @@ export class ReceiveRequirementSubmitted {
                                         const { produto , quantidade } = itenRequiriment;
                                         const  { setor_destino , setor_origem } = dataRequirementRequest;
                                         // processa os produtos nos setores
-                                        await ProcessStockErp.updateStockProductSectorsErp( produto, setor_origem, setor_destino, quantidade );
+                                        await processStockErp.updateStockProductSectorsErp( produto, setor_origem, setor_destino, quantidade );
                                     
                                      for( const serieReq of itenRequiriment.lotes_series ){
                                         // processa os lote series do produto vindo do requerimento 
-                                        await ProcessStockErp.updateStockLoteSeriesSectors(produto , serieReq.lote_serie, setor_origem, setor_destino, serieReq.quantidade   )
+                                        await processStockErp.updateStockLoteSeriesSectors(produto , serieReq.lote_serie, setor_origem, setor_destino, serieReq.quantidade   )
                                     }
                               }
 
