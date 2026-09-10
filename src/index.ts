@@ -68,7 +68,6 @@ const productShippingService = new ProductShippingService(
 
   // consumer sistema   
     await consumer_sistema( productShippingService , prodSectorShippingService);
-/* 
 
 //consumer mobile    
 await consumerMobile('produtosetor.atualizado', receiveProdSector.recebiveByEvent, true)
@@ -88,7 +87,6 @@ await consumerMobile('requerimento.efetuado', ReceiveRequirementSubmitted.receiv
 // await consumerMobile('requerimento.atualizado', UpdateReceivedRequirementService.receive , false);
 
 
-*/
 //****************************** /
 //       EXPRESS
 //****************************** /
