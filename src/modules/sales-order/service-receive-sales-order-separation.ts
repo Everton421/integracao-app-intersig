@@ -42,11 +42,11 @@ import { SalesOrderRepository } from "./repository-pedido.ts";
 
 export class UpdateSalesOrderSeparation {
     
-  /**
-   *  
-   * @param order mensagem vinda do rabbitmq com informacoes do pedido 
-   * @returns 
-   */
+/**
+ *  Processa a mensagem vinda do rabbitmq. Mensagem emitida quando o usuario atualiza a separacao do pedido.
+ * @param messageorder Mensagem vinda do rabbitMq 
+ * @returns 
+ */
    static async updateErpOrderSeparation (messageorder:MessageSeparationOrder){
      let resultFunctionUpdateErpOrder = { success: false, message:null } as  { success: boolean , message: null | string }
 
@@ -95,8 +95,9 @@ export class UpdateSalesOrderSeparation {
 
                 
   /**
-   *  
-   * @param order mensagem vinda do rabbitmq com informacoes do pedido 
+   *  Processa a mensagem vinda do rabbitmq. Mensagem emitida quando o usuario atualiza o pedido.
+   * Ex: Quando atualiza a situação.
+   * @param messageorder Mensagem vinda do Rabbitmq
    * @returns 
    */
    static async updateErpOrder (messageorder: messagePatchOrderRequest ){

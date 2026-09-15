@@ -16,7 +16,18 @@
                updatedAt timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                PRIMARY KEY ( id ),
                KEY  codigo_sistema  ( codigo_sistema , id_mobile )
-           ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;  `
+           ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;`,
+
+             `CREATE TABLE  IF NOT EXISTS ${database_mobile}.fotos_enviadas (
+              id  int(11) NOT NULL AUTO_INCREMENT,
+               id_mobile  varchar(255) NOT NULL DEFAULT '0',
+               codigo_sistema  varchar(255) DEFAULT '0',
+               createdAt timestamp NULL DEFAULT current_timestamp(),
+               updatedAt timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+               PRIMARY KEY ( id ),
+               KEY  codigo_sistema  ( codigo_sistema , id_mobile )
+           ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci; ;
+               `
           ,
              `CREATE TABLE  IF NOT EXISTS ${database_mobile}.produtos_enviados (
                id  int(11) NOT NULL AUTO_INCREMENT,

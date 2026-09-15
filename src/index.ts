@@ -74,6 +74,8 @@ await consumerMobile('produtosetor.atualizado', receiveProdSector.recebiveByEven
 
 await consumerMobile('pedido.separado', UpdateSalesOrderSeparation.updateErpOrder, true)
 
+await consumerMobile('pedido.atualizado', UpdateSalesOrderSeparation.updateErpOrder, true)
+
 await consumerMobile('movimentosprodutos.inserido', insertMvto_produtos, true)
 
 await consumerMobile('lotesserie.inserido', ReceiveLoteSerieService.receiveByEvent, true);
