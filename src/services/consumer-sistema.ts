@@ -12,7 +12,7 @@ import { ServiceSyncSupplier } from '../modules/supplier/service-sync-supplier.t
 import { SendLoteSerieSetor } from '../modules/lote-serie-setor/lote-serie-setor.ts';
 import { ServiceSyncLotesSeries } from '../modules/lotes-series/service-sync-lotes-series.ts';
 import { ServiceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
-import { ServiceSyncSalesOrder } from '../modules/sales-order/service-sync-sales-orders.ts';
+import { ServiceSyncSalesOrder } from '../modules/sales-order/services/service-sync-sales-orders.ts';
 import { delay } from '../utils/delay.ts';
 import { retryAsync } from '../utils/retry.ts';
 import { ServiceSyncRequeriment } from '../modules/requirement/service-sync-requirement.ts';
