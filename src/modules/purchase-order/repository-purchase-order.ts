@@ -2,7 +2,8 @@ import { type ResultSetHeader } from "mysql2"
 import dbConn, { MOBILE, PUBLICO, VENDAS } from "../../database/connection/database-connection.ts"
 import {
   type IParcelasPedidoSistema, type IProdutoPedidoSistema, type IServicosPedidoSistema
-} from "../sales-order/repository-itens-pedido.ts"
+} from "../sales-order/repositories/repository-itens-pedido.ts"
+
 import { type cad_comp } from "./contracts/cad_comp.ts"
 import {type cad_orca } from "../sales-order/contracts/cad_orca.ts"
 import {type par_comp } from "./contracts/par_comp.ts"
