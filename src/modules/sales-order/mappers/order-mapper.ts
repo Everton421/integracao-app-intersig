@@ -1,8 +1,8 @@
-import { repositoryItensSalesOrder   } from "./repository-itens-pedido.ts";
-import { DateService } from "../../utils/date.ts";
-import dbConn, { MOBILE, VENDAS } from "../../database/connection/database-connection.ts";
-import { SalesOrderRepository } from "./repository-pedido.ts";
-import { ServiceSendCustomer } from "../customer/service-send-customer.ts";
+import { repositoryItensSalesOrder   } from "../repositories/repository-itens-pedido.ts";
+import { DateService } from "../../../utils/date.ts";
+import dbConn, { MOBILE, VENDAS } from "../../../database/connection/database-connection.ts";
+import { SalesOrderRepository } from "../repositories/repository-pedido.ts";
+import { ServiceSendCustomer } from "../../customer/service-send-customer.ts";
 
 
 type typeresultDefaultSector = { SETOR:number};

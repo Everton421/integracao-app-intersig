@@ -1,6 +1,5 @@
 import test from "node:test";
-import { ServiceSyncSalesOrder } from "../service-sync-sales-orders.ts";
-
+import { ServiceSyncSalesOrder } from "../services/service-sync-sales-orders.ts";
 
 
 test('service-send-sales-order', async (t) => {

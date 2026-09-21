@@ -8,16 +8,14 @@
     "dev": "node --env-file .env --watch --experimental-strip-types src/index.ts",
     "start": "node --env-file .env --experimental-strip-types src/index.ts",
     "db:seed": "tsx --env-file .env --experimental-strip-types src/database/seed/seed.ts",
+    
+    
+    "test:shipping-photo-service": "tsx --env-file .env --watch  --experimental-strip-types src/modules/photos-product/__test__/shipping-photo-service.test.ts",
     "test-mapping-product-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/products/__test__/mapping-product-shipping.test.ts",
     "test-product-shipping-service": "tsx --env-file .env --watch  --experimental-strip-types src/modules/products/__test__/product-shipping-service.test.ts",
-
-
     "prod-sector-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/prod-sector-shipping.test.ts",
     "receive-prod-sector": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/receive-prod-sector-service.test.ts",
-      
-
     "teste:consumer": "tsx --env-file .env --watch  --experimental-strip-types src/__test__/teste-consumer-pedidos.ts",
-    
     "send:produtos": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-produtos.ts",
     "send:clientes": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-clientes.ts",
     "send:marcas": "tsx --env-file .env --watch  --experimental-strip-types src/scripts/send-marcas.ts",
@@ -37,6 +35,9 @@
     "teste-receive-lote-serie": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/service-receive-lote-serie.test.ts",
     "teste-lote-serie-request": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/lotes-series-request.test.ts",
     "teste-receive-lote-serie-setor": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lote-serie-setor/__test__/receive-lote-series-setor.test.ts",
+    
+    "teste-data-acess-sales-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/data-acess-sales-order.ts",
+    
     "teste-service-receive-sales-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-receive-sales-order-separation.test.ts",
     "test-service-send-sales-order": "tsx --env-file .env --watch  --experimental-strip-types src/modules/sales-order/__test__/service-send-sales-order.test.ts",
     "teste-service-receive-purchase-order-separation": "tsx --env-file .env --watch  --experimental-strip-types src/modules/purchase-order/__test__/service-receive-purchase-order-separation.test.ts",
@@ -90,7 +91,8 @@
     "nodecron": "^0.2.0",
     "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.4.0",

@@ -5,4 +5,5 @@ export interface TabelFotosProd{
      DESCRICAO:string | null,
      FOTO: string | null,
      LINK: string | null 
+     DATA_RECAD:string
         }

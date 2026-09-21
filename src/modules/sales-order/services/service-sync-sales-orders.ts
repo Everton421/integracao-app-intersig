@@ -1,9 +1,9 @@
-import { type event } from "../../contracts/event.ts";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
-import { api } from "../../services/api.ts";
-import { LogsRepository } from "../logs-integration/logs-repository.ts";
-import { OrderMapper } from "./order-mapper.ts";
+import { type event } from "../../../contracts/event.ts";
+import { type table_enviados } from "../../../contracts/table-enviados.ts";
+import dbConn, { MOBILE } from "../../../database/connection/database-connection.ts";
+import { api } from "../../../services/api.ts";
+import { LogsRepository } from "../../logs-integration/logs-repository.ts";
+import { OrderMapper } from "../mappers/order-mapper.ts";
  
 
 export class ServiceSyncSalesOrder {

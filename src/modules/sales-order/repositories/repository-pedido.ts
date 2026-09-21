@@ -1,11 +1,9 @@
 import { type ResultSetHeader } from "mysql2"
-import dbConn, { MOBILE, PUBLICO, VENDAS } from "../../database/connection/database-connection.ts"
-import { DateService } from "../../utils/date.ts"
-import { type cad_clie } from "../customer/contracts/cad_clie.ts"
-import { type cad_orca } from "./contracts/cad_orca.ts"
-import { repositoryItensSalesOrder, type IParcelasPedidoSistema, type IProdutoPedidoSistema, type IServicosPedidoSistema } from "./repository-itens-pedido.ts"
-import { ErpLogsRepository } from "../logs-erp/erp-logs-repository.ts"
-
+import dbConn, { MOBILE, PUBLICO, VENDAS } from "../../../database/connection/database-connection.ts"
+import { DateService } from "../../../utils/date.ts"
+import { type cad_clie } from "../../customer/contracts/cad_clie.ts"
+import { type cad_orca } from "../contracts/cad_orca.ts"
+import { repositoryItensSalesOrder, type IParcelasPedidoSistema, type IProdutoPedidoSistema, type IServicosPedidoSistema } from "../repositories/repository-itens-pedido.ts"
 
 
 export interface IClientePedidoSistema {
@@ -31,6 +29,8 @@ interface veiculo {
   data_cadastro: string
   data_recadastro: string
 }
+type status_separacao =  'NAO INICIADA' | 'EM ANDAMENTO' | 'PAUSADA' | 'RECUSADA' | 'CONCLUIDA';
+
 export interface IPedidoSistema {
   codigo: number
   id: number
@@ -58,32 +58,69 @@ export interface IPedidoSistema {
   just_icms: string
   just_subst: string
   frete: number 
-  status_separacao: 'NAO INICIADA' | 'EM ANDAMENTO' | 'PAUSADA' | 'RECUSADA' | 'CONCLUIDA'
+  status_separacao: status_separacao
   usuario_separacao:number
+  filial:number
   produtos: IProdutoPedidoSistema[]
   servicos: IServicosPedidoSistema[]
   parcelas: IParcelasPedidoSistema[]
 }
 
-
+type typeResultQueryStatusCompany = {
+ STATUS_EVT_SEPAR_P:number, STATUS_EVT_SEPAR_I:number 
+}
 export class SalesOrderRepository {
 
+  /**
+   * 
+   * @param filial codigo da filial do pedido
+   * @param matriz codigo da matriz do sistema
+   * @returns 
+   */
+      async findDefaultStatusOrderSeparation(filial:number, matriz?:number){
+           const sql = `SELECT
+                      STATUS_EVT_SEPAR_P,
+                      STATUS_EVT_SEPAR_I FROM ${VENDAS}.empresas WHERE FILIAL = ? ;`;
+                     let statusCompany : typeResultQueryStatusCompany[] =[];
 
-  static switchStatusOrder(){
+                // busca os status de separacao da filial.
+          if(filial != 0){
+            
+                     const [resultQueryStatusCompany ] = await dbConn.query(sql, filial)
+                      statusCompany =resultQueryStatusCompany as typeResultQueryStatusCompany[];
+                    if(statusCompany[0].STATUS_EVT_SEPAR_I && statusCompany[0].STATUS_EVT_SEPAR_P ){
+                      return statusCompany
+                    }else{
+                     const [resultQueryStatusCompany ] = await dbConn.query(sql , matriz ? matriz : 1)
+                      statusCompany =resultQueryStatusCompany as typeResultQueryStatusCompany[];
+                      return statusCompany
+                    }
+            }else{
+                 // se a filial for 0, busca o status da empresa matriz [ FILIAL:1 ].
+                     const [resultQueryStatusCompany ] = await dbConn.query(sql , matriz ? matriz : 1)
+                     const statusCompany = resultQueryStatusCompany as { STATUS_EVT_SEPAR_P:number, STATUS_EVT_SEPAR_I:number  }[];
+                    if(statusCompany[0].STATUS_EVT_SEPAR_I && statusCompany[0].STATUS_EVT_SEPAR_P ){
+                      return statusCompany
+                    }else{
+                      return statusCompany
+                    }
+            }
+      }
 
-  }
+ 
 
   static async updateSeparationOrder(orcamento: IPedidoSistema, codigoPedido: number) {
-
-    const STATUS_SEPARACAO_EM_SEPARACAO= process.env.STATUS_SEPARACAO_EM_SEPARACAO;
-    const STATUS_SEPARACAO_REJEITADA= process.env.STATUS_SEPARACAO_REJEITADA;
-    const STATUS_SEPARACAO_PAUSADA= process.env.STATUS_SEPARACAO_PAUSADA;
-    const STATUS_SEPARACAO_FINALIZADA= process.env.STATUS_SEPARACAO_FINALIZADA;
-    const STATUS_SEPARACAO_NAO_INICIADA= process.env.STATUS_SEPARACAO_NAO_INICIADA;
+    const dataAcess = new SalesOrderRepository();
     
     let resultFunction = { success: true, message: '' };
+      const MATRIZ = Number(process.env.MATRIZ) || 1;
+      const [dataStatusOrderErp] = await dataAcess.findDefaultStatusOrderSeparation(orcamento.filial, MATRIZ);
+    
 
+    const STATUS_SEPARACAO_EM_SEPARACAO =  dataStatusOrderErp ? dataStatusOrderErp.STATUS_EVT_SEPAR_P : 0;
 
+    const STATUS_SEPARACAO_FINALIZADA= dataStatusOrderErp ? dataStatusOrderErp.STATUS_EVT_SEPAR_I : 0;
+    
     try {
 
           const resultStatus = await this.findUser(orcamento.usuario_separacao);
@@ -108,25 +145,25 @@ export class SalesOrderRepository {
               const valuesUpdateCadOrca=[];
             
            if( orcamento.status_separacao ){
-                if( orcamento.status_separacao == 'CONCLUIDA' && STATUS_SEPARACAO_FINALIZADA)  {
+                if( orcamento.status_separacao == 'CONCLUIDA'  )  {
                         conditionUpdateCadOrca.push( ' status = ? ');
                         valuesUpdateCadOrca.push(STATUS_SEPARACAO_FINALIZADA);
                 }  
-                if( orcamento.status_separacao == 'EM ANDAMENTO' && STATUS_SEPARACAO_EM_SEPARACAO)  {
+                if( orcamento.status_separacao == 'EM ANDAMENTO'  )  {
                         conditionUpdateCadOrca.push( ' status = ? ');
                         valuesUpdateCadOrca.push(STATUS_SEPARACAO_EM_SEPARACAO);
                  } 
-                if( orcamento.status_separacao == 'NAO INICIADA' && STATUS_SEPARACAO_NAO_INICIADA)  {
+                if( orcamento.status_separacao == 'NAO INICIADA'  )  {
                         conditionUpdateCadOrca.push( ' status = ? ');
-                        valuesUpdateCadOrca.push(STATUS_SEPARACAO_NAO_INICIADA);
+                        valuesUpdateCadOrca.push(0);
                  }
-                if( orcamento.status_separacao == 'PAUSADA' && STATUS_SEPARACAO_PAUSADA)  {
+                if( orcamento.status_separacao == 'PAUSADA' )  {
                         conditionUpdateCadOrca.push( ' status = ? ');
-                        valuesUpdateCadOrca.push(STATUS_SEPARACAO_PAUSADA);
+                        valuesUpdateCadOrca.push(STATUS_SEPARACAO_EM_SEPARACAO);
                  }
-                if( orcamento.status_separacao == 'RECUSADA' && STATUS_SEPARACAO_REJEITADA)  {
+                if( orcamento.status_separacao == 'RECUSADA' )  {
                         conditionUpdateCadOrca.push( ' status = ? ');
-                        valuesUpdateCadOrca.push(STATUS_SEPARACAO_REJEITADA);
+                        valuesUpdateCadOrca.push(0);
                  }
                 }
            

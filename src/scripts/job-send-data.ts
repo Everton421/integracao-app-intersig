@@ -9,7 +9,7 @@ import { serviceSendProdSetor } from "../modules/product-sector/service-send-pro
 import { getProduct } from "../modules/products-old/repository-produto.ts";
 import { serviceSendProduct } from "../modules/products-old/service-send-product.ts";
 import { serviceSendPurchaseOrder } from "../modules/purchase-order/service-send-purchase-order.ts";
-import { selectOrdemCompraSistema, selectPedidoSistema } from "../modules/sales-order/repository-pedido.ts";
+import { selectOrdemCompraSistema, selectPedidoSistema } from "../modules/sales-order/repositories/repository-pedido.ts";
 import { serviceSendOrder } from "../modules/sales-order/service-sync-sales-orders.ts";
 import { getSetores } from "../modules/sector/repository-setor.ts";
 import { serviceSendSetor } from "../modules/sector/service-send-setor.ts";

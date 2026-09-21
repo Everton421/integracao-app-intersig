@@ -38,5 +38,20 @@ export class PhotosProductDataAcess {
             return resultPhotos as TabelFotosProd[]
     }
 
-        
+           /**
+     * 
+     * @param publicDatabase banco de dados publico. 
+     * @param id id do registro.
+     * @returns obtem as fotos dos produtos do ERP.
+     */
+     async getPhotosByid(publicDatabase: string , id:number ){
+        const sql = ` 
+            SELECT 
+            FROM ${publicDatabase}.fotos_prod  
+            WHERE id = ?   
+            ` ;
+            const [resultPhotos] = await this.connection.query(sql, [ id]);
+            return resultPhotos as TabelFotosProd[]
+    }
+
 }

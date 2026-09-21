@@ -4,7 +4,7 @@ import { ReceiveLoteSerieService } from "./modules/lotes-series/service-receive-
 import { type message_movimento_produtos } from "./modules/product-movment/contracts/message-movimentos-produtos.ts";
 import { insertMvto_produtos } from "./modules/product-movment/repository-movimentos.ts";
 import { type MessageSeparationOrder } from "./modules/sales-order/contracts/message-separation-order.ts";
-import { UpdateSalesOrderSeparation } from "./modules/sales-order/service-receive-sales-order-separation.ts";
+import { UpdateSalesOrderSeparation } from "./modules/sales-order/services/service-receive-sales-order-separation.ts";
 import express, { type Request } from 'express';
 import { consumerMobile } from "./services/consumer-mobile.ts";
 import { consumer_sistema } from "./services/consumer-sistema.ts";

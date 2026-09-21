@@ -1,7 +1,7 @@
 import { type ResultSetHeader } from "mysql2"
-import dbConn, { MOBILE, PUBLICO, VENDAS } from "../../database/connection/database-connection.ts"
-import { type par_orca } from "./contracts/par_orca.ts"
-import { type pro_orca } from "./contracts/pro_orca.ts"
+import dbConn, { MOBILE, PUBLICO, VENDAS } from "../../../database/connection/database-connection.ts"
+import { type par_orca } from "../contracts/par_orca.ts"
+import { type pro_orca } from "../contracts/pro_orca.ts"
 
 export interface IServicosPedidoSistema {
     pedido: number

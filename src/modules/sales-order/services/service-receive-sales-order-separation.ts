@@ -1,8 +1,8 @@
-import { type pedidosRecebidos } from "./contracts/pedidos-recebidos.ts";
-import dbConn, { MOBILE } from "../../database/connection/database-connection.ts";
-import { api } from "../../services/api.ts";
-import { type MessageSeparationOrder } from "./contracts/message-separation-order.ts";
-import { SalesOrderRepository } from "./repository-pedido.ts";
+import { type pedidosRecebidos } from "../contracts/pedidos-recebidos.ts";
+import dbConn, { MOBILE } from "../../../database/connection/database-connection.ts";
+import { api } from "../../../services/api.ts";
+import { type MessageSeparationOrder } from "../contracts/message-separation-order.ts";
+import { SalesOrderRepository } from "../repositories/repository-pedido.ts";
 
 
   type messagePatchOrderRequest = { 

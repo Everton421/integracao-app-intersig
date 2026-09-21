@@ -1,4 +1,4 @@
-import { selectOrdemCompraSistema } from "../modules/sales-order/repository-pedido.ts";
+import { selectOrdemCompraSistema } from "../modules/sales-order/repositories/repository-pedido.ts";
 import { serviceSendPurchaseOrder } from "../modules/purchase-order/service-send-purchase-order.ts";
 
 const data = await selectOrdemCompraSistema();

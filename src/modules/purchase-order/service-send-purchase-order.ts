@@ -36,7 +36,6 @@ export class ServiceSendPurchaseOrder{
                                 if (result.status === 200 || result.status === 201) {
                                        resultFunction.success = true;
                                    resultFunction.message = `[V] Pedido de compra [ERP]: ${event.id_registro} atualizado com successo `;
-
                                 }
                         } catch (e) {
                                 console.log(e)

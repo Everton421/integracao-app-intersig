@@ -1,4 +1,4 @@
-import { selectPedidoSistema } from "../modules/sales-order/repository-pedido.ts";
+import { selectPedidoSistema } from "../modules/sales-order/repositories/repository-pedido.ts";
 import { serviceSendOrder } from "../modules/sales-order/service-sync-sales-orders.ts";
 
 const data = await selectPedidoSistema();

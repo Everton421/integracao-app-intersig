@@ -1,5 +1,5 @@
 import test from "node:test";
-import { UpdateSalesOrderSeparation } from "../service-receive-sales-order-separation.ts";
+import { UpdateSalesOrderSeparation } from "../services/service-receive-sales-order-separation.ts";
 
  
 
