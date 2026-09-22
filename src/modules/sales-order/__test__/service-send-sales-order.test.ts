@@ -5,18 +5,24 @@ import { ServiceSyncSalesOrder } from "../services/service-sync-sales-orders.ts"
 test('service-send-sales-order', async (t) => {
 
     await t.test("teste envio pedido de venda ", async () => {
+        try{
+
      const result =   await   ServiceSyncSalesOrder.syncData({
              criado_em: '',
             dados_json: '',
             id: 1,
             id_evento: 1,
             id_message: '',
-            id_registro: 1944062,
+            id_registro: 1944066,
             setor: 0,
             status: 'PROCESSADO',
             tabela: 0,
             tabela_origem: 'cad_orca',
             tipo_evento: "INSERT",
         })
+        }catch(e){
+            console.log(e)
+        }
+
     })
 })

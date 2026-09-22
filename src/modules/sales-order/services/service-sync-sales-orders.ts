@@ -42,7 +42,7 @@ export class ServiceSyncSalesOrder {
                                                   tabela_origem: event.tabela_origem,
                                                   status: 'erro',
                                                   id_registro: event.id_registro || 0,
-                                                   tipo_evento: 'POST API '       
+                                                   tipo_evento: event.tipo_evento       
                                                  }
                                           )
                                         console.log(e)
@@ -82,7 +82,8 @@ export class ServiceSyncSalesOrder {
                                                   tabela_origem: event.tabela_origem,
                                                   status: 'erro',
                                                   id_registro: event.id_registro || 0,
-                                                   tipo_evento: 'POST API '       
+                                                   tipo_evento: event.tipo_evento       
+      
                                                  }
                                                    )
 

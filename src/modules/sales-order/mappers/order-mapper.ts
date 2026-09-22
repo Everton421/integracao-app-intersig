@@ -109,6 +109,7 @@ export class OrderMapper {
                                              vendedor :  erp_order.VENDEDOR ,
                                              situacao :   erp_order.SITUACAO ,
                                              situacao_separacao :  erp_order.SIT_SEPAR ,
+                                             status_separacao: 'CONCLUIDA',
                                              contato :  erp_order.CONTATO ,
                                              descontos :  erp_order.DESC_PROD ,
                                              frete: erp_order.VALOR_FRETE,
@@ -134,9 +135,11 @@ export class OrderMapper {
                                              operacao : 'V',
                                             setor: setor || 1, 
                                             filial: erp_order.FILIAL
-                                        }
+                                        } as any
                                         
-                                     
+                                        if( erp_order.SIT_SEPAR != 'I'){
+                                            delete obj.status_separacao  
+                                        }
                                      return obj;
 
             }else{
