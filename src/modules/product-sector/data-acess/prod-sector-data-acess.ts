@@ -52,9 +52,18 @@ export class ProdSectorDataAcess {
     }
 
      async findStockByProductAndSector(databaseStock:string, produto:number, setor:number){
-            const sqlStock = `SELECT * FROM  ${databaseStock}.prod_setor WHERE PRODUTO = ? AND SETOR = ? `;
-           const [arrCurrentStockAtDestinationSector] = await this.connection.query(sqlStock, [ produto,  setor]);
-           return arrCurrentStockAtDestinationSector as dataProdSectorErp[]
+            const sqlStock = `SELECT  
+                                 ps.PRODUTO,
+                                 ps.SETOR,
+                                 ps.ESTOQUE,
+                                 COALESCE( ps.LOCAL_PRODUTO, '') AS LOCAL_PRODUTO, 
+                                 COALESCE( ps.LOCAL1_PRODUTO, '') AS LOCAL1_PRODUTO, 
+                                 COALESCE( ps.LOCAL2_PRODUTO, '') AS LOCAL2_PRODUTO, 
+                                 COALESCE( ps.LOCAL3_PRODUTO, '') AS LOCAL3_PRODUTO, 
+                                 COALESCE( ps.LOCAL4_PRODUTO, '') as LOCAL4_PRODUTO
+                     FROM  ${databaseStock}.prod_setor ps WHERE ps.PRODUTO = ? AND ps.SETOR = ? `;
+                  const [arrCurrentStockAtDestinationSector] = await this.connection.query(sqlStock, [ produto,  setor]);
+                  return arrCurrentStockAtDestinationSector as dataProdSectorErp[]
     }
  
      async findTotalStockProductAndSector(databaseStock:string, produto:number, setor?:number){

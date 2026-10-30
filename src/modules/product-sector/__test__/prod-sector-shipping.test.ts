@@ -29,7 +29,7 @@ test("TEST PROD SECTOR SHIPPING", async ( t )=>{
                    new ApiClient() 
         );
 try {
-      const result =   await prodSectorShippingService.shippingProdSector(55913 ,1)
+      const result =   await prodSectorShippingService.shippingProdSector(55913 ,2)
         console.log(result)
   
 } catch (error) {
