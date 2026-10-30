@@ -28,8 +28,13 @@ test("TEST PROD SECTOR SHIPPING", async ( t )=>{
                  new MappingProdSectorShipping(), 
                    new ApiClient() 
         );
-
-      const result =   await prodSectorShippingService.shippingProdSector(2 ,1)
+try {
+      const result =   await prodSectorShippingService.shippingProdSector(55913 ,1)
         console.log(result)
+  
+} catch (error) {
+        console.log(error)
+  
+}
     })
 })

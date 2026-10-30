@@ -50,17 +50,19 @@ export class ProdSectorShippingService{
                     }
                 
                     if(isProductShipped){
-                            // dados do produto no setor.
+                             // dados do produto no setor.
                             const dataProdSector =dataProdSectorErp[0];
 
                             // dados do produto no setor para enviar para api.
                             const payloadToShippingProdSector = this.mappingProdSectorShipping.mappingToShipping(dataProdSector);
 
-                              const resultRequestProdSector=  await this.api.put("/produtos-setor", payloadToShippingProdSector )
-                            if(resultRequestProdSector.status == 200 || resultRequestProdSector.status == 201){
-                               resultFunction.success = true
-                                resultFunction.message =`[V] produto ${product} atualizado no setor ${sector}.`  
-                            }
+                               const resultRequestProdSector=  await this.api.put("/produtos-setor", payloadToShippingProdSector )
+                                  
+                           if(resultRequestProdSector && resultRequestProdSector.status == 200 || resultRequestProdSector.status == 201){
+                              resultFunction.success = true
+                               resultFunction.message =`[V] produto ${product} atualizado no setor ${sector}.`  
+                           }
+                           
                     }else{
                         resultFunction.success = false
                         resultFunction.message =`[X] não foi possivel fazer o envio do produto ${product}.`

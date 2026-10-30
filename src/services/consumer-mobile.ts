@@ -1,4 +1,5 @@
 import amqplib from 'amqplib';
+import { retryAsync } from '../utils/retry.ts';
 
 /**
  * 
@@ -47,11 +48,15 @@ export async function consumerMobile(domain: string, exec:( message:any )=> Prom
           if (conteudo.metadata.origin != origin) {
 
             console.log(`[v] Mensagem recebida  em [${uniqueQueueName}]  | Key: ${msg.fields.routingKey} | origin : ${conteudo.metadata.origin}`);
-            const resultExecFunction =  await exec(conteudo.data);
-
-            if (ack) {
-                channel.ack(msg)
-              }
+            try {
+              ///  const resultExecFunction =  await exec(conteudo.data);
+              await retryAsync(()=> exec(conteudo.data));
+              if (ack) {
+                  channel.ack(msg)
+                }
+            } catch (error) {
+                    channel.nack(msg, false, false);
+            }
           } else {
 
             if (conteudo.metadata.origin == origin) {

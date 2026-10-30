@@ -26,9 +26,13 @@ export class ReceiveRequirement {
                 return resultFunction;
             }
 
+                console.log(`[V] Registrando requerimento ${event.codigo} no sistema.`);
+
             const resultInsertRequirement = await  InsertRequirementErpService.execute(event);
+                console.log(  resultInsertRequirement);
+
             if (resultInsertRequirement.success && resultInsertRequirement.data > 0) {
-            const codeRequerimentErp = resultInsertRequirement.data;
+                const codeRequerimentErp = resultInsertRequirement.data;
 
                 const sqlInsertMobile = `INSERT INTO ${MOBILE}.requerimentos SET id_mobile = ?, codigo_sistema = ?;`;
                 const [resultInsertMobile] = await dbConn.query(sqlInsertMobile, [event.codigo, codeRequerimentErp]) as ResultSetHeader[];

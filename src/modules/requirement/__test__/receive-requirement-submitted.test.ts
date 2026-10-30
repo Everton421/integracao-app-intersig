@@ -11,10 +11,10 @@ import assert from "node:assert";
       await t.test("TESTE ReceiveRequirementSubmitted.receive", async () => {
 
   const mockEvent: EventRequirement = {
-            codigo: 855928,
-            data_requerimento: "2026-07-17",
+            codigo: 870457,
+            data_requerimento: "2026-10-30",
             requerente: 1,
-            data_efetuacao: "2026-07-17",
+            data_efetuacao: "2026-10-30",
             responsavel: 1,
             pedido: null,
             setor_origem: 1,
@@ -28,10 +28,7 @@ import assert from "node:assert";
                     quantidade: 1,
                     custo: 0,
                     lotes_series: [
-                    {
-                        lote_serie: 1500015,
-                        quantidade: 1
-                    }                        
+                                            
                     ]
                 }
             ]

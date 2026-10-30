@@ -1,5 +1,6 @@
 import { type table_enviados } from "../../../contracts/table-enviados.ts";
-import dbConn, { MOBILE, VENDAS } from "../../../database/connection/database-connection.ts";
+import dbConn, { ESTOQUE, MOBILE, VENDAS } from "../../../database/connection/database-connection.ts";
+import { ProdSectorDataAcess } from "../../product-sector/data-acess/prod-sector-data-acess.ts";
 import { type erpRequeriment } from "../contracts/erpRequirement.ts";
 import { type EventRequirement } from "../contracts/event-requirement.ts";
 import { RequirementDataAcess } from "../requirement-data-acess.ts";
@@ -8,6 +9,9 @@ import { UpdateRequirementErpService } from "../services/update-requirement-erp.
 
 export class UpdateReceivedRequirementService {
 
+                                         
+       
+
         /**
          * Função para receber os requerimento efetuado, cria os movimentos no sistema e movimenta o estoque dos produtos e das series.
          * @param event evento ou dados do requerimento vindo da request da api.
@@ -15,6 +19,12 @@ export class UpdateReceivedRequirementService {
          */
     static async receive(event: EventRequirement) // : Promise<{ success: boolean; message: string | null }> 
     {
+
+        const processStockErp = new ProcessStockErp(
+            new ProdSectorDataAcess(dbConn),
+            ESTOQUE!
+        );
+
         let resultFunction = { success: false, message: null } as { success: boolean; message: string | null };
          
         const connection = await dbConn.getConnection();
@@ -62,11 +72,10 @@ export class UpdateReceivedRequirementService {
                                         const { produto , quantidade } = itenRequiriment;
                                         const  { setor_destino , setor_origem } = dataRequirementRequest;
                                         // processa os produtos nos setores
-                                        await ProcessStockErp.updateStockProductSectorsErp( produto, setor_origem, setor_destino, quantidade );
-                                    
+                                        await processStockErp.updateStockProductSectorsErp( produto, setor_origem, setor_destino, quantidade );
                                      for( const serieReq of itenRequiriment.lotes_series ){
                                         // processa os lote series do produto vindo do requerimento 
-                                        await ProcessStockErp.updateStockLoteSeriesSectors(produto , serieReq.lote_serie, setor_origem, setor_destino, serieReq.quantidade   )
+                                        await processStockErp.updateStockLoteSeriesSectors(produto , serieReq.lote_serie, setor_origem, setor_destino, serieReq.quantidade   )
                                     }
                               }  
                         }

@@ -104,8 +104,15 @@ export async function consumer_sistema(productShippingService: ProductShippingSe
                  channel.ack(msg);
                   break;
               case 'prod_setor':
-                 const resultSendProdSetor = await prodSectorShippingService.shippingProdSector(data.id_registro , data.setor);
-                  channel.ack(msg);
+                    try{
+                        const result =  await retryAsync( ()=> prodSectorShippingService.shippingProdSector(data.id_registro , data.setor));
+                        console.log(result);
+                        channel.ack(msg);
+
+                    }catch(e){
+                      console.log(`[X] Ocorreu um erro ao tentar processar evento da tabela prod_setor ID:${data.id_evento}`, e )
+                        channel.nack(msg, false, false);
+                  }
                   break;
               case 'cad_clie':
                 await delay(delaySyncData, `[...] Aguardando ${delaySyncData/1000} segundos para processar cliente ...`)

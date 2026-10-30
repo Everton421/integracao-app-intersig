@@ -24,6 +24,7 @@ import { ReceiveProdSector } from "./modules/product-sector/services/receive-pro
 import { type message_prod_setor } from "./modules/product-sector/interfaces/message-prod-setor.ts";
 import {type ResultSetHeader } from "mysql2";
 import { seed } from "./database/seed/seed.ts";
+import { UpdateReceivedRequirementService } from "./modules/requirement/use-cases/update-received-requirement.ts";
  
 
 
@@ -82,11 +83,14 @@ await consumerMobile('lotesserie.inserido', ReceiveLoteSerieService.receiveByEve
 
 await consumerMobile('loteseriesetor.atualizado', ReceiveLoteSerieSetor.receive , true);
 
-await consumerMobile('requerimento.inserido', ReceiveRequirement.receive , true);
 
-await consumerMobile('requerimento.efetuado', ReceiveRequirementSubmitted.receive , false);
+ await consumerMobile('requerimento.inserido',ReceiveRequirement.receive, true);
+ 
+  await consumerMobile('requerimento.efetuado', ReceiveRequirementSubmitted.receive , true);
 
-// await consumerMobile('requerimento.atualizado', UpdateReceivedRequirementService.receive , false);
+
+ 
+   await consumerMobile('requerimento.atualizado', UpdateReceivedRequirementService.receive , true);
 
 
 //****************************** /
