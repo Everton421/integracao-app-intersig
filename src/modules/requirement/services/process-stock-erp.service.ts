@@ -1,4 +1,4 @@
-import { RepositoryLoteSerieSetor } from "../../lote-serie-setor/repository-lote-series-setor.ts";
+import { LoteSerieSectorRepository } from "../../lote-serie-setor/repository/lote-serie-respository.ts";
 import { ProdSectorDataAcess } from "../../product-sector/data-acess/prod-sector-data-acess.ts";
  
 
@@ -7,13 +7,15 @@ import { ProdSectorDataAcess } from "../../product-sector/data-acess/prod-sector
  */
 export class ProcessStockErp {
 
+    private loteSerieSectorRepository:LoteSerieSectorRepository;
 
     private prodSectorDataAcess: ProdSectorDataAcess;
     private ESTOQUE:string
 
-    constructor(prodSectorDataAcess: ProdSectorDataAcess, ESTOQUE:string ){
+    constructor(prodSectorDataAcess: ProdSectorDataAcess, ESTOQUE:string, loteSerieSectorRepository:LoteSerieSectorRepository){
         this.prodSectorDataAcess =prodSectorDataAcess;
         this.ESTOQUE = ESTOQUE
+        this.loteSerieSectorRepository=loteSerieSectorRepository;
     }
 
         /**
@@ -74,7 +76,7 @@ export class ProcessStockErp {
                 try{
 
                         // dados da serie no setor de origem
-                    const stockOriginSector = await RepositoryLoteSerieSetor.findStockSeriesByProductAndSector(product, codeSerie , originSector);
+                    const stockOriginSector = await this.loteSerieSectorRepository.findStockSeriesByProductAndSector(product, codeSerie , originSector);
 
                     //    saldo da serie no setor de origem  
                     const currentStockSeriesAtSourceSector = stockOriginSector.length > 0 ? Number(stockOriginSector[0].ESTOQUE) : 0;
@@ -82,18 +84,18 @@ export class ProcessStockErp {
                     const newStockSeriesForSourceSector = currentStockSeriesAtSourceSector - quantity;
 
                         /// executar update dos saldos das series no setor de origem 
-                    await RepositoryLoteSerieSetor.updateLoteSerieSetor( originSector, product, codeSerie, newStockSeriesForSourceSector)
+                    await this.loteSerieSectorRepository.updateLoteSerieSetor( originSector, product, codeSerie, newStockSeriesForSourceSector)
 
 
                     // consultando saldo das serie no setor de destino
-                    const dataCurrentStockSeriesAtDestinationSector = await RepositoryLoteSerieSetor.findStockSeriesByProductAndSector(product, codeSerie, destinationSector);
+                    const dataCurrentStockSeriesAtDestinationSector = await this.loteSerieSectorRepository.findStockSeriesByProductAndSector(product, codeSerie, destinationSector);
 
                     // *********** saldo da serie no setor de destino ***********
                     const currentStockSeriesAtDestinationSector = dataCurrentStockSeriesAtDestinationSector.length > 0 ? Number(dataCurrentStockSeriesAtDestinationSector[0].ESTOQUE) : 0;
                     const newStockSeriesForDestinationSector = currentStockSeriesAtDestinationSector + quantity;
                         
                     /// executar update dos saldos das series no setor de destino 
-                    await RepositoryLoteSerieSetor.updateLoteSerieSetor( destinationSector, product, codeSerie, newStockSeriesForDestinationSector)
+                    await this.loteSerieSectorRepository.updateLoteSerieSetor( destinationSector, product, codeSerie, newStockSeriesForDestinationSector)
                    
                      dataResultFunction.success = true
                     dataResultFunction.message = `[V]  atualizado saldo do lote serie ${codeSerie} do produto ${product} nos setores ${originSector} e ${destinationSector}.`

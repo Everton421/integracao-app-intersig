@@ -1,5 +1,5 @@
 import mysql, { type ResultSetHeader } from 'mysql2/promise';
-import { lote_serie_setor } from '../contracts/lote-serie-setor.ts';
+import { type lote_serie_setor } from '../contracts/lote-serie-setor.ts';
 
  
 
