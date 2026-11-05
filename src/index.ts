@@ -1,29 +1,25 @@
-import { type LoteSerieSetorInput, ReceiveLoteSerieSetor } from "./modules/lote-serie-setor/service-receive-lote-serie-setor.ts";
+import express, { type Request } from 'express';
+import { type LoteSerieSetorInput, ReceiveLoteSerieSetor } from "./modules/lote-serie-setor/services/service-receive-lote-serie-setor.ts";
 import { type EventLoteSerie } from "./modules/lotes-series/contracts/event-lote-serie.ts";
 import { ReceiveLoteSerieService } from "./modules/lotes-series/service-receive-lote-serie.ts";
 import { type message_movimento_produtos } from "./modules/product-movment/contracts/message-movimentos-produtos.ts";
 import { insertMvto_produtos } from "./modules/product-movment/repository-movimentos.ts";
+import { ReceiveRequirementSubmitted } from "./modules/requirement/use-cases/receive-requirement-submitted.ts";
+import { ReceiveRequirement } from "./modules/requirement/use-cases/receive-requirement.ts";
 import { type MessageSeparationOrder } from "./modules/sales-order/contracts/message-separation-order.ts";
 import { UpdateSalesOrderSeparation } from "./modules/sales-order/services/service-receive-sales-order-separation.ts";
-import express, { type Request } from 'express';
 import { consumerMobile } from "./services/consumer-mobile.ts";
 import { consumer_sistema } from "./services/consumer-sistema.ts";
-import { ReceiveRequirement } from "./modules/requirement/use-cases/receive-requirement.ts";
-import { ReceiveRequirementSubmitted } from "./modules/requirement/use-cases/receive-requirement-submitted.ts";
 
+import { type ResultSetHeader } from "mysql2";
 import path from 'node:path';
-import { ProductShippingService } from "./modules/products/services/product-shipping-service.ts";
-import { MappingProductShipping } from "./modules/products/mapping/mapping-product-shipping.ts";
-import { ProductDataAcess } from "./modules/products/data-acess/product-data-acess.ts";
-import dbConn, { ESTOQUE, MOBILE, PUBLICO } from "./database/connection/database-connection.ts";
-import { ApiClient } from "./services/api-client.ts";
-import { ProdSectorShippingService } from "./modules/product-sector/services/prod-sector-shipping-service.ts";
-import { MappingProdSectorShipping } from "./modules/product-sector/mapping/mapping-prod-sector-shipping.ts";
-import { ProdSectorDataAcess } from "./modules/product-sector/data-acess/prod-sector-data-acess.ts";
-import { ReceiveProdSector } from "./modules/product-sector/services/receive-prod-sector-service.ts";
-import { type message_prod_setor } from "./modules/product-sector/interfaces/message-prod-setor.ts";
-import {type ResultSetHeader } from "mysql2";
+import dbConn, { ESTOQUE, MOBILE } from "./database/connection/database-connection.ts";
 import { seed } from "./database/seed/seed.ts";
+import { ProdSectorDataAcess } from "./modules/product-sector/data-acess/prod-sector-data-acess.ts";
+import { type message_prod_setor } from "./modules/product-sector/interfaces/message-prod-setor.ts";
+import { ProdSectorFactory } from "./modules/product-sector/services/prod-sector-factory.ts";
+import { ReceiveProdSector } from "./modules/product-sector/services/receive-prod-sector-service.ts";
+import { ProductShippingFactory } from "./modules/products/services/product-shipping-factory.ts";
 import { UpdateReceivedRequirementService } from "./modules/requirement/use-cases/update-received-requirement.ts";
  
 
@@ -37,33 +33,13 @@ type metadataRequest = {
 
  const port = process.env.PORT_INTEGRATION || 5000;
 
-
-
-const mappingProductShipping = new MappingProductShipping();
-const productDataAcess = new ProductDataAcess(dbConn);
-const apiClient = new ApiClient();
-
-const productShippingService = new ProductShippingService(
-      mappingProductShipping,
-       productDataAcess,
-      String(PUBLICO),
-      String(MOBILE),
-      apiClient
-);
-
+ 
+      const productShippingService =  ProductShippingFactory.createProductShipping();
 
       const prodSectorDataAcess = new ProdSectorDataAcess(dbConn);
-      const mappingProdSectorShipping = new MappingProdSectorShipping();
-      const prodSectorShippingService = new  ProdSectorShippingService( 
-                        prodSectorDataAcess,
-                        productShippingService,
-                        productDataAcess,
-                        String(ESTOQUE),
-                        String(MOBILE),
-                        mappingProdSectorShipping,
-                        apiClient
-                  )
-
+      
+      const prodSectorShippingService = ProdSectorFactory.createProdSectorShippingService();
+      
 
    const receiveProdSector = new ReceiveProdSector( prodSectorDataAcess, String(ESTOQUE)  );
 

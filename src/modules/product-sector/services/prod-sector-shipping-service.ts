@@ -1,8 +1,15 @@
 import { ApiClient } from "../../../services/api-client.ts";
+import { delay } from "../../../utils/delay.ts";
 import { ProductDataAcess } from "../../products/data-acess/product-data-acess.ts";
 import { ProductShippingService } from "../../products/services/product-shipping-service.ts";
 import { ProdSectorDataAcess } from "../data-acess/prod-sector-data-acess.ts";
 import { MappingProdSectorShipping } from "../mapping/mapping-prod-sector-shipping.ts";
+
+type responseBulUpdateProdSector = {
+    success: boolean,
+    message:string,
+    lote_id: string
+}
 
 export class ProdSectorShippingService{
     
@@ -74,4 +81,37 @@ export class ProdSectorShippingService{
         }
         return resultFunction
     }
+
+
+    async bulkShippingProdSector(){
+        try {
+            const arrProdSectorToshipping = await this.prodSectorDataAcess.findAll( this.ESTOQUE);
+
+
+            console.log(`[!] Encontrado ${arrProdSectorToshipping.length} de registros no prod_setor.`)
+
+                 const CHUNK_SIZE = 5000;
+                
+                let acumulator = 0;
+                for( let i =0; i < arrProdSectorToshipping.length ; i +=  CHUNK_SIZE){
+                    const chunk =  arrProdSectorToshipping.slice(i, i + CHUNK_SIZE );
+                    const payload = chunk.map((i)=> {
+                            return this.mappingProdSectorShipping.mappingToShipping( i );
+
+                    });
+                        acumulator +=chunk.length;
+
+
+                      await delay(1000, `[V] Enviando ${acumulator} de ${arrProdSectorToshipping.length}...`);
+
+                      await this.api.put<responseBulUpdateProdSector>("/bulk/produtos-setor", payload );
+                }
+
+           return { success : true, message: "ok", data: null };
+
+        } catch (error) {
+            throw  error;
+        }
+    }   
 }
+

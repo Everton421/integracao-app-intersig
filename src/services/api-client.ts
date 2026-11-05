@@ -42,7 +42,7 @@ export class ApiClient{
         try {
             return await this.client.request<T>(config);
         } catch (error: any ) {
-            const status= error.response.status;
+            const status= error.response?.status;
             const isRetryable = status === 429 || status === 503 || error.code == 'ECONNABORTED';
         if(!isRetryable || retries <= 0 ) throw error;
 

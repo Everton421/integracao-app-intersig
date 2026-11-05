@@ -1,8 +1,8 @@
  
 import { type ResultSetHeader } from "mysql2";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import dbConn, { ESTOQUE, MOBILE,   } from "../../database/connection/database-connection.ts";
-import { ReceiveLoteSerieService } from "../lotes-series/service-receive-lote-serie.ts";
+import { type table_enviados } from "../../../contracts/table-enviados.ts";
+import dbConn, { ESTOQUE, MOBILE,   } from "../../../database/connection/database-connection.ts";
+import { ReceiveLoteSerieService } from "../../lotes-series/service-receive-lote-serie.ts";
 
  
 export type LoteSerieSetorInput = {

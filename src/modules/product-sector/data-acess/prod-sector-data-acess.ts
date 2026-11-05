@@ -10,6 +10,23 @@ export class ProdSectorDataAcess {
             this.connection = connection; 
         }
 
+   async findAll( databaseStock:string) :Promise< dataProdSectorErp[]> {
+      const sql =  `SELECT  
+                                 ps.PRODUTO,
+                                 ps.SETOR,
+                                 ps.ESTOQUE,
+                                 COALESCE( ps.LOCAL_PRODUTO, '') AS LOCAL_PRODUTO, 
+                                 COALESCE( ps.LOCAL1_PRODUTO, '') AS LOCAL1_PRODUTO, 
+                                 COALESCE( ps.LOCAL2_PRODUTO, '') AS LOCAL2_PRODUTO, 
+                                 COALESCE( ps.LOCAL3_PRODUTO, '') AS LOCAL3_PRODUTO, 
+                                 COALESCE( ps.LOCAL4_PRODUTO, '') as LOCAL4_PRODUTO,
+                                 DATE_FORMAT(ps.DATA_RECAD, '%Y-%m-%d %H:%i:%s') AS DATA_RECAD
+
+                     FROM  ${databaseStock}.prod_setor ps  `;
+                      const [arrProdSector] = await this.connection.query(sql );
+                  return arrProdSector as dataProdSectorErp[]
+   }
+
     async updateProdSector( dataProdSector: dataProdSectorReceived , databaseStock:string ){
          const sqlProd_setor = ` INSERT INTO ${databaseStock}.prod_setor  
                              set

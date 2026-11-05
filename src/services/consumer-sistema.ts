@@ -9,7 +9,7 @@ import { ServiceSyncSector } from "../modules/sector/service-sync-sector.ts";
 import { ServiceSyncServiceType } from "../modules/service-type/service-sync-service-type.ts";
 import { ServiceSyncSupplier } from '../modules/supplier/service-sync-supplier.ts';
  
-import { SendLoteSerieSetor } from '../modules/lote-serie-setor/lote-serie-setor.ts';
+ 
 import { ServiceSyncLotesSeries } from '../modules/lotes-series/service-sync-lotes-series.ts';
 import { ServiceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
 import { ServiceSyncSalesOrder } from '../modules/sales-order/services/service-sync-sales-orders.ts';
@@ -18,6 +18,7 @@ import { retryAsync } from '../utils/retry.ts';
 import { ServiceSyncRequeriment } from '../modules/requirement/service-sync-requirement.ts';
 import { ProductShippingService } from '../modules/products/services/product-shipping-service.ts';
 import { ProdSectorShippingService } from '../modules/product-sector/services/prod-sector-shipping-service.ts';
+import { LoteSerieSectorFactory } from '../modules/lote-serie-setor/services/lote-serie-sector-factory.ts';
 
 
 const RECONNECT_DELAY = 5000;
@@ -25,6 +26,7 @@ const RECONNECT_DELAY = 5000;
 export async function consumer_sistema(productShippingService: ProductShippingService , prodSectorShippingService :ProdSectorShippingService): Promise<void> {
 
 
+    const loteSerieShopping = LoteSerieSectorFactory.createLoteSerieShopping();
 
 
   const URL = process.env.BROKER_URL_SISTEMA;
@@ -83,7 +85,7 @@ export async function consumer_sistema(productShippingService: ProductShippingSe
                  break;
               
               case 'lote_serie_setor':
-                await   SendLoteSerieSetor(data)
+                await   loteSerieShopping.SendLoteSerieSectorByEvent(data)
                   channel.ack(msg);
                  break;
               case 'cad_prod':

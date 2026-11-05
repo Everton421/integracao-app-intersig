@@ -1,5 +1,5 @@
 import test from "node:test";
-import { ReceiveLoteSerieSetor } from "../service-receive-lote-serie-setor.ts";
+import { ReceiveLoteSerieSetor } from "../services/service-receive-lote-serie-setor.ts";
 import assert from "node:assert";
  
 
