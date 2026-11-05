@@ -11,7 +11,10 @@
       
     "bulk-prod-sector-shipping": "tsx --env-file .env --experimental-strip-types src/modules/product-sector/script/sync-prod-sector.ts",
     
-    "lote-serie-setor-shipping": "tsx --env-file .env --experimental-strip-types src/modules/lote-serie-setor/script/sync-lote-serie-setor.ts",
+    "bulk-lote-serie-setor": "tsx --env-file .env --experimental-strip-types src/modules/lote-serie-setor/script/sync-lote-serie-setor.ts",
+
+    "bulk-lotes-series": "tsx --env-file .env --experimental-strip-types src/modules/lotes-series/script/sync-lotes-series.ts",
+
 
     "test:bulk-prod-sector-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/bulk-prod-sector-shipping.test.ts",
     "test:lote-serie-setor-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lote-serie-setor/__test__/lote-serie-setor-shipping.test.ts",
