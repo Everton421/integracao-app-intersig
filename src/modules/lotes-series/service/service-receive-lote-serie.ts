@@ -1,8 +1,8 @@
 import { type ResultSetHeader } from "mysql2";
-import { type table_enviados } from "../../contracts/table-enviados.ts";
-import dbConn, { MOBILE, PUBLICO } from "../../database/connection/database-connection.ts";
-import { type EventLoteSerie } from "./contracts/event-lote-serie.ts";
-import { LoteSeriesRequest } from "./lotes-series-request.ts";
+import { type table_enviados } from "../../../contracts/table-enviados.ts";
+import dbConn, { MOBILE, PUBLICO } from "../../../database/connection/database-connection.ts";
+import { type EventLoteSerie } from "../contracts/event-lote-serie.ts";
+import { LoteSeriesRequest } from "../lotes-series-request.ts";
 
  
 

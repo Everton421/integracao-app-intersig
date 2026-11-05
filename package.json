@@ -15,6 +15,7 @@
 
     "test:bulk-prod-sector-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/product-sector/__test__/bulk-prod-sector-shipping.test.ts",
     "test:lote-serie-setor-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lote-serie-setor/__test__/lote-serie-setor-shipping.test.ts",
+    "test:lote-serie-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/lotes-series/__test__/lote-serie-shipping.test.ts",
 
     "test:shipping-photo-service": "tsx --env-file .env --watch  --experimental-strip-types src/modules/photos-product/__test__/shipping-photo-service.test.ts",
     "test-mapping-product-shipping": "tsx --env-file .env --watch  --experimental-strip-types src/modules/products/__test__/mapping-product-shipping.test.ts",

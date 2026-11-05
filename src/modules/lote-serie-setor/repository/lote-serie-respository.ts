@@ -9,7 +9,6 @@ export class LoteSerieSectorRepository {
     constructor(connection: mysql.Pool, databaseStock:string  ) {
         this.connection = connection;
         this.databaseStock=databaseStock;
-
     }   
 
     async findAll() {

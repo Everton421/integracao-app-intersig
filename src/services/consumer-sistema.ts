@@ -10,7 +10,7 @@ import { ServiceSyncServiceType } from "../modules/service-type/service-sync-ser
 import { ServiceSyncSupplier } from '../modules/supplier/service-sync-supplier.ts';
  
  
-import { ServiceSyncLotesSeries } from '../modules/lotes-series/service-sync-lotes-series.ts';
+ 
 import { ServiceSendPurchaseOrder } from '../modules/purchase-order/service-send-purchase-order.ts';
 import { ServiceSyncSalesOrder } from '../modules/sales-order/services/service-sync-sales-orders.ts';
 import { delay } from '../utils/delay.ts';
@@ -19,6 +19,7 @@ import { ServiceSyncRequeriment } from '../modules/requirement/service-sync-requ
 import { ProductShippingService } from '../modules/products/services/product-shipping-service.ts';
 import { ProdSectorShippingService } from '../modules/product-sector/services/prod-sector-shipping-service.ts';
 import { LoteSerieSectorFactory } from '../modules/lote-serie-setor/services/lote-serie-sector-factory.ts';
+import { LoteSerieShoppingFactory } from '../modules/lotes-series/service/lote-serie-shipping-factory.ts';
 
 
 const RECONNECT_DELAY = 5000;
@@ -26,7 +27,8 @@ const RECONNECT_DELAY = 5000;
 export async function consumer_sistema(productShippingService: ProductShippingService , prodSectorShippingService :ProdSectorShippingService): Promise<void> {
 
 
-    const loteSerieShopping = LoteSerieSectorFactory.createLoteSerieShopping();
+    const loteSerieSectorShipping = LoteSerieSectorFactory.createLoteSerieShopping();
+    const loteSerieShipping =  LoteSerieShoppingFactory.createShipping();
 
 
   const URL = process.env.BROKER_URL_SISTEMA;
@@ -75,7 +77,7 @@ export async function consumer_sistema(productShippingService: ProductShippingSe
             switch (data.tabela_origem) {
 
               case 'lotes_series':
-                  const resultLoteSerie = await ServiceSyncLotesSeries.syncData(data)
+                  const resultLoteSerie = await loteSerieShipping.shippingByEvent(data)
                   channel.ack(msg);
                  break;
               case 'requerimentos': 
@@ -85,7 +87,7 @@ export async function consumer_sistema(productShippingService: ProductShippingSe
                  break;
               
               case 'lote_serie_setor':
-                await   loteSerieShopping.SendLoteSerieSectorByEvent(data)
+                await   loteSerieSectorShipping.SendLoteSerieSectorByEvent(data)
                   channel.ack(msg);
                  break;
               case 'cad_prod':

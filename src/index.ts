@@ -1,7 +1,7 @@
 import express, { type Request } from 'express';
 import { type LoteSerieSetorInput, ReceiveLoteSerieSetor } from "./modules/lote-serie-setor/services/service-receive-lote-serie-setor.ts";
 import { type EventLoteSerie } from "./modules/lotes-series/contracts/event-lote-serie.ts";
-import { ReceiveLoteSerieService } from "./modules/lotes-series/service-receive-lote-serie.ts";
+import { ReceiveLoteSerieService } from "./modules/lotes-series/service/service-receive-lote-serie.ts";
 import { type message_movimento_produtos } from "./modules/product-movment/contracts/message-movimentos-produtos.ts";
 import { insertMvto_produtos } from "./modules/product-movment/repository-movimentos.ts";
 import { ReceiveRequirementSubmitted } from "./modules/requirement/use-cases/receive-requirement-submitted.ts";
